@@ -45,25 +45,25 @@
   .bar-wrap { flex: 1; height: 14px; }
   .bar { height: 14px; border-radius: 4px; min-width: 2px; }
   .bar-devil {
-    background: linear-gradient(90deg, #6d0000, #b31212 40%, #e34948 70%, #ff9a3d) !important;
-    position: relative; overflow: visible;
-    animation: devilglow 1.4s ease-in-out infinite alternate;
+    /* molten lava flowing through the bar, flame-tongue tip, breathing glow */
+    background: linear-gradient(90deg, #4a0000, #8b0000, #e34948, #ff9a3d,
+                                #ffd24a, #e34948, #8b0000, #4a0000) !important;
+    background-size: 300% 100% !important;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 22%, calc(100% - 5px) 42%,
+                       100% 58%, calc(100% - 6px) 78%, 100% 100%, 0 100%);
+    animation: lavaflow 2.6s linear infinite,
+               devilglow 1.4s ease-in-out infinite alternate;
   }
-  .bar-devil::after {           /* licking flame at the tip */
-    content: "🔥"; position: absolute; right: -8px; top: -6px;
-    font-size: 15px; animation: flicker 0.9s ease-in-out infinite alternate;
+  @keyframes lavaflow {
+    from { background-position: 0% 0; }
+    to   { background-position: 300% 0; }
   }
-  .bar-imp { position: absolute; left: 4px; top: -7px; font-size: 13px; }
   @keyframes devilglow {
-    from { box-shadow: 0 0 3px rgba(227, 73, 72, .45); }
-    to   { box-shadow: 0 0 11px rgba(255, 100, 40, .85); }
-  }
-  @keyframes flicker {
-    from { transform: rotate(-7deg) scale(.92); }
-    to   { transform: rotate(7deg) scale(1.12); }
+    from { filter: drop-shadow(0 0 2px rgba(227, 73, 72, .5)); }
+    to   { filter: drop-shadow(0 0 9px rgba(255, 110, 40, .9)); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .bar-devil, .bar-devil::after { animation: none; }
+    .bar-devil { animation: none; }
   }
   .stand-pts { flex: none; width: 2.5em; text-align: right;
                font-variant-numeric: tabular-nums; font-weight: 600; }
@@ -116,12 +116,21 @@
   <div id="chartwrap"><div id="tip"></div><svg id="chart" width="100%" height="240"></svg></div>
 </div>
 
+<div class="card" id="funcard" style="display:none">
+  <h2>Fun stats</h2><div id="fun"></div>
+</div>
+
+<div class="card">
+  <h2>Game-by-game (season averages)</h2>
+  <div class="games" id="gamestats"></div>
+</div>
+
 <div class="card">
   <details><summary>Daily history</summary><div id="history"></div></details>
 </div>
 
 <script>
-var DATA = {"generated": "Jul 27, 2026 04:09 PM", "day": "2026-07-27", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew 😈", "slot": 1, "special": true}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false}], "standings": [{"player": "matt", "points": 23, "game_wins": 3, "daily_wins": 1}, {"player": "andrew", "points": 20, "game_wins": 2, "daily_wins": 0}, {"player": "mitch", "points": 15, "game_wins": 1, "daily_wins": 0}, {"player": "kyle", "points": 0, "game_wins": 0, "daily_wins": 0}], "todayTotals": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:13"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:23"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "0:55"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:18"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:19"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:31"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:05"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:06"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:08"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:38"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:45"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:47"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:10"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:12"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:15"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}], "series": {"days": ["2026-07-27"], "cumulative": {"matt": [23], "andrew": [20], "mitch": [15], "kyle": [0]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"]};
+var DATA = {"generated": "Jul 27, 2026 04:15 PM", "day": "2026-07-27", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew 😈", "slot": 1, "special": true}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false}], "standings": [{"player": "matt", "points": 23, "game_wins": 3, "daily_wins": 1}, {"player": "andrew", "points": 20, "game_wins": 2, "daily_wins": 0}, {"player": "mitch", "points": 15, "game_wins": 1, "daily_wins": 0}, {"player": "kyle", "points": 0, "game_wins": 0, "daily_wins": 0}], "todayTotals": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:13"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:23"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "0:55"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:18"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:19"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:31"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:05"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:06"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:08"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:38"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:45"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:47"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:10"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:12"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:15"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}], "series": {"days": ["2026-07-27"], "cumulative": {"matt": [23], "andrew": [20], "mitch": [15], "kyle": [0]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"], "gameStats": [{"slug": "queens", "name": "Queens", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:55", "bestTime": "0:55"}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:13", "bestTime": "0:13"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:23", "bestTime": "0:23"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "tango", "name": "Tango", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:19", "bestTime": "0:19"}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:18", "bestTime": "0:18"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:31", "bestTime": "0:31"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "zip", "name": "Zip", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:05", "bestTime": "0:05"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:06", "bestTime": "0:06"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:08", "bestTime": "0:08"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:38", "bestTime": "0:38"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:47", "bestTime": "0:47"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:45", "bestTime": "0:45"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "patches", "name": "Patches", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:11", "bestTime": "0:11"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:12", "bestTime": "0:12"}, {"id": "mitch", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:10", "bestTime": "0:10"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "wend", "name": "Wend", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:11", "bestTime": "0:11"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:15", "bestTime": "0:15"}, {"id": "mitch", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}], "funStats": [{"emoji": "👑", "label": "Game win king", "value": "Matt — 3 wins"}, {"emoji": "⚡", "label": "Speed demon", "value": "Matt — holds 3 of 6 game records"}, {"emoji": "🥄", "label": "Wooden spoon", "value": "Andrew 😈 — 3 last-place finishes"}, {"emoji": "🦾", "label": "Iron man", "value": "Matt/Andrew 😈 — 6 games played"}, {"emoji": "💥", "label": "Biggest beatdown", "value": "Matt won 07/27 by 3 points"}]};
 
 function isDark() {
   var t = document.documentElement.getAttribute('data-theme');
@@ -155,8 +164,8 @@ function renderStandings() {
       + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
       + '<span class="stand-name">' + esc(p.first) + '</span>'
       + '<span class="bar-wrap"><span class="bar' + (p.special ? ' bar-devil' : '')
-      + '" style="width:' + w + '%;background:' + c[p.slot] + ';display:block">'
-      + (p.special ? '<span class="bar-imp">😈</span>' : '') + '</span></span>'
+      + '" style="width:' + w + '%;background:' + c[p.slot]
+      + ';display:block"></span></span>'
       + '<span class="stand-pts">' + s.points + '</span></div>';
   }
   document.getElementById('standings').innerHTML = html;
@@ -327,6 +336,43 @@ function hookHover() {
   svg.addEventListener('touchend', leave);
 }
 
+function renderFun() {
+  var card = document.getElementById('funcard');
+  if (!DATA.funStats || !DATA.funStats.length) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  var html = '';
+  for (var i = 0; i < DATA.funStats.length; i++) {
+    var s = DATA.funStats[i];
+    html += '<div class="grow"><span class="medal">' + s.emoji + '</span>'
+      + '<span class="nm"><b>' + esc(s.label) + '</b></span>'
+      + '<span class="sc">' + esc(s.value) + '</span></div>';
+  }
+  document.getElementById('fun').innerHTML = html;
+}
+
+function renderGameStats() {
+  var c = colors(), html = '';
+  for (var g = 0; g < DATA.gameStats.length; g++) {
+    var game = DATA.gameStats[g];
+    html += '<div class="game"><h3>' + esc(game.name) + '</h3>'
+      + '<table><tr><th></th><th>Avg</th><th>Place</th><th>Wins</th><th>Best</th></tr>';
+    for (var r = 0; r < game.players.length; r++) {
+      var row = game.players[r], p = playerById(row.id);
+      var played = row.plays > 0;
+      html += '<tr' + (played ? '' : ' style="opacity:.45"') + '>'
+        + '<td><span class="dot" style="background:' + c[p.slot]
+        + ';display:inline-block;vertical-align:middle;margin-right:5px"></span>'
+        + esc(p.first) + '</td>'
+        + '<td>' + (played ? esc(row.avgTime) : '—') + '</td>'
+        + '<td>' + (played && row.avgRank !== null ? row.avgRank : '—') + '</td>'
+        + '<td>' + (played ? row.wins : '—') + '</td>'
+        + '<td>' + (played ? esc(row.bestTime) : '—') + '</td></tr>';
+    }
+    html += '</table></div>';
+  }
+  document.getElementById('gamestats').innerHTML = html;
+}
+
 function renderHistory() {
   var days = Object.keys(DATA.dayTotals).sort().reverse();
   var html = '<table><tr><th>Day</th>';
@@ -344,7 +390,8 @@ function renderHistory() {
 }
 
 function renderAll() {
-  renderStandings(); renderToday(); renderLegend(); renderChart(); renderHistory();
+  renderStandings(); renderToday(); renderLegend(); renderChart();
+  renderFun(); renderGameStats(); renderHistory();
 }
 renderAll();
 hookHover();
