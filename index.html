@@ -95,11 +95,23 @@
   details summary { cursor: pointer; color: var(--ink-2); font-size: .9rem; }
   table { border-collapse: collapse; width: 100%; margin-top: 8px;
           font-size: .85rem; }
-  th, td { text-align: right; padding: 4px 8px;
+  th, td { text-align: right; padding: 5px 8px;
            border-bottom: 1px solid var(--grid);
            font-variant-numeric: tabular-nums; }
   th:first-child, td:first-child { text-align: left; }
-  th { color: var(--muted); font-weight: 500; }
+  th { color: var(--muted); font-weight: 500; font-size: .68rem;
+       text-transform: uppercase; letter-spacing: .06em; }
+  tr:last-child td { border-bottom: none; }
+  .tiles { display: grid; gap: 10px;
+           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .tile { border: 1px solid var(--ring); border-radius: 10px;
+          padding: 10px 12px; }
+  .tile .em { font-size: 1.25rem; line-height: 1; }
+  .tile .lb { font-size: .66rem; letter-spacing: .07em; text-transform: uppercase;
+              color: var(--muted); margin-top: 6px; }
+  .tile .vl { font-size: .84rem; font-weight: 600; margin-top: 2px;
+              line-height: 1.35; }
+  .rec-line { color: var(--muted); font-size: .72rem; margin: -2px 0 4px; }
 </style>
 </head>
 <body>
@@ -130,7 +142,7 @@
 </div>
 
 <script>
-var DATA = {"generated": "Jul 27, 2026 04:15 PM", "day": "2026-07-27", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew 😈", "slot": 1, "special": true}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false}], "standings": [{"player": "matt", "points": 23, "game_wins": 3, "daily_wins": 1}, {"player": "andrew", "points": 20, "game_wins": 2, "daily_wins": 0}, {"player": "mitch", "points": 15, "game_wins": 1, "daily_wins": 0}, {"player": "kyle", "points": 0, "game_wins": 0, "daily_wins": 0}], "todayTotals": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:13"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:23"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "0:55"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:18"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:19"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:31"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:05"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:06"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:08"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:38"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:45"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:47"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:10"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:12"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:15"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}], "series": {"days": ["2026-07-27"], "cumulative": {"matt": [23], "andrew": [20], "mitch": [15], "kyle": [0]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"], "gameStats": [{"slug": "queens", "name": "Queens", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:55", "bestTime": "0:55"}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:13", "bestTime": "0:13"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:23", "bestTime": "0:23"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "tango", "name": "Tango", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:19", "bestTime": "0:19"}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:18", "bestTime": "0:18"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:31", "bestTime": "0:31"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "zip", "name": "Zip", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:05", "bestTime": "0:05"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:06", "bestTime": "0:06"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:08", "bestTime": "0:08"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:38", "bestTime": "0:38"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:47", "bestTime": "0:47"}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:45", "bestTime": "0:45"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "patches", "name": "Patches", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:11", "bestTime": "0:11"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:12", "bestTime": "0:12"}, {"id": "mitch", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:10", "bestTime": "0:10"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}, {"slug": "wend", "name": "Wend", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:11", "bestTime": "0:11"}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:15", "bestTime": "0:15"}, {"id": "mitch", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—"}]}], "funStats": [{"emoji": "👑", "label": "Game win king", "value": "Matt — 3 wins"}, {"emoji": "⚡", "label": "Speed demon", "value": "Matt — holds 3 of 6 game records"}, {"emoji": "🥄", "label": "Wooden spoon", "value": "Andrew 😈 — 3 last-place finishes"}, {"emoji": "🦾", "label": "Iron man", "value": "Matt/Andrew 😈 — 6 games played"}, {"emoji": "💥", "label": "Biggest beatdown", "value": "Matt won 07/27 by 3 points"}]};
+var DATA = {"generated": "Jul 27, 2026 04:18 PM", "day": "2026-07-27", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew 😈", "slot": 1, "special": true}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false}], "standings": [{"player": "matt", "points": 23, "game_wins": 3, "daily_wins": 1}, {"player": "andrew", "points": 20, "game_wins": 2, "daily_wins": 0}, {"player": "mitch", "points": 15, "game_wins": 1, "daily_wins": 0}, {"player": "kyle", "points": 0, "game_wins": 0, "daily_wins": 0}], "todayTotals": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:13"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:23"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "0:55"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "andrew", "played": true, "rank": 1, "points": 5, "score": "0:18"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:19"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:31"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:05"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:06"}, {"player": "mitch", "played": true, "rank": 3, "points": 2, "score": "0:08"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:38"}, {"player": "mitch", "played": true, "rank": 2, "points": 3, "score": "0:45"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:47"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:10"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:12"}, {"player": "kyle", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "0:11"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:15"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}], "series": {"days": ["2026-07-27"], "cumulative": {"matt": [23], "andrew": [20], "mitch": [15], "kyle": [0]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 15, "kyle": 0}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"], "gameStats": [{"slug": "queens", "name": "Queens", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:55", "bestTime": "0:55", "bestSecs": 55}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:13", "bestTime": "0:13", "bestSecs": 13}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:23", "bestTime": "0:23", "bestSecs": 23}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}, {"slug": "tango", "name": "Tango", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:19", "bestTime": "0:19", "bestSecs": 19}, {"id": "andrew", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:18", "bestTime": "0:18", "bestSecs": 18}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:31", "bestTime": "0:31", "bestSecs": 31}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}, {"slug": "zip", "name": "Zip", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:05", "bestTime": "0:05", "bestSecs": 5}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:06", "bestTime": "0:06", "bestSecs": 6}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:08", "bestTime": "0:08", "bestSecs": 8}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:38", "bestTime": "0:38", "bestSecs": 38}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:47", "bestTime": "0:47", "bestSecs": 47}, {"id": "mitch", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:45", "bestTime": "0:45", "bestSecs": 45}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}, {"slug": "patches", "name": "Patches", "players": [{"id": "matt", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:11", "bestTime": "0:11", "bestSecs": 11}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 3.0, "avgTime": "0:12", "bestTime": "0:12", "bestSecs": 12}, {"id": "mitch", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:10", "bestTime": "0:10", "bestSecs": 10}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}, {"slug": "wend", "name": "Wend", "players": [{"id": "matt", "plays": 1, "wins": 1, "avgRank": 1.0, "avgTime": "0:11", "bestTime": "0:11", "bestSecs": 11}, {"id": "andrew", "plays": 1, "wins": 0, "avgRank": 2.0, "avgTime": "0:15", "bestTime": "0:15", "bestSecs": 15}, {"id": "mitch", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}, {"id": "kyle", "plays": 0, "wins": 0, "avgRank": null, "avgTime": "—", "bestTime": "—", "bestSecs": null}]}], "funStats": [{"emoji": "👑", "label": "Game win king", "value": "Matt — 3 wins"}, {"emoji": "⚡", "label": "Speed demon", "value": "Matt — holds 3 of 6 game records"}, {"emoji": "🥄", "label": "Wooden spoon", "value": "Andrew 😈 — 3 last-place finishes"}, {"emoji": "🦾", "label": "Iron man", "value": "Matt/Andrew 😈 — 6 games played"}, {"emoji": "💥", "label": "Biggest beatdown", "value": "Matt won 07/27 by 3 points"}]};
 
 function isDark() {
   var t = document.documentElement.getAttribute('data-theme');
@@ -340,33 +352,59 @@ function renderFun() {
   var card = document.getElementById('funcard');
   if (!DATA.funStats || !DATA.funStats.length) { card.style.display = 'none'; return; }
   card.style.display = '';
-  var html = '';
+  var html = '<div class="tiles">';
   for (var i = 0; i < DATA.funStats.length; i++) {
     var s = DATA.funStats[i];
-    html += '<div class="grow"><span class="medal">' + s.emoji + '</span>'
-      + '<span class="nm"><b>' + esc(s.label) + '</b></span>'
-      + '<span class="sc">' + esc(s.value) + '</span></div>';
+    html += '<div class="tile"><div class="em">' + s.emoji + '</div>'
+      + '<div class="lb">' + esc(s.label) + '</div>'
+      + '<div class="vl">' + esc(s.value) + '</div></div>';
   }
-  document.getElementById('fun').innerHTML = html;
+  document.getElementById('fun').innerHTML = html + '</div>';
 }
 
 function renderGameStats() {
   var c = colors(), html = '';
   for (var g = 0; g < DATA.gameStats.length; g++) {
     var game = DATA.gameStats[g];
-    html += '<div class="game"><h3>' + esc(game.name) + '</h3>'
-      + '<table><tr><th></th><th>Avg</th><th>Place</th><th>Wins</th><th>Best</th></tr>';
-    for (var r = 0; r < game.players.length; r++) {
-      var row = game.players[r], p = playerById(row.id);
+    // best-performing first: avg place, then wins, then fastest best time
+    var rows = game.players.slice().sort(function (a, b) {
+      if ((a.plays > 0) !== (b.plays > 0)) return a.plays > 0 ? -1 : 1;
+      var ar = a.avgRank === null ? 99 : a.avgRank;
+      var br = b.avgRank === null ? 99 : b.avgRank;
+      if (ar !== br) return ar - br;
+      if (a.wins !== b.wins) return b.wins - a.wins;
+      return (a.bestSecs || 1e9) - (b.bestSecs || 1e9);
+    });
+    var recSecs = null, recHolders = [];
+    rows.forEach(function (r) {
+      if (r.bestSecs === null || !r.plays) return;
+      if (recSecs === null || r.bestSecs < recSecs) {
+        recSecs = r.bestSecs; recHolders = [r];
+      } else if (r.bestSecs === recSecs) recHolders.push(r);
+    });
+    html += '<div class="game"><h3>' + esc(game.name) + '</h3>';
+    if (recHolders.length) {
+      html += '<div class="rec-line">🏅 record ' + esc(recHolders[0].bestTime)
+        + ' — ' + recHolders.map(function (r) {
+            return esc(playerById(r.id).first);
+          }).join(', ') + '</div>';
+    }
+    html += '<table><tr><th></th><th>Avg time</th><th>Place</th><th>Wins</th><th>Best</th></tr>';
+    var leadId = rows.length && rows[0].plays > 0 ? rows[0].id : null;
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r], p = playerById(row.id);
       var played = row.plays > 0;
+      var isRec = recSecs !== null && row.bestSecs === recSecs && played;
       html += '<tr' + (played ? '' : ' style="opacity:.45"') + '>'
-        + '<td><span class="dot" style="background:' + c[p.slot]
+        + '<td' + (row.id === leadId ? ' style="font-weight:600"' : '') + '>'
+        + '<span class="dot" style="background:' + c[p.slot]
         + ';display:inline-block;vertical-align:middle;margin-right:5px"></span>'
-        + esc(p.first) + '</td>'
+        + esc(p.first) + (row.id === leadId ? ' 👑' : '') + '</td>'
         + '<td>' + (played ? esc(row.avgTime) : '—') + '</td>'
         + '<td>' + (played && row.avgRank !== null ? row.avgRank : '—') + '</td>'
         + '<td>' + (played ? row.wins : '—') + '</td>'
-        + '<td>' + (played ? esc(row.bestTime) : '—') + '</td></tr>';
+        + '<td' + (isRec ? ' style="font-weight:700"' : '') + '>'
+        + (played ? esc(row.bestTime) : '—') + '</td></tr>';
     }
     html += '</table></div>';
   }
