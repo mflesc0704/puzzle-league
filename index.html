@@ -112,6 +112,9 @@
   .tile .vl { font-size: .84rem; font-weight: 600; margin-top: 2px;
               line-height: 1.35; }
   .rec-line { color: var(--muted); font-size: .72rem; margin: -2px 0 4px; }
+  .game table { font-size: .8rem; }
+  .game th, .game td { padding: 4px 6px; }
+  .game th:first-child, .game td:first-child { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -389,7 +392,7 @@ function renderGameStats() {
             return esc(playerById(r.id).first);
           }).join(', ') + '</div>';
     }
-    html += '<table><tr><th></th><th>Avg time</th><th>Place</th><th>Wins</th><th>Best</th></tr>';
+    html += '<table><tr><th></th><th>Avg</th><th>Place</th><th>Wins</th><th>Best</th></tr>';
     var leadId = rows.length && rows[0].plays > 0 ? rows[0].id : null;
     for (var r = 0; r < rows.length; r++) {
       var row = rows[r], p = playerById(row.id);
