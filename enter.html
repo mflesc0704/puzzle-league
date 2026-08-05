@@ -29,7 +29,8 @@
 </head>
 <body>
 <h1>🏆 Enter results</h1>
-<p class="hint">Type each player's time (like <b>0:42</b>). Leave a player
+<p class="hint">Type each player's time (like <b>0:42</b>). Boxes prefill
+with times already recorded — add or fix what's missing. Leave a player
 blank if they didn't play; leave a whole game blank to not touch it.
 Picked up by the league PC on its next run.</p>
 <label>Puzzle day <input type="date" id="day"></label>
@@ -77,6 +78,55 @@ for (const g of GAMES) {
   fs.appendChild(nl);
   wrap.appendChild(fs);
 }
+function box(g, p) { return document.getElementById("g-" + g + "-" + p); }
+async function prefill() {
+  const day = dayEl.value;
+  for (const g of GAMES) {
+    document.getElementById("none-" + g.slug).checked = false;
+    for (const p of PLAYERS) box(g.slug, p.id).value = "";
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+  const known = {};   // slug -> {player_id: time} or "none"
+  try {
+    const r = await fetch("times.json?t=" + Date.now(), {cache: "no-store"});
+    if (r.ok) Object.assign(known, (await r.json())[day] || {});
+  } catch (e) {}
+  try {  // a phone entry not yet picked up by the PC overrides per game
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`
+        + `/contents/manual/${day}.txt?ref=main&t=` + Date.now(),
+        {headers: {Accept: "application/vnd.github.raw+json"},
+         cache: "no-store"});
+    if (r.ok) for (const raw of (await r.text()).split("\n")) {
+      const line = raw.split("#")[0].trim();
+      const ci = line.indexOf(":");
+      if (!line || ci < 0) continue;
+      const slug = line.slice(0, ci).trim().toLowerCase();
+      const rest = line.slice(ci + 1).trim();
+      if (!GAMES.some(g => g.slug === slug)) continue;
+      if (rest.toLowerCase() === "none") { known[slug] = "none"; continue; }
+      const times = {};
+      for (const item of rest.split(",")) {
+        const t = item.trim().split(/\s+/);
+        let si = t.findIndex((x, i) => i > 0 && /\d/.test(x));
+        if (si < 0) si = t.length;
+        const nm = t.slice(0, si).join(" ").toLowerCase();
+        const p = PLAYERS.find(p => nm.startsWith(p.name.toLowerCase()));
+        if (p) times[p.id] = t.slice(si).join(" ");
+      }
+      known[slug] = times;
+    }
+  } catch (e) {}
+  if (dayEl.value !== day) return;   // user changed the date mid-fetch
+  for (const [slug, times] of Object.entries(known)) {
+    if (times === "none")
+      document.getElementById("none-" + slug).checked = true;
+    else
+      for (const [pid, tm] of Object.entries(times))
+        if (box(slug, pid)) box(slug, pid).value = tm;
+  }
+}
+dayEl.addEventListener("change", prefill);
+prefill();
 const tokEl = document.getElementById("token");
 tokEl.value = localStorage.getItem("pl_token") || "";
 document.getElementById("savetok").onclick = () => {

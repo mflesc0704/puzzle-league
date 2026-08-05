@@ -1,0 +1,322 @@
+{
+"2026-07-27": {
+"mini-sudoku": {
+"andrew": "0:47",
+"matt": "0:38",
+"mitch": "0:45"
+},
+"patches": {
+"andrew": "0:12",
+"matt": "0:11",
+"mitch": "0:10"
+},
+"queens": {
+"andrew": "0:13",
+"matt": "0:55",
+"mitch": "0:23"
+},
+"tango": {
+"andrew": "0:18",
+"matt": "0:19",
+"mitch": "0:31"
+},
+"wend": {
+"andrew": "0:15",
+"matt": "0:11",
+"mitch": "0:47"
+},
+"zip": {
+"andrew": "0:06",
+"matt": "0:05",
+"mitch": "0:08"
+}
+},
+"2026-07-28": {
+"mini-sudoku": {
+"andrew": "1:00",
+"matt": "0:44",
+"mitch": "1:06"
+},
+"patches": {
+"andrew": "0:08",
+"matt": "0:20",
+"mitch": "0:13"
+},
+"queens": {
+"andrew": "0:29",
+"matt": "0:22",
+"mitch": "0:36"
+},
+"tango": {
+"andrew": "0:30",
+"matt": "0:25",
+"mitch": "0:26"
+},
+"wend": {
+"andrew": "0:15",
+"matt": "0:26",
+"mitch": "0:36"
+},
+"zip": {
+"andrew": "0:05",
+"matt": "0:07",
+"mitch": "0:06"
+}
+},
+"2026-07-29": {
+"mini-sudoku": {
+"andrew": "1:03",
+"matt": "1:06",
+"mitch": "1:15"
+},
+"patches": {
+"andrew": "0:08",
+"matt": "0:11",
+"mitch": "0:10"
+},
+"queens": {
+"andrew": "1:01",
+"matt": "1:02",
+"mitch": "0:39"
+},
+"tango": {
+"andrew": "0:26",
+"matt": "0:20",
+"mitch": "0:27"
+},
+"wend": {
+"andrew": "0:31",
+"matt": "0:15",
+"mitch": "0:13"
+},
+"zip": {
+"andrew": "0:04",
+"matt": "0:04",
+"mitch": "0:07"
+}
+},
+"2026-07-30": {
+"mini-sudoku": {
+"matt": "1:07",
+"mitch": "1:25"
+},
+"patches": {
+"matt": "0:32",
+"mitch": "0:54"
+},
+"queens": {
+"matt": "0:53",
+"mitch": "2:00"
+},
+"tango": {
+"matt": "0:31",
+"mitch": "0:58"
+},
+"wend": {
+"matt": "0:26",
+"mitch": "0:31"
+},
+"zip": {
+"matt": "0:11",
+"mitch": "0:16"
+}
+},
+"2026-07-31": {
+"mini-sudoku": {
+"andrew": "1:19",
+"matt": "1:11",
+"mitch": "2:03"
+},
+"patches": {
+"andrew": "0:05",
+"matt": "0:05",
+"mitch": "0:09"
+},
+"queens": {
+"andrew": "0:50",
+"matt": "1:01",
+"mitch": "1:36"
+},
+"tango": {
+"andrew": "0:37",
+"matt": "0:27",
+"mitch": "0:45"
+},
+"wend": {
+"andrew": "1:27",
+"matt": "0:50",
+"mitch": "2:33"
+},
+"zip": {
+"andrew": "0:28",
+"matt": "0:31",
+"mitch": "0:35"
+}
+},
+"2026-08-01": {
+"mini-sudoku": {
+"matt": "1:25",
+"mitch": "1:57"
+},
+"patches": {
+"andrew": "0:25",
+"matt": "0:15",
+"mitch": "0:58"
+},
+"queens": {
+"matt": "1:03",
+"mitch": "1:04"
+},
+"tango": {
+"andrew": "0:36",
+"matt": "0:35",
+"mitch": "0:43"
+},
+"wend": {
+"matt": "0:47",
+"mitch": "0:41"
+},
+"zip": {
+"andrew": "0:23",
+"matt": "0:59",
+"mitch": "0:22"
+}
+},
+"2026-08-02": {
+"mini-sudoku": {
+"matt": "1:32",
+"mitch": "2:18"
+},
+"patches": {
+"matt": "0:44",
+"mitch": "0:55"
+},
+"queens": {
+"matt": "0:48",
+"mitch": "1:02"
+},
+"tango": {
+"matt": "0:33",
+"mitch": "0:48"
+},
+"wend": {
+"matt": "1:15",
+"mitch": "2:13"
+},
+"zip": {
+"matt": "0:36",
+"mitch": "0:21"
+}
+},
+"2026-08-03": {
+"mini-sudoku": {
+"andrew": "0:38",
+"kyle": "0:53",
+"matt": "0:59",
+"mitch": "1:08"
+},
+"patches": {
+"andrew": "0:05",
+"kyle": "0:15",
+"matt": "0:12",
+"mitch": "0:12"
+},
+"queens": {
+"andrew": "0:14",
+"kyle": "0:19",
+"matt": "0:23",
+"mitch": "0:38"
+},
+"tango": {
+"andrew": "0:22",
+"kyle": "0:19",
+"matt": "0:20",
+"mitch": "0:36"
+},
+"wend": {
+"andrew": "0:08",
+"kyle": "0:09",
+"matt": "0:32",
+"mitch": "0:29"
+},
+"zip": {
+"andrew": "0:04",
+"kyle": "0:05",
+"matt": "0:05",
+"mitch": "0:08"
+}
+},
+"2026-08-04": {
+"mini-sudoku": {
+"andrew": "0:48",
+"kyle": "0:52",
+"matt": "0:59",
+"mitch": "1:07"
+},
+"patches": {
+"andrew": "0:07",
+"kyle": "0:11",
+"matt": "0:09",
+"mitch": "0:09"
+},
+"queens": {
+"andrew": "0:52",
+"kyle": "0:19",
+"matt": "0:31",
+"mitch": "0:32"
+},
+"tango": {
+"andrew": "0:29",
+"kyle": "0:29",
+"matt": "0:17",
+"mitch": "0:21"
+},
+"wend": {
+"andrew": "0:26",
+"kyle": "0:13",
+"matt": "0:29",
+"mitch": "0:22"
+},
+"zip": {
+"andrew": "0:09",
+"kyle": "0:07",
+"matt": "0:07",
+"mitch": "0:14"
+}
+},
+"2026-08-05": {
+"mini-sudoku": {
+"andrew": "0:41",
+"kyle": "1:58",
+"matt": "0:48",
+"mitch": "0:57"
+},
+"patches": {
+"andrew": "0:10",
+"kyle": "0:14",
+"matt": "0:13"
+},
+"queens": {
+"andrew": "0:32",
+"kyle": "1:01",
+"matt": "0:38",
+"mitch": "0:43"
+},
+"tango": {
+"andrew": "0:28",
+"kyle": "0:39",
+"matt": "0:27",
+"mitch": "0:28"
+},
+"wend": {
+"andrew": "0:30",
+"kyle": "0:12",
+"matt": "0:46"
+},
+"zip": {
+"andrew": "0:06",
+"kyle": "0:08",
+"matt": "0:05"
+}
+}
+}
