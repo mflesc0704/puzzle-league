@@ -294,7 +294,8 @@
 "patches": {
 "andrew": "0:10",
 "kyle": "0:14",
-"matt": "0:13"
+"matt": "0:13",
+"mitch": "0:43"
 },
 "queens": {
 "andrew": "0:32",
@@ -311,12 +312,14 @@
 "wend": {
 "andrew": "0:30",
 "kyle": "0:12",
-"matt": "0:46"
+"matt": "0:46",
+"mitch": "0:42"
 },
 "zip": {
 "andrew": "0:06",
 "kyle": "0:08",
-"matt": "0:05"
+"matt": "0:05",
+"mitch": "0:07"
 }
 }
 }
