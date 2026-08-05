@@ -8,12 +8,17 @@
   :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
   body { max-width: 480px; margin: 0 auto; padding: 16px; }
   h1 { font-size: 1.3rem; }
-  label { display: block; margin-top: 12px; font-weight: 600; }
+  fieldset { margin-top: 14px; border: 1px solid #8888; border-radius: 10px; }
+  legend { font-weight: 700; padding: 0 6px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grid label { font-size: 0.85rem; }
   input[type=text], input[type=date], input[type=password] {
-    width: 100%; box-sizing: border-box; padding: 10px; margin-top: 4px;
+    width: 100%; box-sizing: border-box; padding: 10px; margin-top: 2px;
     font-size: 16px; border: 1px solid #8888; border-radius: 8px;
     background: transparent; color: inherit;
   }
+  .none { margin-top: 8px; display: block; font-size: 0.85rem; color: #888; }
+  body > label { display: block; margin-top: 12px; font-weight: 600; }
   button { margin-top: 16px; width: 100%; padding: 12px; font-size: 16px;
            border-radius: 8px; border: none; background: #0a66c2;
            color: #fff; font-weight: 700; }
@@ -24,34 +29,53 @@
 </head>
 <body>
 <h1>🏆 Enter results</h1>
-<p class="hint">Comma-separated, finish order — e.g. <b>matt 0:42, kyle 1:03</b>.
-Players: matt, andrew, mitch, kyle. Blank = leave that game alone, <b>none</b> = nobody
-played. Picked up by the league PC on its next run.</p>
+<p class="hint">Type each player's time (like <b>0:42</b>). Leave a player
+blank if they didn't play; leave a whole game blank to not touch it.
+Picked up by the league PC on its next run.</p>
 <label>Puzzle day <input type="date" id="day"></label>
 <div id="games"></div>
 <button id="submit">Submit</button>
 <div id="status"></div>
 <details>
-  <summary>GitHub token</summary>
-  <p class="hint">Fine-grained token for mflesc0704/puzzle-league with Contents
-  read &amp; write. Stored only in this browser.</p>
+  <summary>GitHub token (one-time setup)</summary>
+  <p class="hint">This is what makes you the only person who can submit.
+  Fine-grained token for mflesc0704/puzzle-league with Contents read &amp; write.
+  Stored only in this browser — you won't be asked again.</p>
   <input type="password" id="token" placeholder="github_pat_...">
   <button id="savetok">Save token</button>
 </details>
 <script>
 const OWNER = "mflesc0704", REPO = "puzzle-league";
 const GAMES = [{"slug": "queens", "name": "Queens"}, {"slug": "tango", "name": "Tango"}, {"slug": "zip", "name": "Zip"}, {"slug": "mini-sudoku", "name": "Mini Sudoku"}, {"slug": "patches", "name": "Patches"}, {"slug": "wend", "name": "Wend"}];
+const PLAYERS = [{"id": "matt", "name": "Matt"}, {"id": "andrew", "name": "Andrew"}, {"id": "mitch", "name": "Mitch"}, {"id": "kyle", "name": "Kyle"}];
 const dayEl = document.getElementById("day");
 dayEl.value = new Date().toLocaleDateString("en-CA",
     {timeZone: "America/Los_Angeles"});
 const wrap = document.getElementById("games");
 for (const g of GAMES) {
-  const l = document.createElement("label");
-  l.textContent = g.name + " ";
-  const i = document.createElement("input");
-  i.type = "text"; i.id = "g-" + g.slug; i.autocapitalize = "none";
-  i.placeholder = "matt 0:42, kyle 1:03";
-  l.appendChild(i); wrap.appendChild(l);
+  const fs = document.createElement("fieldset");
+  const lg = document.createElement("legend");
+  lg.textContent = g.name;
+  fs.appendChild(lg);
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  for (const p of PLAYERS) {
+    const l = document.createElement("label");
+    l.textContent = p.name;
+    const i = document.createElement("input");
+    i.type = "text"; i.id = "g-" + g.slug + "-" + p.id;
+    i.inputMode = "numeric"; i.placeholder = "0:42";
+    l.appendChild(i); grid.appendChild(l);
+  }
+  fs.appendChild(grid);
+  const nl = document.createElement("label");
+  nl.className = "none";
+  const cb = document.createElement("input");
+  cb.type = "checkbox"; cb.id = "none-" + g.slug;
+  nl.appendChild(cb);
+  nl.appendChild(document.createTextNode(" nobody played this one"));
+  fs.appendChild(nl);
+  wrap.appendChild(fs);
 }
 const tokEl = document.getElementById("token");
 tokEl.value = localStorage.getItem("pl_token") || "";
@@ -66,9 +90,18 @@ document.getElementById("submit").onclick = async () => {
   if (!token) return say("No token yet — open “GitHub token” below and save one.");
   const day = dayEl.value;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return say("Pick a date first.");
-  const lines = GAMES
-      .map(g => [g.slug, document.getElementById("g-" + g.slug).value.trim()])
-      .filter(([, v]) => v).map(([s, v]) => s + ": " + v);
+  const lines = [];
+  for (const g of GAMES) {
+    if (document.getElementById("none-" + g.slug).checked) {
+      lines.push(g.slug + ": none");
+      continue;
+    }
+    const parts = PLAYERS
+        .map(p => [p.name, document.getElementById(
+            "g-" + g.slug + "-" + p.id).value.trim()])
+        .filter(([, v]) => v).map(([n, v]) => n + " " + v);
+    if (parts.length) lines.push(g.slug + ": " + parts.join(", "));
+  }
   if (!lines.length) return say("Nothing to submit — fill in at least one game.");
   const path = "manual/" + day + ".txt";
   const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
