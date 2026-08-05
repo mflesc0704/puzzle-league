@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puzzle League — enter results</title>
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  body { max-width: 480px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.3rem; }
+  label { display: block; margin-top: 12px; font-weight: 600; }
+  input[type=text], input[type=date], input[type=password] {
+    width: 100%; box-sizing: border-box; padding: 10px; margin-top: 4px;
+    font-size: 16px; border: 1px solid #8888; border-radius: 8px;
+    background: transparent; color: inherit;
+  }
+  button { margin-top: 16px; width: 100%; padding: 12px; font-size: 16px;
+           border-radius: 8px; border: none; background: #0a66c2;
+           color: #fff; font-weight: 700; }
+  #status { margin-top: 12px; white-space: pre-wrap; }
+  .hint { color: #888; font-size: 0.85rem; margin: 4px 0 0; }
+  details { margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>🏆 Enter results</h1>
+<p class="hint">Comma-separated, finish order — e.g. <b>matt 0:42, kyle 1:03</b>.
+Players: matt, andrew, mitch, kyle. Blank = leave that game alone, <b>none</b> = nobody
+played. Picked up by the league PC on its next run.</p>
+<label>Puzzle day <input type="date" id="day"></label>
+<div id="games"></div>
+<button id="submit">Submit</button>
+<div id="status"></div>
+<details>
+  <summary>GitHub token</summary>
+  <p class="hint">Fine-grained token for mflesc0704/puzzle-league with Contents
+  read &amp; write. Stored only in this browser.</p>
+  <input type="password" id="token" placeholder="github_pat_...">
+  <button id="savetok">Save token</button>
+</details>
+<script>
+const OWNER = "mflesc0704", REPO = "puzzle-league";
+const GAMES = [{"slug": "queens", "name": "Queens"}, {"slug": "tango", "name": "Tango"}, {"slug": "zip", "name": "Zip"}, {"slug": "mini-sudoku", "name": "Mini Sudoku"}, {"slug": "patches", "name": "Patches"}, {"slug": "wend", "name": "Wend"}];
+const dayEl = document.getElementById("day");
+dayEl.value = new Date().toLocaleDateString("en-CA",
+    {timeZone: "America/Los_Angeles"});
+const wrap = document.getElementById("games");
+for (const g of GAMES) {
+  const l = document.createElement("label");
+  l.textContent = g.name + " ";
+  const i = document.createElement("input");
+  i.type = "text"; i.id = "g-" + g.slug; i.autocapitalize = "none";
+  i.placeholder = "matt 0:42, kyle 1:03";
+  l.appendChild(i); wrap.appendChild(l);
+}
+const tokEl = document.getElementById("token");
+tokEl.value = localStorage.getItem("pl_token") || "";
+document.getElementById("savetok").onclick = () => {
+  localStorage.setItem("pl_token", tokEl.value.trim());
+  say("Token saved on this device.");
+};
+function say(msg) { document.getElementById("status").textContent = msg; }
+function b64(s) { return btoa(unescape(encodeURIComponent(s))); }
+document.getElementById("submit").onclick = async () => {
+  const token = (localStorage.getItem("pl_token") || "").trim();
+  if (!token) return say("No token yet — open “GitHub token” below and save one.");
+  const day = dayEl.value;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return say("Pick a date first.");
+  const lines = GAMES
+      .map(g => [g.slug, document.getElementById("g-" + g.slug).value.trim()])
+      .filter(([, v]) => v).map(([s, v]) => s + ": " + v);
+  if (!lines.length) return say("Nothing to submit — fill in at least one game.");
+  const path = "manual/" + day + ".txt";
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+  const headers = {Authorization: "Bearer " + token,
+                   Accept: "application/vnd.github+json"};
+  say("Submitting…");
+  try {
+    let sha;
+    const cur = await fetch(api + "?ref=main", {headers});
+    if (cur.status === 200) sha = (await cur.json()).sha;
+    const body = {message: "Manual results " + day + " (phone)",
+                  content: b64(lines.join("\n") + "\n")};
+    if (sha) body.sha = sha;
+    const put = await fetch(api, {method: "PUT", headers,
+                                  body: JSON.stringify(body)});
+    if (put.status === 401 || put.status === 403)
+      return say("GitHub rejected the token — check it under “GitHub token”.");
+    if (!put.ok) return say("GitHub error " + put.status + ": "
+                            + (await put.text()).slice(0, 300));
+    say("Saved ✅ " + path + (sha ? " (updated)" : "")
+        + "\nThe league PC will apply it on its next run.");
+  } catch (e) { say("Network error: " + e); }
+};
+</script>
+</body>
+</html>
