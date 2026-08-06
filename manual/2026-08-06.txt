@@ -1,0 +1,6 @@
+queens: Matt 0:25, Mitch 0:28, Kyle 0:20
+tango: Matt 0:43, Mitch 0:52, Kyle 1:28
+zip: Matt 1:17, Kyle 0:49
+mini-sudoku: Matt 1:40, Mitch 1:18, Kyle 1:12
+patches: Matt 0:45, Andrew 0:25, Kyle 0:37
+wend: Matt 0:59, Andrew 0:58, Mitch 1:09
