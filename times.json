@@ -321,5 +321,71 @@
 "matt": "0:05",
 "mitch": "0:07"
 }
+},
+"2026-08-06": {
+"mini-sudoku": {
+"kyle": "1:12",
+"matt": "1:40",
+"mitch": "1:18"
+},
+"patches": {
+"andrew": "0:25",
+"kyle": "0:37",
+"matt": "0:45"
+},
+"queens": {
+"kyle": "0:20",
+"matt": "0:25",
+"mitch": "0:28"
+},
+"tango": {
+"kyle": "1:28",
+"matt": "0:43",
+"mitch": "0:52"
+},
+"wend": {
+"andrew": "0:58",
+"matt": "0:59",
+"mitch": "1:09"
+},
+"zip": {
+"kyle": "0:49",
+"matt": "1:17"
+}
+},
+"2026-08-08": {
+"mini-sudoku": {
+"kyle": "2:13",
+"matt": "1:18",
+"mitch": "2:24"
+},
+"patches": {
+"andrew": "0:18",
+"kyle": "1:30",
+"matt": "0:21"
+},
+"queens": {
+"andrew": "2:17",
+"kyle": "1:03",
+"matt": "0:49",
+"mitch": "1:00"
+},
+"tango": {
+"andrew": "1:13",
+"kyle": "3:29",
+"matt": "0:42",
+"mitch": "0:52"
+},
+"wend": {
+"andrew": "3:15",
+"kyle": "0:43",
+"matt": "0:45"
+},
+"zip": {
+"andrew": "0:14",
+"kyle": "0:14",
+"matt": "0:12",
+"mitch": "0:14"
+}
 }
 }
