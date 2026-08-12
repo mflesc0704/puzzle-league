@@ -497,10 +497,17 @@
 }
 },
 "2026-08-12": {
+"mini-sudoku": {
+"andrew": "1:16",
+"kyle": "1:45",
+"matt": "1:14",
+"mitch": "0:59"
+},
 "patches": {
 "andrew": "0:22",
 "kyle": "0:22",
-"matt": "0:18"
+"matt": "0:18",
+"mitch": "0:18"
 },
 "queens": {
 "andrew": "0:50",
@@ -517,7 +524,8 @@
 "wend": {
 "andrew": "0:09",
 "kyle": "0:16",
-"matt": "0:11"
+"matt": "0:11",
+"mitch": "0:53"
 },
 "zip": {
 "andrew": "0:21",
