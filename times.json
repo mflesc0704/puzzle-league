@@ -648,17 +648,20 @@
 "2026-08-16": {
 "mini-sudoku": {
 "kyle": "3:00",
-"matt": "1:48"
+"matt": "1:48",
+"mitch": "2:01"
 },
 "patches": {
 "andrew": "0:53",
 "kyle": "0:49",
-"matt": "0:20"
+"matt": "0:20",
+"mitch": "0:43"
 },
 "queens": {
 "andrew": "2:09",
 "kyle": "2:21",
-"matt": "1:02"
+"matt": "1:02",
+"mitch": "2:13"
 },
 "tango": {
 "andrew": "1:40",
@@ -669,7 +672,8 @@
 "wend": {
 "andrew": "1:26",
 "kyle": "3:02",
-"matt": "0:51"
+"matt": "0:51",
+"mitch": "1:33"
 },
 "zip": {
 "kyle": "1:06",
