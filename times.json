@@ -728,12 +728,14 @@
 "patches": {
 "andrew": "0:08",
 "kyle": "0:24",
-"matt": "0:19"
+"matt": "0:19",
+"mitch": "1:01"
 },
 "queens": {
 "andrew": "0:20",
 "kyle": "0:26",
-"matt": "0:19"
+"matt": "0:19",
+"mitch": "0:38"
 },
 "tango": {
 "andrew": "0:22",
@@ -744,7 +746,8 @@
 "wend": {
 "andrew": "0:13",
 "kyle": "0:08",
-"matt": "0:14"
+"matt": "0:14",
+"mitch": "0:23"
 },
 "zip": {
 "andrew": "0:07",
