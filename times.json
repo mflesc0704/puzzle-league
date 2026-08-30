@@ -1128,12 +1128,14 @@
 "mini-sudoku": {
 "andrew": "4:48",
 "kyle": "1:15",
-"matt": "1:45"
+"matt": "1:45",
+"mitch": "1:29"
 },
 "patches": {
 "andrew": "1:18",
 "kyle": "1:19",
-"matt": "0:18"
+"matt": "0:18",
+"mitch": "0:18"
 },
 "queens": {
 "andrew": "2:10",
@@ -1150,7 +1152,8 @@
 "wend": {
 "andrew": "1:55",
 "kyle": "1:07",
-"matt": "1:27"
+"matt": "1:27",
+"mitch": "0:46"
 },
 "zip": {
 "andrew": "0:10",
