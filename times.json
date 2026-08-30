@@ -1123,5 +1123,40 @@
 "matt": "0:09",
 "mitch": "0:19"
 }
+},
+"2026-08-29": {
+"mini-sudoku": {
+"andrew": "4:48",
+"kyle": "1:15",
+"matt": "1:45"
+},
+"patches": {
+"andrew": "1:18",
+"kyle": "1:19",
+"matt": "0:18"
+},
+"queens": {
+"andrew": "2:10",
+"kyle": "3:54",
+"matt": "0:51",
+"mitch": "1:55"
+},
+"tango": {
+"andrew": "1:07",
+"kyle": "0:58",
+"matt": "0:30",
+"mitch": "0:58"
+},
+"wend": {
+"andrew": "1:55",
+"kyle": "1:07",
+"matt": "1:27"
+},
+"zip": {
+"andrew": "0:10",
+"kyle": "0:15",
+"matt": "0:08",
+"mitch": "0:30"
+}
 }
 }
