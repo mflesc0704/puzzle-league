@@ -1290,18 +1290,24 @@
 },
 "queens": {
 "andrew": "0:22",
+"kyle": "0:33",
 "matt": "0:21",
 "mitch": "0:24"
 },
 "tango": {
 "andrew": "0:37",
 "kyle": "0:33",
-"matt": "0:31"
+"matt": "0:31",
+"mitch": "0:52"
 },
 "wend": {
-"matt": "0:43"
+"andrew": "1:14",
+"kyle": "1:08",
+"matt": "0:43",
+"mitch": "1:06"
 },
 "zip": {
+"andrew": "0:18",
 "kyle": "0:10",
 "matt": "0:20",
 "mitch": "0:16"
