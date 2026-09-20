@@ -1905,17 +1905,34 @@
 }
 },
 "2026-09-19": {
+"mini-sudoku": {
+"andrew": "1:07",
+"kyle": "3:48",
+"matt": "1:25",
+"mitch": "1:50"
+},
 "patches": {
 "andrew": "0:23",
 "kyle": "0:43",
 "matt": "0:27",
 "mitch": "1:04"
 },
+"queens": {
+"andrew": "1:40",
+"matt": "1:23",
+"mitch": "1:41"
+},
 "tango": {
 "andrew": "0:50",
 "kyle": "0:43",
 "matt": "0:23",
 "mitch": "1:01"
+},
+"wend": {
+"andrew": "1:16",
+"kyle": "1:28",
+"matt": "0:45",
+"mitch": "1:03"
 },
 "zip": {
 "andrew": "0:38",
