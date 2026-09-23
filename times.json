@@ -2015,5 +2015,40 @@
 "matt": "0:06",
 "mitch": "0:06"
 }
+},
+"2026-09-22": {
+"mini-sudoku": {
+"andrew": "0:36",
+"kyle": "1:15",
+"matt": "0:49",
+"mitch": "1:16"
+},
+"patches": {
+"andrew": "0:08",
+"kyle": "0:16",
+"matt": "0:08",
+"mitch": "0:13"
+},
+"queens": {
+"andrew": "0:16",
+"kyle": "0:24",
+"matt": "0:11",
+"mitch": "0:27"
+},
+"tango": {
+"andrew": "0:22",
+"kyle": "0:28",
+"matt": "0:40",
+"mitch": "0:22"
+},
+"wend": {
+"andrew": "0:35",
+"matt": "0:20"
+},
+"zip": {
+"andrew": "0:05",
+"kyle": "0:07",
+"matt": "0:07"
+}
 }
 }
