@@ -2132,6 +2132,7 @@
 "2026-09-25": {
 "mini-sudoku": {
 "andrew": "2:18",
+"kyle": "0:46",
 "matt": "1:35",
 "mitch": "1:05"
 },
@@ -2142,21 +2143,25 @@
 },
 "queens": {
 "andrew": "1:35",
+"kyle": "3:34",
 "matt": "0:08",
 "mitch": "0:52"
 },
 "tango": {
 "andrew": "0:28",
+"kyle": "0:32",
 "matt": "0:36",
 "mitch": "0:36"
 },
 "wend": {
 "andrew": "0:24",
+"kyle": "0:26",
 "matt": "0:58",
 "mitch": "1:00"
 },
 "zip": {
 "andrew": "0:07",
+"kyle": "0:11",
 "matt": "0:12",
 "mitch": "0:14"
 }
