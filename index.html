@@ -2,1052 +2,1042 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Puzzle League</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%237c5cff'/%3E%3Cpath d='M20 14h24v10c0 9-5 15-12 17-7-2-12-8-12-17z' fill='%23ffd166'/%3E%3Crect x='26' y='44' width='12' height='5' rx='2' fill='%23ffd166'/%3E%3Crect x='20' y='49' width='24' height='5' rx='2.5' fill='%23fff'/%3E%3C/svg%3E">
 <style>
-  :root {
-    color-scheme: light;
-    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e;
-    --muted: #898781; --grid: #e1e0d9; --axis: #c3c2b7;
-    --ring: rgba(11,11,11,0.10);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
-      --muted: #898781; --grid: #2c2c2a; --axis: #383835;
-      --ring: rgba(255,255,255,0.10);
-    }
-  }
-  :root[data-theme="dark"] {
+/* ---------- tokens ---------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --bg: #f1f2fa; --solid: #ffffff; --surface: rgba(255,255,255,.78);
+  --ink: #13151f; --ink2: #454a5f; --muted: #868ba2;
+  --line: rgba(26,32,70,.09); --line2: rgba(26,32,70,.18);
+  --track: rgba(26,32,70,.07); --bar: rgba(243,244,252,.76);
+  --shadow: 0 22px 44px -26px rgba(38,48,120,.45), 0 2px 8px rgba(38,48,120,.07);
+  --gold: #f0ad1b; --silver: #a9b2c6; --bronze: #c8844d;
+  --good: #13a678; --bad: #e5484d;
+  --blob: .30;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI Variable Display",
+          "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --r: 26px; --r2: 18px; --r3: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
-    --muted: #898781; --grid: #2c2c2a; --axis: #383835;
-    --ring: rgba(255,255,255,0.10);
+    --bg: #0a0b13; --solid: #171a29; --surface: rgba(26,29,46,.70);
+    --ink: #f1f2f9; --ink2: #b6bad0; --muted: #7b8098;
+    --line: rgba(255,255,255,.08); --line2: rgba(255,255,255,.17);
+    --track: rgba(255,255,255,.08); --bar: rgba(10,11,19,.72);
+    --shadow: 0 22px 44px -24px rgba(0,0,0,.75), 0 2px 8px rgba(0,0,0,.3);
+    --blob: .26;
   }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    background: var(--page); color: var(--ink);
-    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
-    padding: 16px; max-width: 760px; margin: 0 auto;
-  }
-  h1 { font-size: 1.35rem; }
-  .sub { color: var(--muted); font-size: .8rem; margin-bottom: 18px; }
-  .card {
-    background: var(--surface); border: 1px solid var(--ring);
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
-  }
-  h2 { font-size: .95rem; color: var(--ink-2); margin-bottom: 10px; }
-  .stand-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
-  .stand-rank { width: 1.4em; color: var(--muted); font-size: .9rem; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .stand-name { flex: none; width: 7em; font-weight: 600; font-size: .95rem; }
-  .wchip { font-size: .7rem; color: var(--ink-2); }
-  .bar-wrap { flex: 1; height: 14px; }
-  .bar { height: 14px; border-radius: 4px; min-width: 2px; }
-  .stand-pts { flex: none; width: 2.5em; text-align: right;
-               font-variant-numeric: tabular-nums; font-weight: 600; }
-  .games { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width: 480px) { .games { grid-template-columns: 1fr; } }
-  .game { background: var(--surface); border: 1px solid var(--ring);
-          border-radius: 12px; padding: 10px 12px; }
-  .game h3 { font-size: .85rem; margin-bottom: 6px; }
-  .game .nodata { color: var(--muted); font-size: .8rem; }
-  .grow { display: flex; align-items: center; gap: 8px; font-size: .85rem;
-          padding: 2px 0; }
-  .grow .nm { flex: 1; }
-  .grow .sc { color: var(--ink-2); font-variant-numeric: tabular-nums; }
-  .grow .pt { width: 2.6em; text-align: right; color: var(--ink-2);
-              font-variant-numeric: tabular-nums; }
-  .grow.dnp { color: var(--muted); }
-  .medal { width: 1.2em; }
-  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: .8rem;
-            color: var(--ink-2); margin: 4px 0 8px; }
-  .legend span { display: inline-flex; align-items: center; gap: 5px; }
-  svg text { font: 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
-  #chartwrap { position: relative; }
-  #tip {
-    position: absolute; pointer-events: none; display: none;
-    background: var(--surface); border: 1px solid var(--ring);
-    border-radius: 8px; padding: 6px 9px; font-size: .75rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15); white-space: nowrap; z-index: 2;
-  }
-  details summary { cursor: pointer; color: var(--ink-2); font-size: .9rem; }
-  table { border-collapse: collapse; width: 100%; margin-top: 8px;
-          font-size: .85rem; }
-  th, td { text-align: right; padding: 5px 8px;
-           border-bottom: 1px solid var(--grid);
-           font-variant-numeric: tabular-nums; }
-  th:first-child, td:first-child { text-align: left; }
-  th { color: var(--muted); font-weight: 500; font-size: .68rem;
-       text-transform: uppercase; letter-spacing: .06em; }
-  tr:last-child td { border-bottom: none; }
-  .spark { flex: 1; display: flex; align-items: flex-end; gap: 2px;
-           height: 28px; }
-  .spark i { display: block; width: 100%; max-width: 14px;
-             border-radius: 3px 3px 0 0; }
-  .form-meta { flex: none; width: 5.2em; text-align: right; font-size: .8rem;
-               color: var(--ink-2); font-variant-numeric: tabular-nums; }
-  .rec-line { color: var(--muted); font-size: .72rem; margin: -2px 0 4px; }
-  .fin-week { margin-top: 10px; }
-  .clutch-line { font-size: .8rem; color: var(--ink-2); margin: 5px 0; }
-  .tscroll { overflow-x: auto; }
-  .fin-table { font-size: .8rem; }
-  .fin-table th, .fin-table td { padding: 5px 4px; }
-  .fin-table th { letter-spacing: .02em; }
-  .fin-week summary { cursor: pointer; font-size: .85rem; color: var(--ink-2); }
-  .tcase { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 10px; }
-  .tchip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px;
-           border: 1px solid var(--grid); border-radius: 999px; font-size: .82rem;
-           font-variant-numeric: tabular-nums; }
-  .tchip b { font-weight: 700; }
-  .tchip.none { opacity: .45; }
-  .s-live { color: var(--muted); font-weight: 500; white-space: nowrap; }
-  .dnp-line { margin: -4px 0 6px 2.6em; color: var(--muted); font-size: .72rem; }
-  .bar.dnp-bar { opacity: .55; }
-  .tagline { margin: -4px 0 4px 2.6em; color: var(--muted); font-size: .75rem;
-             font-style: italic; }
-  .alert-card { border: 2px solid #e34948; text-align: center;
-                animation: alertpulse 1.2s ease-in-out infinite alternate; }
-  .alert-head { font-size: .68rem; letter-spacing: .3em; text-transform: uppercase;
-                color: #e34948; font-weight: 700; }
-  .alert-head .siren { display: inline-block;
-                       animation: sirenspin 0.7s ease-in-out infinite alternate; }
-  .alert-big { font-size: 1.7rem; font-weight: 800; letter-spacing: .04em;
-               margin: 6px 0 2px; }
-  .alert-sub { color: var(--ink-2); font-size: .85rem; }
-  @keyframes alertpulse {
-    from { box-shadow: 0 0 0 rgba(227, 73, 72, 0); }
-    to   { box-shadow: 0 0 16px rgba(227, 73, 72, .55); }
-  }
-  @keyframes sirenspin {
-    from { transform: rotate(-14deg); }
-    to   { transform: rotate(14deg); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .alert-card, .alert-head .siren { animation: none; }
-  }
-  .game table { font-size: .8rem; }
-  .game th, .game td { padding: 4px 6px; }
-  .game th:first-child, .game td:first-child { white-space: nowrap; }
-  .game td.skip { font-weight: 700; color: #e34948; white-space: nowrap; }
-  .sk-sm { display: block; font-size: .68rem; font-weight: 700; color: #e34948;
-           line-height: 1.1; }
-  .sk-none { display: block; font-size: .68rem; color: var(--muted); line-height: 1.1;
-             opacity: .6; }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0b13; --solid: #171a29; --surface: rgba(26,29,46,.70);
+  --ink: #f1f2f9; --ink2: #b6bad0; --muted: #7b8098;
+  --line: rgba(255,255,255,.08); --line2: rgba(255,255,255,.17);
+  --track: rgba(255,255,255,.08); --bar: rgba(10,11,19,.72);
+  --shadow: 0 22px 44px -24px rgba(0,0,0,.75), 0 2px 8px rgba(0,0,0,.3);
+  --blob: .26;
+}
+
+/* ---------- base ------------------------------------------------------------ */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 15px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+button { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+b, strong { font-weight: 700; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 4px 16px 90px; }
+
+/* animated colour mesh behind everything, tinted by the players' colours */
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+.bg i {
+  position: absolute; width: 58vmax; height: 58vmax; border-radius: 50%;
+  filter: blur(80px); opacity: var(--blob); will-change: transform;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+.bg i:nth-child(1) { background: var(--p0); left: -22vmax; top: -26vmax; }
+.bg i:nth-child(2) { background: var(--p1); right: -26vmax; top: -10vmax; animation-delay: -6s; animation-duration: 31s; }
+.bg i:nth-child(3) { background: var(--p2); left: -10vmax; bottom: -34vmax; animation-delay: -12s; animation-duration: 34s; }
+.bg i:nth-child(4) { background: var(--p3); right: -20vmax; bottom: -28vmax; animation-delay: -3s; animation-duration: 29s; }
+@keyframes drift {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to   { transform: translate3d(6vmax,4vmax,0) scale(1.12); }
+}
+
+/* ---------- top bar + nav --------------------------------------------------- */
+.top {
+  position: sticky; top: 0; z-index: 60;
+  background: var(--bar);
+  -webkit-backdrop-filter: saturate(1.5) blur(18px); backdrop-filter: saturate(1.5) blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+.top-in { max-width: 1120px; margin: 0 auto; padding: 10px 16px 6px; display: flex; align-items: center; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 9px; font-weight: 800; letter-spacing: -.02em; font-size: 1.08rem; }
+.logo {
+  width: 30px; height: 30px; border-radius: 10px; flex: none; position: relative;
+  background: linear-gradient(135deg, var(--p0), var(--p1) 55%, var(--p3));
+  box-shadow: 0 6px 14px -6px var(--p1);
+}
+.logo::after {
+  content: ""; position: absolute; inset: 7px 8px 8px; border-radius: 3px 3px 9px 9px;
+  background: rgba(255,255,255,.92);
+  clip-path: polygon(0 0,100% 0,88% 55%,62% 80%,62% 100%,38% 100%,38% 80%,12% 55%);
+}
+.pill {
+  margin-left: auto; font-size: .76rem; font-weight: 700; color: var(--ink2);
+  padding: 5px 11px; border-radius: 999px; background: var(--track); white-space: nowrap;
+}
+.iconbtn {
+  width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface); display: grid; place-items: center; cursor: pointer; flex: none;
+  transition: transform .2s, background .2s;
+}
+.iconbtn:hover { transform: rotate(-12deg) scale(1.06); }
+.iconbtn svg { width: 18px; height: 18px; }
+.nav {
+  max-width: 1120px; margin: 0 auto; padding: 2px 16px 10px; display: flex; gap: 6px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav a {
+  flex: none; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: .86rem;
+  color: var(--ink2); transition: background .25s, color .25s, transform .25s;
+}
+.nav a:hover { background: var(--track); }
+.nav a.on { background: var(--ink); color: var(--bg); }
+
+/* ---------- layout primitives ----------------------------------------------- */
+.sec { scroll-margin-top: 112px; margin-top: 26px; }
+.sec-h { display: flex; align-items: baseline; gap: 10px; margin: 0 4px 12px; flex-wrap: wrap; }
+.sec-h h2 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; }
+.sec-h .sub { color: var(--muted); font-size: .85rem; font-weight: 600; }
+.eyebrow { font-size: .7rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); }
+.card {
+  position: relative; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--shadow); padding: 18px;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.grid2 { display: grid; gap: 14px; }
+@media (min-width: 860px) {
+  .grid2 { grid-template-columns: 1fr 1fr; }
+  .card { padding: 24px; }
+}
+.note { color: var(--muted); font-size: .76rem; line-height: 1.5; margin: 12px 2px 0; }
+.empty { color: var(--muted); text-align: center; padding: 22px 8px; font-weight: 600; }
+.grad {
+  background: linear-gradient(120deg, var(--p0), var(--p1), var(--p3)); -webkit-background-clip: text;
+  background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+}
+
+/* scroll-reveal */
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0ms); }
+.rv.in { opacity: 1; transform: none; }
+
+/* spotlight: tapping a player dims everyone else */
+[data-p] { transition: opacity .3s, filter .3s; }
+[data-p].dim { opacity: .28; filter: saturate(.4); }
+[data-fb] { cursor: pointer; }
+
+/* ---------- avatars, chips --------------------------------------------------- */
+.av {
+  width: var(--s, 34px); height: var(--s, 34px); border-radius: 50%; flex: none;
+  display: inline-grid; place-items: center; font-weight: 800; letter-spacing: -.02em;
+  font-size: calc(var(--s, 34px) * .44); color: var(--pc-ink); background: var(--pc);
+  box-shadow: inset 0 -7px 12px rgba(0,0,0,.13), inset 0 2px 3px rgba(255,255,255,.35), 0 6px 14px -6px var(--pc);
+}
+.av.two { font-size: calc(var(--s, 34px) * .36); letter-spacing: 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+  font-size: .72rem; font-weight: 800; background: var(--track); color: var(--ink2); white-space: nowrap;
+}
+.chip svg { width: 12px; height: 12px; }
+.chip.gold { background: rgba(240,173,27,.18); color: #b97d00; }
+.chip.hot { background: rgba(229,72,77,.14); color: var(--bad); }
+.chip.cold { background: rgba(70,150,255,.16); color: #2f7ae5; }
+.chip.good { background: rgba(19,166,120,.15); color: var(--good); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip.gold { color: #f7c755; } }
+:root[data-theme="dark"] .chip.gold { color: #f7c755; }
+.mv { display: inline-flex; align-items: center; gap: 2px; font-size: .72rem; font-weight: 800; }
+.mv.up { color: var(--good); } .mv.down { color: var(--bad); } .mv.flat { color: var(--muted); }
+.mv::before { content: ""; border: 4px solid transparent; }
+.mv.up::before { border-bottom: 6px solid currentColor; border-top: 0; }
+.mv.down::before { border-top: 6px solid currentColor; border-bottom: 0; }
+.mv.flat::before { width: 7px; height: 2px; border: 0; background: currentColor; border-radius: 2px; }
+
+/* ---------- alert ------------------------------------------------------------ */
+.alert {
+  margin-top: 16px; padding: 14px 18px; border-radius: var(--r2); color: #fff; text-align: center;
+  background: linear-gradient(120deg, #e5484d, #ff7a59); box-shadow: 0 14px 34px -14px #e5484d;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.alert b { display: block; font-size: 1.15rem; letter-spacing: .01em; }
+.alert small { opacity: .9; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .68rem; }
+@keyframes pulse { 50% { box-shadow: 0 14px 44px -6px #e5484d; transform: scale(1.012); } }
+
+/* ---------- hero / podium ---------------------------------------------------- */
+.hero-top { display: flex; align-items: center; gap: 16px; justify-content: space-between; }
+.hero h1 { margin: 6px 0 4px; font-size: clamp(1.7rem, 6.4vw, 2.7rem); line-height: 1.05; letter-spacing: -.045em; font-weight: 800; }
+.hero .lead { color: var(--ink2); font-weight: 600; font-size: .92rem; }
+.ring { position: relative; flex: none; width: 92px; height: 92px; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring .trk { stroke: var(--track); }
+.ring .arc { stroke-linecap: round; stroke-dasharray: var(--c) var(--c); stroke-dashoffset: var(--c); transition: stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1) .2s; }
+.in .ring .arc, .ring.in .arc { stroke-dashoffset: var(--o); }
+.ring .mid { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; line-height: 1.05; }
+.ring .mid b { font-size: 1.35rem; letter-spacing: -.04em; }
+.ring .mid small { display: block; color: var(--muted); font-size: .62rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: clamp(6px, 2.4vw, 18px); margin-top: 22px; padding-top: 28px; }
+.pod { flex: 1 1 0; max-width: 150px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+.pod[data-rank="1"] { order: 2; } .pod[data-rank="2"] { order: 1; }
+.pod[data-rank="3"] { order: 3; } .pod[data-rank="4"] { order: 4; }
+.pod .crown { position: absolute; top: -26px; width: 30px; height: 30px; color: var(--gold); filter: drop-shadow(0 4px 6px rgba(240,173,27,.45)); animation: bob 2.6s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-4px) rotate(-4deg); } }
+.pod .nm { margin-top: 8px; font-weight: 800; font-size: .95rem; letter-spacing: -.02em; }
+.pod .pts { font-size: 1.55rem; font-weight: 800; letter-spacing: -.045em; line-height: 1.1; }
+.pod .gap { color: var(--muted); font-size: .72rem; font-weight: 700; min-height: 1.1em; }
+.pillar {
+  width: 100%; margin-top: 10px; height: 0; border-radius: 18px 18px 8px 8px; position: relative; overflow: hidden;
+  background: linear-gradient(180deg, var(--pc), var(--pc-m)); transition: height 1.1s cubic-bezier(.2,.9,.25,1.15) .15s;
+  box-shadow: 0 16px 30px -18px var(--pc);
+}
+.in .pillar, .pillar.in { height: var(--ph); }
+.pillar::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 40%; background: linear-gradient(180deg, rgba(255,255,255,.35), transparent); }
+.pillar .rk { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-size: 2rem; font-weight: 800; color: #fff; opacity: .85; text-shadow: 0 2px 10px rgba(0,0,0,.18); }
+.pod .mv { margin-top: 2px; }
+@media (min-width: 900px) {
+  .hero { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.25fr); gap: 28px; align-items: center; }
+  .hero-top { flex-direction: column; align-items: flex-start; gap: 22px; }
+  .hero .podium { margin-top: 0; padding-top: 34px; }
+  .ring { width: 112px; height: 112px; }
+}
+
+/* ---------- today ------------------------------------------------------------ */
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+.tile { padding: 12px 6px; text-align: center; border-radius: var(--r2); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.tile.top1 { border-color: var(--pc); box-shadow: 0 14px 30px -16px var(--pc); }
+.tile .av { margin: 0 auto 6px; }
+.tile .v { font-size: 1.5rem; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+.tile small { display: block; margin-top: 3px; color: var(--muted); font-weight: 700; font-size: .7rem; }
+.rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 14px; margin: 0 -2px; scrollbar-width: none; }
+.rail::-webkit-scrollbar { display: none; }
+.gcard { flex: 0 0 82%; max-width: 310px; scroll-snap-align: start; padding: 16px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+@media (min-width: 900px) {
+  .rail { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
+  .gcard { max-width: none; }
+}
+.gh { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.gem { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: .95rem; background: var(--gc); box-shadow: 0 8px 16px -8px var(--gc); }
+.gh b { font-size: 1.02rem; letter-spacing: -.02em; }
+.grow { display: flex; align-items: center; gap: 9px; padding: 7px 4px; border-radius: 12px; }
+.grow + .grow { border-top: 1px dashed var(--line); }
+.plc { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .76rem; flex: none; background: var(--track); color: var(--ink2); }
+.plc.p1 { background: var(--gold); color: #5b3b00; } .plc.p2 { background: var(--silver); color: #2b3347; } .plc.p3 { background: var(--bronze); color: #3d2208; }
+.grow .nm { font-weight: 700; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.grow .sc { font-weight: 700; color: var(--ink2); font-size: .94rem; }
+.grow .pt { min-width: 34px; text-align: center; font-size: .74rem; font-weight: 800; padding: 3px 7px; border-radius: 999px; background: var(--pc-s); color: var(--ink); }
+.grow.dnp { opacity: .5; } .grow.dnp .sc { font-weight: 600; font-size: .8rem; }
+.gcard .nodata { color: var(--muted); padding: 18px 4px; text-align: center; font-weight: 700; }
+
+/* ---------- odds ------------------------------------------------------------- */
+.odds-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.odds-h h3 { margin: 0; font-size: 1.12rem; font-weight: 800; letter-spacing: -.03em; }
+.odds-h span { color: var(--muted); font-size: .78rem; font-weight: 700; }
+.orow { padding: 12px 0; }
+.orow + .orow { border-top: 1px dashed var(--line); }
+.oh { display: flex; align-items: center; gap: 10px; }
+.oh .who { flex: 1; min-width: 0; line-height: 1.2; }
+.oh .who b { display: block; font-size: 1rem; letter-spacing: -.02em; }
+.oh .who small { color: var(--muted); font-weight: 700; font-size: .74rem; }
+.oh .win { text-align: right; line-height: 1; }
+.oh .win b { font-size: 1.7rem; font-weight: 800; letter-spacing: -.05em; }
+.oh .win small { display: block; margin-top: 2px; color: var(--muted); font-weight: 800; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
+.obar { display: flex; height: 12px; margin: 10px 0 7px; border-radius: 999px; overflow: hidden; background: var(--track); gap: 2px; }
+.obar i { display: block; flex: var(--f) 1 0; min-width: 0; background: var(--pc); border-radius: 3px; transform: scaleX(0); transform-origin: left; transition: transform .9s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--d, 0ms) + var(--k) * 90ms); }
+.obar i:first-child { border-radius: 999px 3px 3px 999px; } .obar i:last-child { border-radius: 3px 999px 999px 3px; }
+.obar i:nth-child(1) { opacity: 1; } .obar i:nth-child(2) { opacity: .74; } .obar i:nth-child(3) { opacity: .5; } .obar i:nth-child(4) { opacity: .32; }
+.in .obar i, .obar.in i { transform: scaleX(1); }
+.oplaces { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.oplaces span { text-align: center; font-size: .68rem; color: var(--muted); font-weight: 700; }
+.oplaces b { display: block; color: var(--ink); font-size: .84rem; }
+details.how { margin-top: 12px; }
+details.how summary { cursor: pointer; font-weight: 800; font-size: .78rem; color: var(--ink2); list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+details.how summary::-webkit-details-marker { display: none; }
+details.how summary::before { content: "+"; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--track); font-size: .85rem; }
+details.how[open] summary::before { content: "\2212"; }
+
+/* ---------- week lanes ------------------------------------------------------- */
+.lane { display: flex; align-items: center; gap: 10px; padding: 7px 0; }
+.lane .trk { flex: 1; height: 14px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.lane .trk i { display: block; height: 100%; width: var(--w); border-radius: 999px; background: linear-gradient(90deg, var(--pc-m), var(--pc)); transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0ms); }
+.in .lane .trk i, .lane.in .trk i { transform: scaleX(1); }
+.lane .nm { width: 64px; font-weight: 700; font-size: .92rem; }
+.lane .v { width: 40px; text-align: right; font-weight: 800; letter-spacing: -.03em; }
+
+/* ---------- chart ------------------------------------------------------------ */
+.chartbox { position: relative; touch-action: pan-y; }
+.chartbox svg { display: block; width: 100%; overflow: visible; }
+.chartbox .gridl { stroke: var(--line); stroke-width: 1; }
+.chartbox .axis { fill: var(--muted); font-size: 10.5px; font-weight: 700; }
+.chartbox .ln { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.chartbox .xh { stroke: var(--line2); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.tip {
+  position: absolute; top: 6px; left: 0; pointer-events: none; min-width: 150px; z-index: 5;
+  background: var(--solid); border: 1px solid var(--line2); border-radius: 14px; padding: 9px 11px;
+  box-shadow: var(--shadow); font-size: .78rem; opacity: 0; transform: translateY(4px); transition: opacity .15s, transform .15s;
+}
+.tip.on { opacity: 1; transform: none; }
+.tip .d { color: var(--muted); font-weight: 800; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
+.tip .r { display: flex; align-items: center; gap: 7px; padding: 1.5px 0; font-weight: 700; }
+.tip .r i { width: 8px; height: 8px; border-radius: 50%; background: var(--pc); flex: none; }
+.tip .r em { margin-left: auto; font-style: normal; font-weight: 800; }
+.tip .r small { color: var(--muted); font-weight: 700; min-width: 30px; text-align: right; }
+.legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.lg { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-weight: 800; font-size: .82rem; cursor: pointer; transition: opacity .2s, transform .2s; }
+.lg i { width: 11px; height: 11px; border-radius: 50%; background: var(--pc); }
+.lg:hover { transform: translateY(-1px); }
+.lg.off { opacity: .4; } .lg.off i { background: var(--muted); }
+
+/* ---------- champions -------------------------------------------------------- */
+.shelf { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.trophy {
+  display: flex; align-items: center; gap: 10px; padding: 8px 14px 8px 8px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.trophy .n { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 1.05rem; letter-spacing: -.03em; }
+.trophy svg { width: 18px; height: 18px; color: var(--gold); }
+.trophy.zero { opacity: .5; box-shadow: none; }
+.seasons { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 14px; scrollbar-width: none; }
+.seasons::-webkit-scrollbar { display: none; }
+.scard { flex: 0 0 82%; max-width: 330px; scroll-snap-align: start; padding: 18px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.scard.done::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--gold), #ffd978, var(--gold)); }
+.scard.live { border-color: var(--line2); }
+.scard .sh { display: flex; justify-content: space-between; align-items: baseline; }
+.scard .sh b { font-size: 1.05rem; letter-spacing: -.03em; }
+.scard .sh span { color: var(--muted); font-weight: 700; font-size: .74rem; }
+.scard .rg { color: var(--muted); font-weight: 700; font-size: .74rem; margin-top: 2px; }
+.champ { display: flex; align-items: center; gap: 12px; margin: 14px 0 10px; }
+.champ .who { line-height: 1.15; }
+.champ .who small { display: block; font-weight: 800; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.champ .who b { font-size: 1.3rem; letter-spacing: -.04em; }
+.champ svg { width: 22px; height: 22px; color: var(--gold); margin-left: auto; }
+.mini { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: .86rem; font-weight: 700; color: var(--ink2); }
+.mini span { display: flex; align-items: center; gap: 7px; }
+.mini i { width: 8px; height: 8px; border-radius: 50%; background: var(--pc); }
+.mini b { color: var(--ink); }
+
+/* ---------- stats tabs ------------------------------------------------------- */
+.seg { display: flex; gap: 4px; overflow-x: auto; padding: 4px; border-radius: 999px; background: var(--track); scrollbar-width: none; margin-bottom: 14px; }
+.seg::-webkit-scrollbar { display: none; }
+.seg button { flex: none; border: 0; background: transparent; padding: 8px 15px; border-radius: 999px; font-weight: 800; font-size: .84rem; color: var(--ink2); cursor: pointer; transition: background .25s, color .25s, box-shadow .25s; }
+.seg button.on { background: var(--solid); color: var(--ink); box-shadow: 0 4px 12px -4px rgba(20,24,60,.3); }
+.pane { animation: paneIn .45s cubic-bezier(.2,.8,.2,1); }
+@keyframes paneIn { from { opacity: 0; transform: translateY(10px); } }
+.frow { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+.frow + .frow { border-top: 1px dashed var(--line); }
+.frow .who { width: 84px; font-weight: 800; line-height: 1.15; }
+.frow .who .chips { display: flex; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
+.spark { flex: 1; display: flex; align-items: flex-end; gap: 3px; height: 44px; }
+.spark i { flex: 1; max-width: 16px; min-height: 3px; border-radius: 5px 5px 2px 2px; background: var(--pc); height: var(--h); transform-origin: bottom; animation: growY .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 18ms); }
+@keyframes growY { from { transform: scaleY(0); } }
+@keyframes growX { from { transform: scaleX(0); } }
+.frow .meta { text-align: right; width: 64px; line-height: 1.15; }
+.frow .meta b { font-size: 1.15rem; letter-spacing: -.03em; }
+.frow .meta small { display: block; color: var(--muted); font-weight: 700; font-size: .68rem; }
+
+.mx { display: grid; gap: 6px; }
+.mx .c { border-radius: 14px; padding: 9px 4px; text-align: center; background: var(--track); font-weight: 800; line-height: 1.1; min-height: 52px; display: grid; place-content: center; }
+.mx .c .sc { white-space: nowrap; font-size: .92rem; }
+.mx .c small { display: block; color: var(--muted); font-weight: 700; font-size: .64rem; margin-top: 2px; }
+.mx .h { background: transparent; min-height: 0; padding: 0; }
+.mx .self { background: transparent; color: var(--muted); }
+.mx .c.win { background: linear-gradient(160deg, var(--pc-m), var(--pc-s)); }
+
+.gstats { display: grid; gap: 12px; }
+@media (min-width: 760px) { .gstats { grid-template-columns: 1fr 1fr; } }
+.gs { padding: 14px; border-radius: var(--r2); background: var(--track); }
+.gs .gh { margin-bottom: 6px; }
+.gs .rec { font-size: .74rem; font-weight: 800; color: var(--gold); margin: -2px 0 8px 44px; }
+.gs table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.gs th { color: var(--muted); font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; text-align: right; padding: 2px 4px 6px; }
+.gs th:first-child, .gs td:first-child { text-align: left; }
+.gs td { padding: 6px 4px; text-align: right; font-weight: 700; border-top: 1px solid var(--line); }
+.gs td:first-child { display: flex; align-items: center; gap: 7px; }
+.gs td.skip { color: var(--bad); }
+.gs tr.dimr { opacity: .45; }
+
+.heat { display: grid; grid-template-columns: 44px repeat(7, 1fr); gap: 5px; align-items: stretch; }
+.heat .hd { text-align: center; font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-bottom: 2px; }
+.heat .hd small { display: block; text-transform: none; letter-spacing: 0; font-weight: 700; font-size: .6rem; }
+.heat .cell { border-radius: 10px; min-height: 40px; display: grid; place-content: center; text-align: center; font-weight: 800; font-size: .84rem; line-height: 1.05; background: var(--track); position: relative; }
+.heat .cell.best { box-shadow: inset 0 0 0 2px var(--gold); }
+.heat .cell em { font-style: normal; display: block; color: var(--bad); font-size: .58rem; font-weight: 800; }
+.heat .av { margin: auto; }
+
+.stack { display: flex; height: 26px; border-radius: 9px; overflow: hidden; gap: 2px; background: var(--track); }
+.stack i { display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: .72rem; color: var(--ink); background: var(--pc-m); flex: var(--f) 1 0; min-width: 0; transform-origin: left; animation: growX .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--k) * 80ms); }
+.stack i:nth-child(1) { background: var(--pc); color: var(--pc-ink); }
+.stack i:nth-child(2) { background: var(--pc-m); background: color-mix(in srgb, var(--pc) 66%, transparent); }
+.stack i:nth-child(3) { background: var(--pc-m); }
+.stack i:nth-child(4) { background: var(--pc-s); }
+.stack i.dnp { background: repeating-linear-gradient(45deg, var(--line2) 0 4px, transparent 4px 8px); color: var(--ink2); }
+.fin { padding: 10px 0; } .fin + .fin { border-top: 1px dashed var(--line); }
+.fin .fh { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+.fin .fh b { flex: 1; letter-spacing: -.02em; }
+.fin .fh small { color: var(--muted); font-weight: 800; font-size: .72rem; }
+.wk { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 12px; scrollbar-width: none; }
+.wk::-webkit-scrollbar { display: none; }
+.wk button { flex: none; border: 1px solid var(--line); background: var(--surface); padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: .78rem; cursor: pointer; color: var(--ink2); }
+.wk button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.dots { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; padding: 2px 0; }
+.dots::-webkit-scrollbar { display: none; }
+.dot { width: 26px; height: 26px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: .74rem; font-weight: 800; background: var(--track); color: var(--ink2); }
+.dot.p1 { background: var(--gold); color: #5b3b00; } .dot.p2 { background: var(--silver); color: #2b3347; } .dot.p3 { background: var(--bronze); color: #3d2208; }
+.cnt { display: flex; gap: 6px; }
+.cnt span { flex: 1; text-align: center; padding: 6px 0; border-radius: 10px; background: var(--track); font-weight: 800; line-height: 1.1; font-size: 1.05rem; }
+.cnt small { display: block; color: var(--muted); font-size: .6rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.rcards { display: grid; gap: 12px; }
+@media (min-width: 760px) { .rcards { grid-template-columns: 1fr 1fr; } }
+.rc { padding: 14px; border-radius: var(--r2); background: var(--track); }
+.rc .rh { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.rc .rh b { font-size: 1rem; letter-spacing: -.02em; }
+.kv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.kv div { background: var(--surface); border-radius: 12px; padding: 8px 10px; line-height: 1.15; }
+.kv b { font-size: 1.3rem; letter-spacing: -.04em; display: block; }
+.kv small { color: var(--muted); font-weight: 700; font-size: .68rem; }
+.swing { padding: 9px 12px; margin-top: 8px; border-radius: 12px; background: var(--track); font-size: .82rem; font-weight: 600; color: var(--ink2); }
+.swing b { color: var(--ink); }
+.bars .frow .who { width: 74px; }
+.bars .bar { flex: 1; height: 12px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.bars .bar i { display: block; height: 100%; width: var(--w); background: var(--pc); border-radius: 999px; opacity: .8; }
+.bars .n { width: 32px; text-align: right; font-weight: 800; }
+.sub-l { color: var(--muted); font-size: .74rem; font-weight: 700; margin: 2px 0 8px 94px; }
+
+/* ---------- history ---------------------------------------------------------- */
+details.fold { border-radius: var(--r2); background: var(--surface); border: 1px solid var(--line); margin-bottom: 10px; box-shadow: var(--shadow); }
+details.fold > summary { cursor: pointer; padding: 15px 18px; font-weight: 800; letter-spacing: -.02em; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .25s; margin-right: 4px; }
+details.fold[open] > summary::after { transform: rotate(-135deg); }
+.tbw { overflow-x: auto; padding: 0 12px 14px; max-height: 520px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.tbl th { position: sticky; top: 0; background: var(--solid); color: var(--muted); font-size: .64rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; text-align: right; padding: 8px 8px; }
+.tbl td { padding: 8px; text-align: right; border-top: 1px solid var(--line); font-weight: 600; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; }
+.tbl td.w { font-weight: 800; color: var(--ink); background: var(--pc-s); border-radius: 8px; }
+.tbl tr.miss td { color: var(--muted); font-style: italic; }
+
+.foot { margin-top: 36px; text-align: center; color: var(--muted); font-size: .76rem; font-weight: 700; }
+
+/* the page is made of motion; honour people who don't want it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .rv { opacity: 1; transform: none; }
+}
+
 </style>
 </head>
 <body>
-<h1>🏆 Puzzle League</h1>
-<div class="sub" id="sub"></div>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
-<div class="card alert-card" id="alertcard" style="display:none"></div>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#race" aria-label="Puzzle League home">
+      <span class="logo" aria-hidden="true"></span>
+      <span class="brand-t">Puzzle League</span>
+    </a>
+    <span class="pill" id="seasonpill"></span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Switch theme" title="Theme"></button>
+  </div>
+  <nav class="nav" id="nav" aria-label="Sections">
+    <a href="#race" data-sec="race">Race</a>
+    <a href="#today" data-sec="today">Today</a>
+    <a href="#odds" data-sec="odds">Odds</a>
+    <a href="#chart" data-sec="chart">Chart</a>
+    <a href="#fame" data-sec="fame">Champions</a>
+    <a href="#stats" data-sec="stats">Stats</a>
+    <a href="#history" data-sec="history">History</a>
+  </nav>
+</header>
 
-<div class="card"><h2 id="seasonhdr">Season standings</h2><div id="standings"></div>
-  <div class="rec-line" id="seasonnote" style="margin-top:6px"></div></div>
+<main class="wrap">
+  <div id="alert"></div>
 
-<div class="card">
-  <h2>Champions</h2><div id="seasons"></div>
-  <div class="rec-line" id="seasonsnote" style="margin-top:6px"></div>
-</div>
+  <section class="sec" id="race"></section>
+  <section class="sec" id="today"></section>
+  <section class="sec" id="odds"></section>
+  <section class="sec" id="chart"></section>
+  <section class="sec" id="fame"></section>
+  <section class="sec" id="stats"></section>
+  <section class="sec" id="history"></section>
 
-<div class="card"><h2 id="weekhdr">This week</h2><div id="week"></div></div>
+  <footer class="foot" id="foot"></footer>
+</main>
 
-<div class="card">
-  <h2 id="forecasthdr">Week forecast</h2><div id="forecast"></div>
-  <div class="rec-line" id="forecastnote" style="margin-top:6px"></div>
-</div>
-
-<div class="card"><h2 id="todayhdr">Today</h2><div class="games" id="games"></div></div>
-
-<div class="card">
-  <h2>Cumulative points</h2>
-  <div class="legend" id="legend"></div>
-  <div id="chartwrap"><div id="tip"></div><svg id="chart" width="100%" height="240"></svg></div>
-</div>
-
-<div class="card">
-  <h2>Form guide · last 3 weeks</h2><div id="form"></div>
-</div>
-
-<div class="card">
-  <h2>Day-of-week averages</h2><div id="weekdays"></div>
-  <div class="rec-line" style="margin-top:6px">average points per day on that weekday
-    · (n) = days counted · bold = best that day
-    · <span style="color:#e34948;font-weight:700">red</span> = games skipped on that weekday</div>
-</div>
-
-<div class="card">
-  <h2>Missed games</h2><div id="missed"></div>
-  <div class="rec-line" id="missednote" style="margin-top:6px"></div>
-</div>
-
-<div class="card">
-  <h2>Head-to-head</h2><div id="h2h"></div>
-  <div class="rec-line" style="margin-top:6px">row vs column ·
-    wins–losses–ties across games both played</div>
-</div>
-
-<div class="card">
-  <h2>Game-by-game (all-time averages)</h2>
-  <div class="games" id="gamestats"></div>
-</div>
-
-<div class="card">
-  <h2>Finishes</h2><div id="finishes"></div>
-  <div class="rec-line" style="margin-top:6px">how often each player placed 1st / 2nd / 3rd / 4th
-    across every game &middot; a tie for a place counts for both &middot; DNP = skipped a game
-    others played &middot; Avg = mean finishing place (lower is better) &middot; Days won =
-    days with the highest total &middot; bold = best in column</div>
-</div>
-
-<div class="card">
-  <h2>Records</h2><div id="records"></div>
-  <div class="rec-line" style="margin-top:6px">perfect day = won every game of a fully
-    recorded day &middot; streaks end on any non-win or DNP &middot; (now n) = still running</div>
-</div>
-
-<div class="card">
-  <h2>Weekly finishes</h2><div id="wfinishes"></div>
-  <div class="rec-line" style="margin-top:6px">where each player finished in the weekly
-    standings, completed weeks only &middot; a tie shares a place &middot; Avg = mean weekly
-    place (lower is better) &middot; bold = most weekly wins</div>
-</div>
-
-<div class="card">
-  <h2>Clutch</h2><div id="clutch"></div>
-  <div class="rec-line" style="margin-top:6px">showdown = a completed week where two or
-    more players entered Sunday within 24 points of the lead (the most one day can swing)
-    &middot; comeback = won after trailing &middot; blown lead = led or shared the lead
-    entering Sunday but did not win &middot; small samples: one showdown per week</div>
-</div>
-
-<div class="card">
-  <details><summary>Weekly history</summary><div id="weekhistory"></div></details>
-</div>
-
-<div class="card">
-  <details><summary>Daily history</summary><div id="history"></div></details>
-</div>
-
+<script>window.PL = {"generated": "Oct 11, 2026 12:30 PM", "day": "2026-10-11", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false, "tagline": ""}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew", "slot": 1, "special": true, "tagline": ""}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false, "tagline": ""}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false, "tagline": ""}], "standings": [{"player": "matt", "points": 445, "game_wins": 62, "daily_wins": 11}, {"player": "andrew", "points": 384, "game_wins": 40, "daily_wins": 5}, {"player": "kyle", "points": 321, "game_wins": 27, "daily_wins": 4}, {"player": "mitch", "points": 277, "game_wins": 14, "daily_wins": 1}], "todayTotals": {"matt": 19, "andrew": 14, "mitch": 6, "kyle": 21}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "1:31"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "2:00"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:34"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:39"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:49"}, {"player": "kyle", "played": true, "rank": 4, "points": 1, "score": "1:15"}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:14"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:18"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:25"}, {"player": "mitch", "played": true, "rank": 4, "points": 1, "score": "0:42"}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "1:12"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "1:34"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "1:35"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:20"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:31"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "1:02"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:42"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:43"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "1:08"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}], "series": {"days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "cumulative": {"matt": [21, 43, 60, 87, 103, 125, 150, 169, 193, 206, 228, 253, 274, 300, 317, 337, 357, 382, 404, 426, 445], "andrew": [23, 49, 68, 88, 111, 128, 140, 159, 176, 200, 220, 237, 254, 265, 284, 303, 323, 339, 355, 370, 384], "mitch": [12, 24, 36, 47, 59, 77, 93, 102, 112, 124, 140, 153, 170, 188, 203, 217, 220, 235, 248, 271, 277], "kyle": [15, 26, 44, 56, 72, 84, 95, 117, 136, 156, 165, 176, 187, 198, 224, 240, 261, 274, 289, 300, 321]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 17, "kyle": 0}, "2026-07-28": {"matt": 22, "andrew": 23, "mitch": 15, "kyle": 0}, "2026-07-29": {"matt": 20, "andrew": 23, "mitch": 19, "kyle": 0}, "2026-07-30": {"matt": 30, "andrew": 0, "mitch": 18, "kyle": 0}, "2026-07-31": {"matt": 26, "andrew": 24, "mitch": 12, "kyle": 0}, "2026-08-01": {"matt": 25, "andrew": 9, "mitch": 20, "kyle": 0}, "2026-08-02": {"matt": 28, "andrew": 0, "mitch": 20, "kyle": 0}, "2026-08-03": {"matt": 14, "andrew": 27, "mitch": 9, "kyle": 18}, "2026-08-04": {"matt": 19, "andrew": 17, "mitch": 13, "kyle": 21}, "2026-08-05": {"matt": 20, "andrew": 24, "mitch": 12, "kyle": 11}, "2026-08-06": {"matt": 18, "andrew": 10, "mitch": 10, "kyle": 20}, "2026-08-08": {"matt": 26, "andrew": 12, "mitch": 14, "kyle": 16}, "2026-08-09": {"matt": 24, "andrew": 0, "mitch": 11, "kyle": 22}, "2026-08-10": {"matt": 22, "andrew": 17, "mitch": 14, "kyle": 17}, "2026-08-11": {"matt": 18, "andrew": 22, "mitch": 14, "kyle": 16}, "2026-08-12": {"matt": 20, "andrew": 14, "mitch": 21, "kyle": 17}, "2026-08-13": {"matt": 28, "andrew": 14, "mitch": 13, "kyle": 13}, "2026-08-14": {"matt": 20, "andrew": 22, "mitch": 11, "kyle": 15}, "2026-08-15": {"matt": 16, "andrew": 16, "mitch": 15, "kyle": 18}, "2026-08-16": {"matt": 30, "andrew": 9, "mitch": 16, "kyle": 9}, "2026-08-17": {"matt": 19, "andrew": 16, "mitch": 7, "kyle": 25}, "2026-08-18": {"matt": 21, "andrew": 24, "mitch": 7, "kyle": 14}, "2026-08-19": {"matt": 24, "andrew": 15, "mitch": 14, "kyle": 15}, "2026-08-20": {"matt": 17, "andrew": 19, "mitch": 19, "kyle": 12}, "2026-08-21": {"matt": 24, "andrew": 16, "mitch": 11, "kyle": 15}, "2026-08-22": {"matt": 26, "andrew": 17, "mitch": 12, "kyle": 11}, "2026-08-23": {"matt": 22, "andrew": 6, "mitch": 18, "kyle": 15}, "2026-08-24": {"matt": 22, "andrew": 23, "mitch": 11, "kyle": 15}, "2026-08-25": {"matt": 16, "andrew": 25, "mitch": 12, "kyle": 14}, "2026-08-26": {"matt": 19, "andrew": 17, "mitch": 12, "kyle": 17}, "2026-08-27": {"matt": 15, "andrew": 19, "mitch": 13, "kyle": 19}, "2026-08-28": {"matt": 18, "andrew": 20, "mitch": 10, "kyle": 18}, "2026-08-29": {"matt": 24, "andrew": 10, "mitch": 20, "kyle": 15}, "2026-08-30": {"matt": 27, "andrew": 12, "mitch": 16, "kyle": 11}, "2026-08-31": {"matt": 17, "andrew": 27, "mitch": 13, "kyle": 16}, "2026-09-01": {"matt": 19, "andrew": 18, "mitch": 11, "kyle": 20}, "2026-09-02": {"matt": 19, "andrew": 18, "mitch": 14, "kyle": 15}, "2026-09-03": {"matt": 20, "andrew": 16, "mitch": 17, "kyle": 12}, "2026-09-04": {"matt": 23, "andrew": 21, "mitch": 16, "kyle": 7}, "2026-09-05": {"matt": 24, "andrew": 11, "mitch": 13, "kyle": 18}, "2026-09-06": {"matt": 22, "andrew": 17, "mitch": 17, "kyle": 12}, "2026-09-07": {"matt": 30, "andrew": 0, "mitch": 18, "kyle": 14}, "2026-09-08": {"matt": 19, "andrew": 20, "mitch": 12, "kyle": 18}, "2026-09-09": {"matt": 25, "andrew": 14, "mitch": 13, "kyle": 17}, "2026-09-10": {"matt": 22, "andrew": 16, "mitch": 17, "kyle": 12}, "2026-09-11": {"matt": 11, "andrew": 22, "mitch": 20, "kyle": 14}, "2026-09-12": {"matt": 18, "andrew": 0, "mitch": 15, "kyle": 27}, "2026-09-13": {"matt": 21, "andrew": 14, "mitch": 15, "kyle": 19}, "2026-09-14": {"matt": 20, "andrew": 23, "mitch": 11, "kyle": 18}, "2026-09-15": {"matt": 20, "andrew": 17, "mitch": 8, "kyle": 25}, "2026-09-16": {"matt": 26, "andrew": 20, "mitch": 11, "kyle": 11}, "2026-09-17": {"matt": 18, "andrew": 19, "mitch": 12, "kyle": 16}, "2026-09-18": {"matt": 18, "andrew": 19, "mitch": 10, "kyle": 19}, "2026-09-19": {"matt": 23, "andrew": 20, "mitch": 14, "kyle": 7}, "2026-09-20": {"matt": 22, "andrew": 11, "mitch": 10, "kyle": 23}, "2026-09-21": {"matt": 21, "andrew": 23, "mitch": 12, "kyle": 15}, "2026-09-22": {"matt": 22, "andrew": 26, "mitch": 12, "kyle": 11}, "2026-09-23": {"matt": 17, "andrew": 19, "mitch": 12, "kyle": 18}, "2026-09-24": {"matt": 27, "andrew": 20, "mitch": 11, "kyle": 12}, "2026-09-25": {"matt": 16, "andrew": 23, "mitch": 12, "kyle": 16}, "2026-09-26": {"matt": 22, "andrew": 17, "mitch": 18, "kyle": 12}, "2026-09-27": {"matt": 25, "andrew": 12, "mitch": 16, "kyle": 11}, "2026-09-28": {"matt": 19, "andrew": 19, "mitch": 9, "kyle": 22}, "2026-09-29": {"matt": 24, "andrew": 17, "mitch": 10, "kyle": 19}, "2026-09-30": {"matt": 13, "andrew": 24, "mitch": 12, "kyle": 20}, "2026-10-01": {"matt": 22, "andrew": 20, "mitch": 16, "kyle": 9}, "2026-10-02": {"matt": 25, "andrew": 17, "mitch": 13, "kyle": 11}, "2026-10-03": {"matt": 21, "andrew": 17, "mitch": 17, "kyle": 11}, "2026-10-04": {"matt": 26, "andrew": 11, "mitch": 18, "kyle": 11}, "2026-10-05": {"matt": 17, "andrew": 19, "mitch": 15, "kyle": 26}, "2026-10-06": {"matt": 20, "andrew": 19, "mitch": 14, "kyle": 16}, "2026-10-07": {"matt": 20, "andrew": 20, "mitch": 3, "kyle": 21}, "2026-10-08": {"matt": 25, "andrew": 16, "mitch": 15, "kyle": 13}, "2026-10-09": {"matt": 22, "andrew": 16, "mitch": 13, "kyle": 15}, "2026-10-10": {"matt": 22, "andrew": 15, "mitch": 23, "kyle": 11}, "2026-10-11": {"matt": 19, "andrew": 14, "mitch": 6, "kyle": 21}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"], "gameStats": [{"slug": "queens", "name": "Queens", "players": [{"id": "matt", "plays": 69, "wins": 41, "missed": 0, "avgRank": 1.7, "avgTime": "0:47", "bestTime": "0:08", "bestSecs": 8}, {"id": "andrew", "plays": 62, "wins": 7, "missed": 7, "avgRank": 2.5, "avgTime": "1:08", "bestTime": "0:14", "bestSecs": 14}, {"id": "mitch", "plays": 68, "wins": 11, "missed": 1, "avgRank": 2.7, "avgTime": "1:02", "bestTime": "0:18", "bestSecs": 18}, {"id": "kyle", "plays": 61, "wins": 12, "missed": 8, "avgRank": 2.7, "avgTime": "1:10", "bestTime": "0:15", "bestSecs": 15}]}, {"slug": "tango", "name": "Tango", "players": [{"id": "matt", "plays": 69, "wins": 43, "missed": 0, "avgRank": 1.7, "avgTime": "0:31", "bestTime": "0:15", "bestSecs": 15}, {"id": "andrew", "plays": 63, "wins": 13, "missed": 6, "avgRank": 2.7, "avgTime": "0:41", "bestTime": "0:20", "bestSecs": 20}, {"id": "mitch", "plays": 69, "wins": 9, "missed": 0, "avgRank": 2.5, "avgTime": "0:37", "bestTime": "0:19", "bestSecs": 19}, {"id": "kyle", "plays": 69, "wins": 15, "missed": 0, "avgRank": 2.7, "avgTime": "0:54", "bestTime": "0:19", "bestSecs": 19}]}, {"slug": "zip", "name": "Zip", "players": [{"id": "matt", "plays": 69, "wins": 35, "missed": 0, "avgRank": 1.8, "avgTime": "0:16", "bestTime": "0:04", "bestSecs": 4}, {"id": "andrew", "plays": 64, "wins": 22, "missed": 5, "avgRank": 2.2, "avgTime": "0:18", "bestTime": "0:04", "bestSecs": 4}, {"id": "mitch", "plays": 67, "wins": 8, "missed": 2, "avgRank": 3.0, "avgTime": "0:19", "bestTime": "0:05", "bestSecs": 5}, {"id": "kyle", "plays": 67, "wins": 25, "missed": 2, "avgRank": 2.2, "avgTime": "0:17", "bestTime": "0:04", "bestSecs": 4}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "players": [{"id": "matt", "plays": 69, "wins": 16, "missed": 0, "avgRank": 2.5, "avgTime": "1:20", "bestTime": "0:26", "bestSecs": 26}, {"id": "andrew", "plays": 59, "wins": 31, "missed": 10, "avgRank": 1.9, "avgTime": "1:10", "bestTime": "0:31", "bestSecs": 31}, {"id": "mitch", "plays": 67, "wins": 6, "missed": 2, "avgRank": 2.8, "avgTime": "1:21", "bestTime": "0:37", "bestSecs": 37}, {"id": "kyle", "plays": 68, "wins": 17, "missed": 1, "avgRank": 2.4, "avgTime": "1:16", "bestTime": "0:32", "bestSecs": 32}]}, {"slug": "patches", "name": "Patches", "players": [{"id": "matt", "plays": 69, "wins": 32, "missed": 0, "avgRank": 1.8, "avgTime": "0:19", "bestTime": "0:05", "bestSecs": 5}, {"id": "andrew", "plays": 65, "wins": 33, "missed": 4, "avgRank": 1.8, "avgTime": "0:21", "bestTime": "0:04", "bestSecs": 4}, {"id": "mitch", "plays": 64, "wins": 7, "missed": 5, "avgRank": 3.0, "avgTime": "0:28", "bestTime": "0:07", "bestSecs": 7}, {"id": "kyle", "plays": 68, "wins": 6, "missed": 1, "avgRank": 3.0, "avgTime": "0:38", "bestTime": "0:06", "bestSecs": 6}]}, {"slug": "wend", "name": "Wend", "players": [{"id": "matt", "plays": 69, "wins": 19, "missed": 0, "avgRank": 2.3, "avgTime": "0:42", "bestTime": "0:05", "bestSecs": 5}, {"id": "andrew", "plays": 66, "wins": 20, "missed": 3, "avgRank": 2.4, "avgTime": "0:53", "bestTime": "0:06", "bestSecs": 6}, {"id": "mitch", "plays": 64, "wins": 4, "missed": 5, "avgRank": 2.9, "avgTime": "0:54", "bestTime": "0:10", "bestSecs": 10}, {"id": "kyle", "plays": 64, "wins": 27, "missed": 5, "avgRank": 2.1, "avgTime": "0:49", "bestTime": "0:08", "bestSecs": 8}]}], "headToHead": {"matt": {"andrew": {"w": 208, "l": 157, "t": 14}, "mitch": {"w": 286, "l": 97, "t": 16}, "kyle": {"w": 238, "l": 137, "t": 22}}, "andrew": {"matt": {"w": 157, "l": 208, "t": 14}, "mitch": {"w": 227, "l": 127, "t": 13}, "kyle": {"w": 203, "l": 137, "t": 23}}, "mitch": {"matt": {"w": 97, "l": 286, "t": 16}, "andrew": {"w": 127, "l": 227, "t": 13}, "kyle": {"w": 159, "l": 209, "t": 16}}, "kyle": {"matt": {"w": 137, "l": 238, "t": 22}, "andrew": {"w": 137, "l": 203, "t": 23}, "mitch": {"w": 209, "l": 159, "t": 16}}}, "form": [{"id": "matt", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [21, 22, 17, 27, 16, 22, 25, 19, 24, 13, 22, 25, 21, 26, 17, 20, 20, 25, 22, 22, 19], "avg": 21.2, "trend": "flat", "streak": 0, "drought": 2}, {"id": "andrew", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [23, 26, 19, 20, 23, 17, 12, 19, 17, 24, 20, 17, 17, 11, 19, 19, 20, 16, 16, 15, 14], "avg": 18.3, "trend": "up", "streak": 0, "drought": 11}, {"id": "mitch", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [12, 12, 12, 11, 12, 18, 16, 9, 10, 12, 16, 13, 17, 18, 15, 14, 3, 15, 13, 23, 6], "avg": 13.2, "trend": "flat", "streak": 0, "drought": 1}, {"id": "kyle", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [15, 11, 18, 12, 16, 12, 11, 22, 19, 20, 9, 11, 11, 11, 26, 16, 21, 13, 15, 11, 21], "avg": 15.3, "trend": "flat", "streak": 1, "drought": 0}], "missed": [{"id": "matt", "missed": 0, "held": 414, "byGame": [], "last": null, "streak": 0}, {"id": "andrew", "missed": 35, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 7}, {"slug": "tango", "name": "Tango", "missed": 6}, {"slug": "zip", "name": "Zip", "missed": 5}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 10}, {"slug": "patches", "name": "Patches", "missed": 4}, {"slug": "wend", "name": "Wend", "missed": 3}], "last": "2026-09-27", "streak": 0}, {"id": "mitch", "missed": 15, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 1}, {"slug": "zip", "name": "Zip", "missed": 2}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 2}, {"slug": "patches", "name": "Patches", "missed": 5}, {"slug": "wend", "name": "Wend", "missed": 5}], "last": "2026-10-11", "streak": 3}, {"id": "kyle", "missed": 17, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 8}, {"slug": "zip", "name": "Zip", "missed": 2}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 1}, {"slug": "patches", "name": "Patches", "missed": 1}, {"slug": "wend", "name": "Wend", "missed": 5}], "last": "2026-10-11", "streak": 0}], "weekdays": [{"dow": "Mon", "n": 10, "avg": {"matt": 20.1, "andrew": 19.4, "mitch": 11.9, "kyle": 18.6}, "skips": {"matt": 0, "andrew": 7, "mitch": 0, "kyle": 0}}, {"dow": "Tue", "n": 10, "avg": {"matt": 19.8, "andrew": 20.5, "mitch": 11.3, "kyle": 17.4}, "skips": {"matt": 0, "andrew": 0, "mitch": 2, "kyle": 1}}, {"dow": "Wed", "n": 10, "avg": {"matt": 20.3, "andrew": 18.5, "mitch": 12.4, "kyle": 16.2}, "skips": {"matt": 0, "andrew": 0, "mitch": 4, "kyle": 0}}, {"dow": "Thu", "n": 10, "avg": {"matt": 21.2, "andrew": 16.9, "mitch": 14.3, "kyle": 13.8}, "skips": {"matt": 0, "andrew": 6, "mitch": 2, "kyle": 4}}, {"dow": "Fri", "n": 9, "avg": {"matt": 19.7, "andrew": 19.6, "mitch": 12.9, "kyle": 14.4}, "skips": {"matt": 0, "andrew": 1, "mitch": 1, "kyle": 2}}, {"dow": "Sat", "n": 10, "avg": {"matt": 22.2, "andrew": 13.5, "mitch": 16.1, "kyle": 14.6}, "skips": {"matt": 0, "andrew": 8, "mitch": 0, "kyle": 5}}, {"dow": "Sun", "n": 10, "avg": {"matt": 23.8, "andrew": 10.6, "mitch": 14.3, "kyle": 15.4}, "skips": {"matt": 0, "andrew": 13, "mitch": 6, "kyle": 5}}], "weeks": [{"start": "2026-07-27", "end": "2026-08-02", "label": "Jul 27 – Aug 2", "totals": {"matt": 174, "andrew": 99, "mitch": 121, "kyle": 0}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-03", "end": "2026-08-09", "label": "Aug 3 – Aug 9", "totals": {"matt": 121, "andrew": 90, "mitch": 69, "kyle": 108}, "winners": ["matt"], "missed": ["2026-08-07"], "complete": true}, {"start": "2026-08-10", "end": "2026-08-16", "label": "Aug 10 – Aug 16", "totals": {"matt": 154, "andrew": 114, "mitch": 104, "kyle": 105}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-17", "end": "2026-08-23", "label": "Aug 17 – Aug 23", "totals": {"matt": 153, "andrew": 113, "mitch": 88, "kyle": 107}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-24", "end": "2026-08-30", "label": "Aug 24 – Aug 30", "totals": {"matt": 141, "andrew": 126, "mitch": 94, "kyle": 109}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-31", "end": "2026-09-06", "label": "Aug 31 – Sep 6", "totals": {"matt": 144, "andrew": 128, "mitch": 101, "kyle": 100}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-07", "end": "2026-09-13", "label": "Sep 7 – Sep 13", "totals": {"matt": 146, "andrew": 86, "mitch": 110, "kyle": 121}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-14", "end": "2026-09-20", "label": "Sep 14 – Sep 20", "totals": {"matt": 147, "andrew": 129, "mitch": 76, "kyle": 119}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-21", "end": "2026-09-27", "label": "Sep 21 – Sep 27", "totals": {"matt": 150, "andrew": 140, "mitch": 93, "kyle": 95}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-28", "end": "2026-10-04", "label": "Sep 28 – Oct 4", "totals": {"matt": 150, "andrew": 125, "mitch": 95, "kyle": 103}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11", "totals": {"matt": 145, "andrew": 119, "mitch": 89, "kyle": 123}, "winners": ["matt"], "missed": [], "complete": false}], "weeksWon": {"matt": 10, "andrew": 0, "mitch": 0, "kyle": 0}, "missedDays": ["2026-08-07"], "seasons": [{"n": 1, "start": "2026-08-03", "end": "2026-09-20", "label": "Season 1", "range": "Aug 3 – Sep 20, 2026", "weeks": 7, "week_index": 7, "complete": true, "current": false, "upcoming": false, "days_left": null, "standings": [{"player": "matt", "points": 1006, "game_wins": 124, "daily_wins": 23}, {"player": "andrew", "points": 786, "game_wins": 86, "daily_wins": 16}, {"player": "kyle", "points": 769, "game_wins": 75, "daily_wins": 10}, {"player": "mitch", "points": 642, "game_wins": 31, "daily_wins": 2}], "leaders": ["matt"], "champions": ["matt"]}, {"n": 2, "start": "2026-09-21", "end": "2026-11-15", "label": "Season 2", "range": "Sep 21 – Nov 15, 2026", "weeks": 8, "week_index": 3, "complete": false, "current": true, "upcoming": false, "days_left": 35, "standings": [{"player": "matt", "points": 445, "game_wins": 62, "daily_wins": 11}, {"player": "andrew", "points": 384, "game_wins": 40, "daily_wins": 5}, {"player": "kyle", "points": 321, "game_wins": 27, "daily_wins": 4}, {"player": "mitch", "points": 277, "game_wins": 14, "daily_wins": 1}], "leaders": ["matt"], "champions": []}], "seasonTitles": {"matt": 1, "andrew": 0, "mitch": 0, "kyle": 0}, "seasonNow": {"n": 2, "start": "2026-09-21", "end": "2026-11-15", "label": "Season 2", "range": "Sep 21 – Nov 15, 2026", "weeks": 8, "week_index": 3, "complete": false, "current": true, "upcoming": false, "days_left": 35}, "career": [{"player": "matt", "points": 1451, "game_wins": 186, "daily_wins": 34}, {"player": "andrew", "points": 1170, "game_wins": 126, "daily_wins": 21}, {"player": "kyle", "points": 1090, "game_wins": 102, "daily_wins": 14}, {"player": "mitch", "points": 919, "game_wins": 45, "daily_wins": 3}], "finishes": {"weeks": [{"n": 1, "start": "2026-07-27", "end": "2026-08-02", "label": "Jul 27 – Aug 2", "complete": true, "players": {"matt": {"first": 27, "second": 9, "third": 6, "fourth": 0, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 1.5, "winPct": 64}, "andrew": {"first": 11, "second": 12, "third": 4, "fourth": 0, "dnp": 15, "dailyWins": 2, "played": 27, "avg": 1.74, "winPct": 41}, "mitch": {"first": 6, "second": 19, "third": 17, "fourth": 0, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.26, "winPct": 14}, "kyle": {"first": 0, "second": 0, "third": 0, "fourth": 0, "dnp": 42, "dailyWins": 0, "played": 0, "avg": null, "winPct": null}}}, {"n": 2, "start": "2026-08-03", "end": "2026-08-09", "label": "Aug 3 – Aug 9", "complete": true, "players": {"matt": {"first": 12, "second": 16, "third": 5, "fourth": 3, "dnp": 0, "dailyWins": 2, "played": 36, "avg": 1.97, "winPct": 33}, "andrew": {"first": 13, "second": 4, "third": 5, "fourth": 3, "dnp": 11, "dailyWins": 2, "played": 25, "avg": 1.92, "winPct": 52}, "mitch": {"first": 0, "second": 13, "third": 11, "fourth": 8, "dnp": 4, "dailyWins": 0, "played": 32, "avg": 2.84, "winPct": 0}, "kyle": {"first": 12, "second": 9, "third": 7, "fourth": 7, "dnp": 1, "dailyWins": 2, "played": 35, "avg": 2.26, "winPct": 34}}}, {"n": 3, "start": "2026-08-10", "end": "2026-08-16", "label": "Aug 10 – Aug 16", "complete": true, "players": {"matt": {"first": 24, "second": 6, "third": 4, "fourth": 8, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 1.9, "winPct": 57}, "andrew": {"first": 9, "second": 17, "third": 7, "fourth": 4, "dnp": 5, "dailyWins": 2, "played": 37, "avg": 2.16, "winPct": 24}, "mitch": {"first": 8, "second": 8, "third": 14, "fourth": 12, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.71, "winPct": 19}, "kyle": {"first": 9, "second": 5, "third": 17, "fourth": 11, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.71, "winPct": 21}}}, {"n": 4, "start": "2026-08-17", "end": "2026-08-23", "label": "Aug 17 – Aug 23", "complete": true, "players": {"matt": {"first": 17, "second": 18, "third": 7, "fourth": 0, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 1.76, "winPct": 40}, "andrew": {"first": 12, "second": 11, "third": 7, "fourth": 6, "dnp": 6, "dailyWins": 2, "played": 36, "avg": 2.19, "winPct": 33}, "mitch": {"first": 6, "second": 6, "third": 10, "fourth": 20, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 3.05, "winPct": 14}, "kyle": {"first": 9, "second": 10, "third": 13, "fourth": 6, "dnp": 4, "dailyWins": 1, "played": 38, "avg": 2.42, "winPct": 24}}}, {"n": 5, "start": "2026-08-24", "end": "2026-08-30", "label": "Aug 24 – Aug 30", "complete": true, "players": {"matt": {"first": 16, "second": 13, "third": 9, "fourth": 4, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.02, "winPct": 38}, "andrew": {"first": 15, "second": 9, "third": 6, "fourth": 12, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 2.36, "winPct": 36}, "mitch": {"first": 5, "second": 11, "third": 12, "fourth": 12, "dnp": 2, "dailyWins": 0, "played": 40, "avg": 2.77, "winPct": 12}, "kyle": {"first": 10, "second": 9, "third": 10, "fourth": 12, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.59, "winPct": 24}}}, {"n": 6, "start": "2026-08-31", "end": "2026-09-06", "label": "Aug 31 – Sep 6", "complete": true, "players": {"matt": {"first": 20, "second": 6, "third": 10, "fourth": 6, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 2.05, "winPct": 48}, "andrew": {"first": 14, "second": 12, "third": 6, "fourth": 10, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.29, "winPct": 33}, "mitch": {"first": 4, "second": 16, "third": 12, "fourth": 9, "dnp": 1, "dailyWins": 0, "played": 41, "avg": 2.63, "winPct": 10}, "kyle": {"first": 8, "second": 9, "third": 9, "fourth": 15, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.76, "winPct": 20}}}, {"n": 7, "start": "2026-09-07", "end": "2026-09-13", "label": "Sep 7 – Sep 13", "complete": true, "players": {"matt": {"first": 19, "second": 10, "third": 8, "fourth": 5, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 1.98, "winPct": 45}, "andrew": {"first": 8, "second": 8, "third": 8, "fourth": 6, "dnp": 12, "dailyWins": 2, "played": 30, "avg": 2.4, "winPct": 27}, "mitch": {"first": 6, "second": 14, "third": 16, "fourth": 6, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.52, "winPct": 14}, "kyle": {"first": 12, "second": 8, "third": 16, "fourth": 5, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.34, "winPct": 29}}}, {"n": 8, "start": "2026-09-14", "end": "2026-09-20", "label": "Sep 14 – Sep 20", "complete": true, "players": {"matt": {"first": 16, "second": 17, "third": 7, "fourth": 2, "dnp": 0, "dailyWins": 2, "played": 42, "avg": 1.88, "winPct": 38}, "andrew": {"first": 15, "second": 10, "third": 7, "fourth": 10, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.29, "winPct": 36}, "mitch": {"first": 2, "second": 6, "third": 15, "fourth": 18, "dnp": 1, "dailyWins": 0, "played": 41, "avg": 3.2, "winPct": 5}, "kyle": {"first": 15, "second": 5, "third": 11, "fourth": 7, "dnp": 4, "dailyWins": 3, "played": 38, "avg": 2.26, "winPct": 39}}}, {"n": 9, "start": "2026-09-21", "end": "2026-09-27", "label": "Sep 21 – Sep 27", "complete": true, "players": {"matt": {"first": 20, "second": 9, "third": 10, "fourth": 3, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 1.9, "winPct": 48}, "andrew": {"first": 18, "second": 10, "third": 7, "fourth": 6, "dnp": 1, "dailyWins": 4, "played": 41, "avg": 2.02, "winPct": 44}, "mitch": {"first": 4, "second": 11, "third": 13, "fourth": 14, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.88, "winPct": 10}, "kyle": {"first": 6, "second": 9, "third": 13, "fourth": 12, "dnp": 2, "dailyWins": 0, "played": 40, "avg": 2.77, "winPct": 15}}}, {"n": 10, "start": "2026-09-28", "end": "2026-10-04", "label": "Sep 28 – Oct 4", "complete": true, "players": {"matt": {"first": 23, "second": 5, "third": 6, "fourth": 8, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 1.98, "winPct": 55}, "andrew": {"first": 12, "second": 12, "third": 11, "fourth": 7, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.31, "winPct": 29}, "mitch": {"first": 3, "second": 14, "third": 13, "fourth": 12, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.81, "winPct": 7}, "kyle": {"first": 8, "second": 11, "third": 9, "fourth": 12, "dnp": 2, "dailyWins": 1, "played": 40, "avg": 2.62, "winPct": 20}}}, {"n": 11, "start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11", "complete": false, "players": {"matt": {"first": 19, "second": 9, "third": 9, "fourth": 5, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.0, "winPct": 45}, "andrew": {"first": 10, "second": 12, "third": 13, "fourth": 7, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.4, "winPct": 24}, "mitch": {"first": 7, "second": 8, "third": 10, "fourth": 10, "dnp": 7, "dailyWins": 1, "played": 35, "avg": 2.66, "winPct": 20}, "kyle": {"first": 13, "second": 10, "third": 10, "fourth": 8, "dnp": 1, "dailyWins": 3, "played": 41, "avg": 2.32, "winPct": 32}}}], "total": {"matt": {"first": 213, "second": 118, "third": 81, "fourth": 44, "dnp": 0, "dailyWins": 39, "played": 456, "avg": 1.9, "winPct": 47}, "andrew": {"first": 137, "second": 117, "third": 81, "fourth": 71, "dnp": 50, "dailyWins": 23, "played": 406, "avg": 2.21, "winPct": 34}, "mitch": {"first": 51, "second": 126, "third": 143, "fourth": 121, "dnp": 15, "dailyWins": 3, "played": 441, "avg": 2.76, "winPct": 12}, "kyle": {"first": 102, "second": 85, "third": 115, "fourth": 95, "dnp": 59, "dailyWins": 14, "played": 397, "avg": 2.51, "winPct": 26}}}, "records": {"matt": {"bestDay": {"points": 30, "date": "2026-07-30"}, "perfectDays": 3, "dailyWinStreak": {"best": 6, "current": 0}, "gameWinStreak": {"best": 6, "current": 0}}, "andrew": {"bestDay": {"points": 27, "date": "2026-08-03"}, "perfectDays": 0, "dailyWinStreak": {"best": 3, "current": 0}, "gameWinStreak": {"best": 5, "current": 0}}, "mitch": {"bestDay": {"points": 23, "date": "2026-10-10"}, "perfectDays": 0, "dailyWinStreak": {"best": 1, "current": 0}, "gameWinStreak": {"best": 3, "current": 0}}, "kyle": {"bestDay": {"points": 27, "date": "2026-09-12"}, "perfectDays": 0, "dailyWinStreak": {"best": 1, "current": 1}, "gameWinStreak": {"best": 4, "current": 4}}}, "weeklyFinishes": {"weeks": [{"n": 1, "start": "2026-07-27", "label": "Jul 27 – Aug 2", "totals": {"matt": 174, "andrew": 99, "mitch": 121, "kyle": 0}, "places": {"matt": 1, "mitch": 2, "andrew": 3, "kyle": 4}}, {"n": 2, "start": "2026-08-03", "label": "Aug 3 – Aug 9", "totals": {"matt": 121, "andrew": 90, "mitch": 69, "kyle": 108}, "places": {"matt": 1, "kyle": 2, "andrew": 3, "mitch": 4}}, {"n": 3, "start": "2026-08-10", "label": "Aug 10 – Aug 16", "totals": {"matt": 154, "andrew": 114, "mitch": 104, "kyle": 105}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 4, "start": "2026-08-17", "label": "Aug 17 – Aug 23", "totals": {"matt": 153, "andrew": 113, "mitch": 88, "kyle": 107}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 5, "start": "2026-08-24", "label": "Aug 24 – Aug 30", "totals": {"matt": 141, "andrew": 126, "mitch": 94, "kyle": 109}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 6, "start": "2026-08-31", "label": "Aug 31 – Sep 6", "totals": {"matt": 144, "andrew": 128, "mitch": 101, "kyle": 100}, "places": {"matt": 1, "andrew": 2, "mitch": 3, "kyle": 4}}, {"n": 7, "start": "2026-09-07", "label": "Sep 7 – Sep 13", "totals": {"matt": 146, "andrew": 86, "mitch": 110, "kyle": 121}, "places": {"matt": 1, "kyle": 2, "mitch": 3, "andrew": 4}}, {"n": 8, "start": "2026-09-14", "label": "Sep 14 – Sep 20", "totals": {"matt": 147, "andrew": 129, "mitch": 76, "kyle": 119}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 9, "start": "2026-09-21", "label": "Sep 21 – Sep 27", "totals": {"matt": 150, "andrew": 140, "mitch": 93, "kyle": 95}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 10, "start": "2026-09-28", "label": "Sep 28 – Oct 4", "totals": {"matt": 150, "andrew": 125, "mitch": 95, "kyle": 103}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}], "total": {"matt": {"first": 10, "second": 0, "third": 0, "fourth": 0, "weeks": 10, "avg": 1.0}, "andrew": {"first": 0, "second": 7, "third": 2, "fourth": 1, "weeks": 10, "avg": 2.4}, "mitch": {"first": 0, "second": 1, "third": 2, "fourth": 7, "weeks": 10, "avg": 3.6}, "kyle": {"first": 0, "second": 2, "third": 6, "fourth": 2, "weeks": 10, "avg": 3.0}}}, "clutch": {"range": 24, "players": {"matt": {"showdowns": 9, "won": 9, "comebacks": 1, "held": 8, "blown": 0, "sundayAvg": 24.3}, "andrew": {"showdowns": 8, "won": 0, "comebacks": 0, "held": 0, "blown": 2, "sundayAvg": 9.8}, "mitch": {"showdowns": 0, "won": 0, "comebacks": 0, "held": 0, "blown": 0, "sundayAvg": null}, "kyle": {"showdowns": 3, "won": 0, "comebacks": 0, "held": 0, "blown": 0, "sundayAvg": 17.3}}, "weeks": [{"n": 1, "label": "Jul 27 – Aug 2", "showdown": false, "leadersBefore": ["matt"], "lead": 45, "winners": ["matt"], "sunday": {"matt": 28, "andrew": 0, "mitch": 20, "kyle": 0}, "swing": false}, {"n": 2, "label": "Aug 3 – Aug 9", "showdown": true, "leadersBefore": ["matt"], "lead": 7, "winners": ["matt"], "sunday": {"matt": 24, "andrew": 0, "mitch": 11, "kyle": 22}, "swing": false}, {"n": 3, "label": "Aug 10 – Aug 16", "showdown": true, "leadersBefore": ["matt"], "lead": 19, "winners": ["matt"], "sunday": {"matt": 30, "andrew": 9, "mitch": 16, "kyle": 9}, "swing": false}, {"n": 4, "label": "Aug 17 – Aug 23", "showdown": true, "leadersBefore": ["matt"], "lead": 24, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 6, "mitch": 18, "kyle": 15}, "swing": false}, {"n": 5, "label": "Aug 24 – Aug 30", "showdown": true, "leadersBefore": ["matt", "andrew"], "lead": 0, "winners": ["matt"], "sunday": {"matt": 27, "andrew": 12, "mitch": 16, "kyle": 11}, "swing": true}, {"n": 6, "label": "Aug 31 – Sep 6", "showdown": true, "leadersBefore": ["matt"], "lead": 11, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 17, "mitch": 17, "kyle": 12}, "swing": false}, {"n": 7, "label": "Sep 7 – Sep 13", "showdown": true, "leadersBefore": ["matt"], "lead": 23, "winners": ["matt"], "sunday": {"matt": 21, "andrew": 14, "mitch": 15, "kyle": 19}, "swing": false}, {"n": 8, "label": "Sep 14 – Sep 20", "showdown": true, "leadersBefore": ["matt"], "lead": 7, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 11, "mitch": 10, "kyle": 23}, "swing": false}, {"n": 9, "label": "Sep 21 – Sep 27", "showdown": true, "leadersBefore": ["andrew"], "lead": 3, "winners": ["matt"], "sunday": {"matt": 25, "andrew": 12, "mitch": 16, "kyle": 11}, "swing": true}, {"n": 10, "label": "Sep 28 – Oct 4", "showdown": true, "leadersBefore": ["matt"], "lead": 10, "winners": ["matt"], "sunday": {"matt": 26, "andrew": 11, "mitch": 18, "kyle": 11}, "swing": false}]}, "forecast": {"daysLeft": 1, "todayCounted": false, "pool": 75, "sims": 20000, "halfLife": 28, "players": {"matt": {"now": 126, "margin": 21, "win": 1.0, "places": [1.0, 0.0, 0.0, 0.0], "expected": 147.3}, "andrew": {"now": 105, "margin": -21, "win": 0.0, "places": [0.0, 0.8145, 0.1855, 0.0], "expected": 122.2}, "mitch": {"now": 83, "margin": -43, "win": 0.0, "places": [0.0, 0.0, 0.0113, 0.9887], "expected": 96.6}, "kyle": {"now": 102, "margin": -24, "win": 0.0, "places": [0.0, 0.1855, 0.8032, 0.0113], "expected": 117.1}}, "week": {"start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11"}}, "seasonForecast": {"daysLeft": 36, "todayCounted": false, "pool": 75, "sims": 8000, "halfLife": 28, "players": {"matt": {"now": 426, "margin": 56, "win": 1.0, "places": [1.0, 0.0, 0.0, 0.0], "expected": 1191.8}, "andrew": {"now": 370, "margin": -56, "win": 0.0, "places": [0.0, 0.9984, 0.0016, 0.0], "expected": 986.9}, "mitch": {"now": 271, "margin": -155, "win": 0.0, "places": [0.0, 0.0, 0.052, 0.948], "expected": 763.1}, "kyle": {"now": 300, "margin": -126, "win": 0.0, "places": [0.0, 0.0016, 0.9464, 0.052], "expected": 841.6}}, "season": {"n": 2, "label": "Season 2", "range": "Sep 21 – Nov 15, 2026", "weeks": 8, "weekIndex": 3, "weeksLeft": 6}}};</script>
 <script>
-var DATA = {"generated": "Oct 11, 2026 12:12 PM", "day": "2026-10-11", "players": [{"id": "matt", "name": "Matt Fleschner", "first": "Matt", "slot": 0, "special": false, "tagline": ""}, {"id": "andrew", "name": "Andrew Bliss", "first": "Andrew", "slot": 1, "special": true, "tagline": ""}, {"id": "mitch", "name": "Mitch O'Halloran", "first": "Mitch", "slot": 2, "special": false, "tagline": ""}, {"id": "kyle", "name": "Kyle Varda", "first": "Kyle", "slot": 3, "special": false, "tagline": ""}], "standings": [{"player": "matt", "points": 445, "game_wins": 62, "daily_wins": 11}, {"player": "andrew", "points": 384, "game_wins": 40, "daily_wins": 5}, {"player": "kyle", "points": 321, "game_wins": 27, "daily_wins": 4}, {"player": "mitch", "points": 277, "game_wins": 14, "daily_wins": 1}], "todayTotals": {"matt": 19, "andrew": 14, "mitch": 6, "kyle": 21}, "todayGames": [{"slug": "queens", "name": "Queens", "status": "ok", "rows": [{"player": "matt", "played": true, "rank": 1, "points": 5, "score": "1:31"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "2:00"}, {"player": "kyle", "played": false, "rank": 3, "points": 0, "score": ""}, {"player": "mitch", "played": false, "rank": 3, "points": 0, "score": ""}]}, {"slug": "tango", "name": "Tango", "status": "ok", "rows": [{"player": "mitch", "played": true, "rank": 1, "points": 5, "score": "0:34"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:39"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:49"}, {"player": "kyle", "played": true, "rank": 4, "points": 1, "score": "1:15"}]}, {"slug": "zip", "name": "Zip", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:14"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:18"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "0:25"}, {"player": "mitch", "played": true, "rank": 4, "points": 1, "score": "0:42"}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "1:12"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "1:34"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "1:35"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "patches", "name": "Patches", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:20"}, {"player": "matt", "played": true, "rank": 2, "points": 3, "score": "0:31"}, {"player": "andrew", "played": true, "rank": 3, "points": 2, "score": "1:02"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}, {"slug": "wend", "name": "Wend", "status": "ok", "rows": [{"player": "kyle", "played": true, "rank": 1, "points": 5, "score": "0:42"}, {"player": "andrew", "played": true, "rank": 2, "points": 3, "score": "0:43"}, {"player": "matt", "played": true, "rank": 3, "points": 2, "score": "1:08"}, {"player": "mitch", "played": false, "rank": 4, "points": 0, "score": ""}]}], "series": {"days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "cumulative": {"matt": [21, 43, 60, 87, 103, 125, 150, 169, 193, 206, 228, 253, 274, 300, 317, 337, 357, 382, 404, 426, 445], "andrew": [23, 49, 68, 88, 111, 128, 140, 159, 176, 200, 220, 237, 254, 265, 284, 303, 323, 339, 355, 370, 384], "mitch": [12, 24, 36, 47, 59, 77, 93, 102, 112, 124, 140, 153, 170, 188, 203, 217, 220, 235, 248, 271, 277], "kyle": [15, 26, 44, 56, 72, 84, 95, 117, 136, 156, 165, 176, 187, 198, 224, 240, 261, 274, 289, 300, 321]}}, "dayTotals": {"2026-07-27": {"matt": 23, "andrew": 20, "mitch": 17, "kyle": 0}, "2026-07-28": {"matt": 22, "andrew": 23, "mitch": 15, "kyle": 0}, "2026-07-29": {"matt": 20, "andrew": 23, "mitch": 19, "kyle": 0}, "2026-07-30": {"matt": 30, "andrew": 0, "mitch": 18, "kyle": 0}, "2026-07-31": {"matt": 26, "andrew": 24, "mitch": 12, "kyle": 0}, "2026-08-01": {"matt": 25, "andrew": 9, "mitch": 20, "kyle": 0}, "2026-08-02": {"matt": 28, "andrew": 0, "mitch": 20, "kyle": 0}, "2026-08-03": {"matt": 14, "andrew": 27, "mitch": 9, "kyle": 18}, "2026-08-04": {"matt": 19, "andrew": 17, "mitch": 13, "kyle": 21}, "2026-08-05": {"matt": 20, "andrew": 24, "mitch": 12, "kyle": 11}, "2026-08-06": {"matt": 18, "andrew": 10, "mitch": 10, "kyle": 20}, "2026-08-08": {"matt": 26, "andrew": 12, "mitch": 14, "kyle": 16}, "2026-08-09": {"matt": 24, "andrew": 0, "mitch": 11, "kyle": 22}, "2026-08-10": {"matt": 22, "andrew": 17, "mitch": 14, "kyle": 17}, "2026-08-11": {"matt": 18, "andrew": 22, "mitch": 14, "kyle": 16}, "2026-08-12": {"matt": 20, "andrew": 14, "mitch": 21, "kyle": 17}, "2026-08-13": {"matt": 28, "andrew": 14, "mitch": 13, "kyle": 13}, "2026-08-14": {"matt": 20, "andrew": 22, "mitch": 11, "kyle": 15}, "2026-08-15": {"matt": 16, "andrew": 16, "mitch": 15, "kyle": 18}, "2026-08-16": {"matt": 30, "andrew": 9, "mitch": 16, "kyle": 9}, "2026-08-17": {"matt": 19, "andrew": 16, "mitch": 7, "kyle": 25}, "2026-08-18": {"matt": 21, "andrew": 24, "mitch": 7, "kyle": 14}, "2026-08-19": {"matt": 24, "andrew": 15, "mitch": 14, "kyle": 15}, "2026-08-20": {"matt": 17, "andrew": 19, "mitch": 19, "kyle": 12}, "2026-08-21": {"matt": 24, "andrew": 16, "mitch": 11, "kyle": 15}, "2026-08-22": {"matt": 26, "andrew": 17, "mitch": 12, "kyle": 11}, "2026-08-23": {"matt": 22, "andrew": 6, "mitch": 18, "kyle": 15}, "2026-08-24": {"matt": 22, "andrew": 23, "mitch": 11, "kyle": 15}, "2026-08-25": {"matt": 16, "andrew": 25, "mitch": 12, "kyle": 14}, "2026-08-26": {"matt": 19, "andrew": 17, "mitch": 12, "kyle": 17}, "2026-08-27": {"matt": 15, "andrew": 19, "mitch": 13, "kyle": 19}, "2026-08-28": {"matt": 18, "andrew": 20, "mitch": 10, "kyle": 18}, "2026-08-29": {"matt": 24, "andrew": 10, "mitch": 20, "kyle": 15}, "2026-08-30": {"matt": 27, "andrew": 12, "mitch": 16, "kyle": 11}, "2026-08-31": {"matt": 17, "andrew": 27, "mitch": 13, "kyle": 16}, "2026-09-01": {"matt": 19, "andrew": 18, "mitch": 11, "kyle": 20}, "2026-09-02": {"matt": 19, "andrew": 18, "mitch": 14, "kyle": 15}, "2026-09-03": {"matt": 20, "andrew": 16, "mitch": 17, "kyle": 12}, "2026-09-04": {"matt": 23, "andrew": 21, "mitch": 16, "kyle": 7}, "2026-09-05": {"matt": 24, "andrew": 11, "mitch": 13, "kyle": 18}, "2026-09-06": {"matt": 22, "andrew": 17, "mitch": 17, "kyle": 12}, "2026-09-07": {"matt": 30, "andrew": 0, "mitch": 18, "kyle": 14}, "2026-09-08": {"matt": 19, "andrew": 20, "mitch": 12, "kyle": 18}, "2026-09-09": {"matt": 25, "andrew": 14, "mitch": 13, "kyle": 17}, "2026-09-10": {"matt": 22, "andrew": 16, "mitch": 17, "kyle": 12}, "2026-09-11": {"matt": 11, "andrew": 22, "mitch": 20, "kyle": 14}, "2026-09-12": {"matt": 18, "andrew": 0, "mitch": 15, "kyle": 27}, "2026-09-13": {"matt": 21, "andrew": 14, "mitch": 15, "kyle": 19}, "2026-09-14": {"matt": 20, "andrew": 23, "mitch": 11, "kyle": 18}, "2026-09-15": {"matt": 20, "andrew": 17, "mitch": 8, "kyle": 25}, "2026-09-16": {"matt": 26, "andrew": 20, "mitch": 11, "kyle": 11}, "2026-09-17": {"matt": 18, "andrew": 19, "mitch": 12, "kyle": 16}, "2026-09-18": {"matt": 18, "andrew": 19, "mitch": 10, "kyle": 19}, "2026-09-19": {"matt": 23, "andrew": 20, "mitch": 14, "kyle": 7}, "2026-09-20": {"matt": 22, "andrew": 11, "mitch": 10, "kyle": 23}, "2026-09-21": {"matt": 21, "andrew": 23, "mitch": 12, "kyle": 15}, "2026-09-22": {"matt": 22, "andrew": 26, "mitch": 12, "kyle": 11}, "2026-09-23": {"matt": 17, "andrew": 19, "mitch": 12, "kyle": 18}, "2026-09-24": {"matt": 27, "andrew": 20, "mitch": 11, "kyle": 12}, "2026-09-25": {"matt": 16, "andrew": 23, "mitch": 12, "kyle": 16}, "2026-09-26": {"matt": 22, "andrew": 17, "mitch": 18, "kyle": 12}, "2026-09-27": {"matt": 25, "andrew": 12, "mitch": 16, "kyle": 11}, "2026-09-28": {"matt": 19, "andrew": 19, "mitch": 9, "kyle": 22}, "2026-09-29": {"matt": 24, "andrew": 17, "mitch": 10, "kyle": 19}, "2026-09-30": {"matt": 13, "andrew": 24, "mitch": 12, "kyle": 20}, "2026-10-01": {"matt": 22, "andrew": 20, "mitch": 16, "kyle": 9}, "2026-10-02": {"matt": 25, "andrew": 17, "mitch": 13, "kyle": 11}, "2026-10-03": {"matt": 21, "andrew": 17, "mitch": 17, "kyle": 11}, "2026-10-04": {"matt": 26, "andrew": 11, "mitch": 18, "kyle": 11}, "2026-10-05": {"matt": 17, "andrew": 19, "mitch": 15, "kyle": 26}, "2026-10-06": {"matt": 20, "andrew": 19, "mitch": 14, "kyle": 16}, "2026-10-07": {"matt": 20, "andrew": 20, "mitch": 3, "kyle": 21}, "2026-10-08": {"matt": 25, "andrew": 16, "mitch": 15, "kyle": 13}, "2026-10-09": {"matt": 22, "andrew": 16, "mitch": 13, "kyle": 15}, "2026-10-10": {"matt": 22, "andrew": 15, "mitch": 23, "kyle": 11}, "2026-10-11": {"matt": 19, "andrew": 14, "mitch": 6, "kyle": 21}}, "colorsLight": ["#2a78d6", "#e34948", "#1baf7a", "#eda100"], "colorsDark": ["#3987e5", "#e66767", "#199e70", "#c98500"], "gameStats": [{"slug": "queens", "name": "Queens", "players": [{"id": "matt", "plays": 69, "wins": 41, "missed": 0, "avgRank": 1.7, "avgTime": "0:47", "bestTime": "0:08", "bestSecs": 8}, {"id": "andrew", "plays": 62, "wins": 7, "missed": 7, "avgRank": 2.5, "avgTime": "1:08", "bestTime": "0:14", "bestSecs": 14}, {"id": "mitch", "plays": 68, "wins": 11, "missed": 1, "avgRank": 2.7, "avgTime": "1:02", "bestTime": "0:18", "bestSecs": 18}, {"id": "kyle", "plays": 61, "wins": 12, "missed": 8, "avgRank": 2.7, "avgTime": "1:10", "bestTime": "0:15", "bestSecs": 15}]}, {"slug": "tango", "name": "Tango", "players": [{"id": "matt", "plays": 69, "wins": 43, "missed": 0, "avgRank": 1.7, "avgTime": "0:31", "bestTime": "0:15", "bestSecs": 15}, {"id": "andrew", "plays": 63, "wins": 13, "missed": 6, "avgRank": 2.7, "avgTime": "0:41", "bestTime": "0:20", "bestSecs": 20}, {"id": "mitch", "plays": 69, "wins": 9, "missed": 0, "avgRank": 2.5, "avgTime": "0:37", "bestTime": "0:19", "bestSecs": 19}, {"id": "kyle", "plays": 69, "wins": 15, "missed": 0, "avgRank": 2.7, "avgTime": "0:54", "bestTime": "0:19", "bestSecs": 19}]}, {"slug": "zip", "name": "Zip", "players": [{"id": "matt", "plays": 69, "wins": 35, "missed": 0, "avgRank": 1.8, "avgTime": "0:16", "bestTime": "0:04", "bestSecs": 4}, {"id": "andrew", "plays": 64, "wins": 22, "missed": 5, "avgRank": 2.2, "avgTime": "0:18", "bestTime": "0:04", "bestSecs": 4}, {"id": "mitch", "plays": 67, "wins": 8, "missed": 2, "avgRank": 3.0, "avgTime": "0:19", "bestTime": "0:05", "bestSecs": 5}, {"id": "kyle", "plays": 67, "wins": 25, "missed": 2, "avgRank": 2.2, "avgTime": "0:17", "bestTime": "0:04", "bestSecs": 4}]}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "players": [{"id": "matt", "plays": 69, "wins": 16, "missed": 0, "avgRank": 2.5, "avgTime": "1:20", "bestTime": "0:26", "bestSecs": 26}, {"id": "andrew", "plays": 59, "wins": 31, "missed": 10, "avgRank": 1.9, "avgTime": "1:10", "bestTime": "0:31", "bestSecs": 31}, {"id": "mitch", "plays": 67, "wins": 6, "missed": 2, "avgRank": 2.8, "avgTime": "1:21", "bestTime": "0:37", "bestSecs": 37}, {"id": "kyle", "plays": 68, "wins": 17, "missed": 1, "avgRank": 2.4, "avgTime": "1:16", "bestTime": "0:32", "bestSecs": 32}]}, {"slug": "patches", "name": "Patches", "players": [{"id": "matt", "plays": 69, "wins": 32, "missed": 0, "avgRank": 1.8, "avgTime": "0:19", "bestTime": "0:05", "bestSecs": 5}, {"id": "andrew", "plays": 65, "wins": 33, "missed": 4, "avgRank": 1.8, "avgTime": "0:21", "bestTime": "0:04", "bestSecs": 4}, {"id": "mitch", "plays": 64, "wins": 7, "missed": 5, "avgRank": 3.0, "avgTime": "0:28", "bestTime": "0:07", "bestSecs": 7}, {"id": "kyle", "plays": 68, "wins": 6, "missed": 1, "avgRank": 3.0, "avgTime": "0:38", "bestTime": "0:06", "bestSecs": 6}]}, {"slug": "wend", "name": "Wend", "players": [{"id": "matt", "plays": 69, "wins": 19, "missed": 0, "avgRank": 2.3, "avgTime": "0:42", "bestTime": "0:05", "bestSecs": 5}, {"id": "andrew", "plays": 66, "wins": 20, "missed": 3, "avgRank": 2.4, "avgTime": "0:53", "bestTime": "0:06", "bestSecs": 6}, {"id": "mitch", "plays": 64, "wins": 4, "missed": 5, "avgRank": 2.9, "avgTime": "0:54", "bestTime": "0:10", "bestSecs": 10}, {"id": "kyle", "plays": 64, "wins": 27, "missed": 5, "avgRank": 2.1, "avgTime": "0:49", "bestTime": "0:08", "bestSecs": 8}]}], "headToHead": {"matt": {"andrew": {"w": 208, "l": 157, "t": 14}, "mitch": {"w": 286, "l": 97, "t": 16}, "kyle": {"w": 238, "l": 137, "t": 22}}, "andrew": {"matt": {"w": 157, "l": 208, "t": 14}, "mitch": {"w": 227, "l": 127, "t": 13}, "kyle": {"w": 203, "l": 137, "t": 23}}, "mitch": {"matt": {"w": 97, "l": 286, "t": 16}, "andrew": {"w": 127, "l": 227, "t": 13}, "kyle": {"w": 159, "l": 209, "t": 16}}, "kyle": {"matt": {"w": 137, "l": 238, "t": 22}, "andrew": {"w": 137, "l": 203, "t": 23}, "mitch": {"w": 209, "l": 159, "t": 16}}}, "form": [{"id": "matt", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [21, 22, 17, 27, 16, 22, 25, 19, 24, 13, 22, 25, 21, 26, 17, 20, 20, 25, 22, 22, 19], "avg": 21.2, "trend": "flat", "streak": 0, "drought": 2}, {"id": "andrew", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [23, 26, 19, 20, 23, 17, 12, 19, 17, 24, 20, 17, 17, 11, 19, 19, 20, 16, 16, 15, 14], "avg": 18.3, "trend": "up", "streak": 0, "drought": 11}, {"id": "mitch", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [12, 12, 12, 11, 12, 18, 16, 9, 10, 12, 16, 13, 17, 18, 15, 14, 3, 15, 13, 23, 6], "avg": 13.2, "trend": "flat", "streak": 0, "drought": 1}, {"id": "kyle", "days": ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"], "points": [15, 11, 18, 12, 16, 12, 11, 22, 19, 20, 9, 11, 11, 11, 26, 16, 21, 13, 15, 11, 21], "avg": 15.3, "trend": "flat", "streak": 1, "drought": 0}], "missed": [{"id": "matt", "missed": 0, "held": 414, "byGame": [], "last": null, "streak": 0}, {"id": "andrew", "missed": 35, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 7}, {"slug": "tango", "name": "Tango", "missed": 6}, {"slug": "zip", "name": "Zip", "missed": 5}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 10}, {"slug": "patches", "name": "Patches", "missed": 4}, {"slug": "wend", "name": "Wend", "missed": 3}], "last": "2026-09-27", "streak": 0}, {"id": "mitch", "missed": 15, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 1}, {"slug": "zip", "name": "Zip", "missed": 2}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 2}, {"slug": "patches", "name": "Patches", "missed": 5}, {"slug": "wend", "name": "Wend", "missed": 5}], "last": "2026-10-11", "streak": 3}, {"id": "kyle", "missed": 17, "held": 414, "byGame": [{"slug": "queens", "name": "Queens", "missed": 8}, {"slug": "zip", "name": "Zip", "missed": 2}, {"slug": "mini-sudoku", "name": "Mini Sudoku", "missed": 1}, {"slug": "patches", "name": "Patches", "missed": 1}, {"slug": "wend", "name": "Wend", "missed": 5}], "last": "2026-10-11", "streak": 0}], "weekdays": [{"dow": "Mon", "n": 10, "avg": {"matt": 20.1, "andrew": 19.4, "mitch": 11.9, "kyle": 18.6}, "skips": {"matt": 0, "andrew": 7, "mitch": 0, "kyle": 0}}, {"dow": "Tue", "n": 10, "avg": {"matt": 19.8, "andrew": 20.5, "mitch": 11.3, "kyle": 17.4}, "skips": {"matt": 0, "andrew": 0, "mitch": 2, "kyle": 1}}, {"dow": "Wed", "n": 10, "avg": {"matt": 20.3, "andrew": 18.5, "mitch": 12.4, "kyle": 16.2}, "skips": {"matt": 0, "andrew": 0, "mitch": 4, "kyle": 0}}, {"dow": "Thu", "n": 10, "avg": {"matt": 21.2, "andrew": 16.9, "mitch": 14.3, "kyle": 13.8}, "skips": {"matt": 0, "andrew": 6, "mitch": 2, "kyle": 4}}, {"dow": "Fri", "n": 9, "avg": {"matt": 19.7, "andrew": 19.6, "mitch": 12.9, "kyle": 14.4}, "skips": {"matt": 0, "andrew": 1, "mitch": 1, "kyle": 2}}, {"dow": "Sat", "n": 10, "avg": {"matt": 22.2, "andrew": 13.5, "mitch": 16.1, "kyle": 14.6}, "skips": {"matt": 0, "andrew": 8, "mitch": 0, "kyle": 5}}, {"dow": "Sun", "n": 10, "avg": {"matt": 23.8, "andrew": 10.6, "mitch": 14.3, "kyle": 15.4}, "skips": {"matt": 0, "andrew": 13, "mitch": 6, "kyle": 5}}], "weeks": [{"start": "2026-07-27", "end": "2026-08-02", "label": "Jul 27 – Aug 2", "totals": {"matt": 174, "andrew": 99, "mitch": 121, "kyle": 0}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-03", "end": "2026-08-09", "label": "Aug 3 – Aug 9", "totals": {"matt": 121, "andrew": 90, "mitch": 69, "kyle": 108}, "winners": ["matt"], "missed": ["2026-08-07"], "complete": true}, {"start": "2026-08-10", "end": "2026-08-16", "label": "Aug 10 – Aug 16", "totals": {"matt": 154, "andrew": 114, "mitch": 104, "kyle": 105}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-17", "end": "2026-08-23", "label": "Aug 17 – Aug 23", "totals": {"matt": 153, "andrew": 113, "mitch": 88, "kyle": 107}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-24", "end": "2026-08-30", "label": "Aug 24 – Aug 30", "totals": {"matt": 141, "andrew": 126, "mitch": 94, "kyle": 109}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-08-31", "end": "2026-09-06", "label": "Aug 31 – Sep 6", "totals": {"matt": 144, "andrew": 128, "mitch": 101, "kyle": 100}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-07", "end": "2026-09-13", "label": "Sep 7 – Sep 13", "totals": {"matt": 146, "andrew": 86, "mitch": 110, "kyle": 121}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-14", "end": "2026-09-20", "label": "Sep 14 – Sep 20", "totals": {"matt": 147, "andrew": 129, "mitch": 76, "kyle": 119}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-21", "end": "2026-09-27", "label": "Sep 21 – Sep 27", "totals": {"matt": 150, "andrew": 140, "mitch": 93, "kyle": 95}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-09-28", "end": "2026-10-04", "label": "Sep 28 – Oct 4", "totals": {"matt": 150, "andrew": 125, "mitch": 95, "kyle": 103}, "winners": ["matt"], "missed": [], "complete": true}, {"start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11", "totals": {"matt": 145, "andrew": 119, "mitch": 89, "kyle": 123}, "winners": ["matt"], "missed": [], "complete": false}], "weeksWon": {"matt": 10, "andrew": 0, "mitch": 0, "kyle": 0}, "missedDays": ["2026-08-07"], "seasons": [{"n": 1, "start": "2026-08-03", "end": "2026-09-20", "label": "Season 1", "range": "Aug 3 – Sep 20, 2026", "weeks": 7, "week_index": 7, "complete": true, "current": false, "upcoming": false, "days_left": null, "standings": [{"player": "matt", "points": 1006, "game_wins": 124, "daily_wins": 23}, {"player": "andrew", "points": 786, "game_wins": 86, "daily_wins": 16}, {"player": "kyle", "points": 769, "game_wins": 75, "daily_wins": 10}, {"player": "mitch", "points": 642, "game_wins": 31, "daily_wins": 2}], "leaders": ["matt"], "champions": ["matt"]}, {"n": 2, "start": "2026-09-21", "end": "2026-11-15", "label": "Season 2", "range": "Sep 21 – Nov 15, 2026", "weeks": 8, "week_index": 3, "complete": false, "current": true, "upcoming": false, "days_left": 35, "standings": [{"player": "matt", "points": 445, "game_wins": 62, "daily_wins": 11}, {"player": "andrew", "points": 384, "game_wins": 40, "daily_wins": 5}, {"player": "kyle", "points": 321, "game_wins": 27, "daily_wins": 4}, {"player": "mitch", "points": 277, "game_wins": 14, "daily_wins": 1}], "leaders": ["matt"], "champions": []}], "seasonTitles": {"matt": 1, "andrew": 0, "mitch": 0, "kyle": 0}, "seasonNow": {"n": 2, "start": "2026-09-21", "end": "2026-11-15", "label": "Season 2", "range": "Sep 21 – Nov 15, 2026", "weeks": 8, "week_index": 3, "complete": false, "current": true, "upcoming": false, "days_left": 35}, "career": [{"player": "matt", "points": 1451, "game_wins": 186, "daily_wins": 34}, {"player": "andrew", "points": 1170, "game_wins": 126, "daily_wins": 21}, {"player": "kyle", "points": 1090, "game_wins": 102, "daily_wins": 14}, {"player": "mitch", "points": 919, "game_wins": 45, "daily_wins": 3}], "finishes": {"weeks": [{"n": 1, "start": "2026-07-27", "end": "2026-08-02", "label": "Jul 27 – Aug 2", "complete": true, "players": {"matt": {"first": 27, "second": 9, "third": 6, "fourth": 0, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 1.5, "winPct": 64}, "andrew": {"first": 11, "second": 12, "third": 4, "fourth": 0, "dnp": 15, "dailyWins": 2, "played": 27, "avg": 1.74, "winPct": 41}, "mitch": {"first": 6, "second": 19, "third": 17, "fourth": 0, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.26, "winPct": 14}, "kyle": {"first": 0, "second": 0, "third": 0, "fourth": 0, "dnp": 42, "dailyWins": 0, "played": 0, "avg": null, "winPct": null}}}, {"n": 2, "start": "2026-08-03", "end": "2026-08-09", "label": "Aug 3 – Aug 9", "complete": true, "players": {"matt": {"first": 12, "second": 16, "third": 5, "fourth": 3, "dnp": 0, "dailyWins": 2, "played": 36, "avg": 1.97, "winPct": 33}, "andrew": {"first": 13, "second": 4, "third": 5, "fourth": 3, "dnp": 11, "dailyWins": 2, "played": 25, "avg": 1.92, "winPct": 52}, "mitch": {"first": 0, "second": 13, "third": 11, "fourth": 8, "dnp": 4, "dailyWins": 0, "played": 32, "avg": 2.84, "winPct": 0}, "kyle": {"first": 12, "second": 9, "third": 7, "fourth": 7, "dnp": 1, "dailyWins": 2, "played": 35, "avg": 2.26, "winPct": 34}}}, {"n": 3, "start": "2026-08-10", "end": "2026-08-16", "label": "Aug 10 – Aug 16", "complete": true, "players": {"matt": {"first": 24, "second": 6, "third": 4, "fourth": 8, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 1.9, "winPct": 57}, "andrew": {"first": 9, "second": 17, "third": 7, "fourth": 4, "dnp": 5, "dailyWins": 2, "played": 37, "avg": 2.16, "winPct": 24}, "mitch": {"first": 8, "second": 8, "third": 14, "fourth": 12, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.71, "winPct": 19}, "kyle": {"first": 9, "second": 5, "third": 17, "fourth": 11, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.71, "winPct": 21}}}, {"n": 4, "start": "2026-08-17", "end": "2026-08-23", "label": "Aug 17 – Aug 23", "complete": true, "players": {"matt": {"first": 17, "second": 18, "third": 7, "fourth": 0, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 1.76, "winPct": 40}, "andrew": {"first": 12, "second": 11, "third": 7, "fourth": 6, "dnp": 6, "dailyWins": 2, "played": 36, "avg": 2.19, "winPct": 33}, "mitch": {"first": 6, "second": 6, "third": 10, "fourth": 20, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 3.05, "winPct": 14}, "kyle": {"first": 9, "second": 10, "third": 13, "fourth": 6, "dnp": 4, "dailyWins": 1, "played": 38, "avg": 2.42, "winPct": 24}}}, {"n": 5, "start": "2026-08-24", "end": "2026-08-30", "label": "Aug 24 – Aug 30", "complete": true, "players": {"matt": {"first": 16, "second": 13, "third": 9, "fourth": 4, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.02, "winPct": 38}, "andrew": {"first": 15, "second": 9, "third": 6, "fourth": 12, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 2.36, "winPct": 36}, "mitch": {"first": 5, "second": 11, "third": 12, "fourth": 12, "dnp": 2, "dailyWins": 0, "played": 40, "avg": 2.77, "winPct": 12}, "kyle": {"first": 10, "second": 9, "third": 10, "fourth": 12, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.59, "winPct": 24}}}, {"n": 6, "start": "2026-08-31", "end": "2026-09-06", "label": "Aug 31 – Sep 6", "complete": true, "players": {"matt": {"first": 20, "second": 6, "third": 10, "fourth": 6, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 2.05, "winPct": 48}, "andrew": {"first": 14, "second": 12, "third": 6, "fourth": 10, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.29, "winPct": 33}, "mitch": {"first": 4, "second": 16, "third": 12, "fourth": 9, "dnp": 1, "dailyWins": 0, "played": 41, "avg": 2.63, "winPct": 10}, "kyle": {"first": 8, "second": 9, "third": 9, "fourth": 15, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.76, "winPct": 20}}}, {"n": 7, "start": "2026-09-07", "end": "2026-09-13", "label": "Sep 7 – Sep 13", "complete": true, "players": {"matt": {"first": 19, "second": 10, "third": 8, "fourth": 5, "dnp": 0, "dailyWins": 4, "played": 42, "avg": 1.98, "winPct": 45}, "andrew": {"first": 8, "second": 8, "third": 8, "fourth": 6, "dnp": 12, "dailyWins": 2, "played": 30, "avg": 2.4, "winPct": 27}, "mitch": {"first": 6, "second": 14, "third": 16, "fourth": 6, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.52, "winPct": 14}, "kyle": {"first": 12, "second": 8, "third": 16, "fourth": 5, "dnp": 1, "dailyWins": 1, "played": 41, "avg": 2.34, "winPct": 29}}}, {"n": 8, "start": "2026-09-14", "end": "2026-09-20", "label": "Sep 14 – Sep 20", "complete": true, "players": {"matt": {"first": 16, "second": 17, "third": 7, "fourth": 2, "dnp": 0, "dailyWins": 2, "played": 42, "avg": 1.88, "winPct": 38}, "andrew": {"first": 15, "second": 10, "third": 7, "fourth": 10, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.29, "winPct": 36}, "mitch": {"first": 2, "second": 6, "third": 15, "fourth": 18, "dnp": 1, "dailyWins": 0, "played": 41, "avg": 3.2, "winPct": 5}, "kyle": {"first": 15, "second": 5, "third": 11, "fourth": 7, "dnp": 4, "dailyWins": 3, "played": 38, "avg": 2.26, "winPct": 39}}}, {"n": 9, "start": "2026-09-21", "end": "2026-09-27", "label": "Sep 21 – Sep 27", "complete": true, "players": {"matt": {"first": 20, "second": 9, "third": 10, "fourth": 3, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 1.9, "winPct": 48}, "andrew": {"first": 18, "second": 10, "third": 7, "fourth": 6, "dnp": 1, "dailyWins": 4, "played": 41, "avg": 2.02, "winPct": 44}, "mitch": {"first": 4, "second": 11, "third": 13, "fourth": 14, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.88, "winPct": 10}, "kyle": {"first": 6, "second": 9, "third": 13, "fourth": 12, "dnp": 2, "dailyWins": 0, "played": 40, "avg": 2.77, "winPct": 15}}}, {"n": 10, "start": "2026-09-28", "end": "2026-10-04", "label": "Sep 28 – Oct 4", "complete": true, "players": {"matt": {"first": 23, "second": 5, "third": 6, "fourth": 8, "dnp": 0, "dailyWins": 5, "played": 42, "avg": 1.98, "winPct": 55}, "andrew": {"first": 12, "second": 12, "third": 11, "fourth": 7, "dnp": 0, "dailyWins": 1, "played": 42, "avg": 2.31, "winPct": 29}, "mitch": {"first": 3, "second": 14, "third": 13, "fourth": 12, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.81, "winPct": 7}, "kyle": {"first": 8, "second": 11, "third": 9, "fourth": 12, "dnp": 2, "dailyWins": 1, "played": 40, "avg": 2.62, "winPct": 20}}}, {"n": 11, "start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11", "complete": false, "players": {"matt": {"first": 19, "second": 9, "third": 9, "fourth": 5, "dnp": 0, "dailyWins": 3, "played": 42, "avg": 2.0, "winPct": 45}, "andrew": {"first": 10, "second": 12, "third": 13, "fourth": 7, "dnp": 0, "dailyWins": 0, "played": 42, "avg": 2.4, "winPct": 24}, "mitch": {"first": 7, "second": 8, "third": 10, "fourth": 10, "dnp": 7, "dailyWins": 1, "played": 35, "avg": 2.66, "winPct": 20}, "kyle": {"first": 13, "second": 10, "third": 10, "fourth": 8, "dnp": 1, "dailyWins": 3, "played": 41, "avg": 2.32, "winPct": 32}}}], "total": {"matt": {"first": 213, "second": 118, "third": 81, "fourth": 44, "dnp": 0, "dailyWins": 39, "played": 456, "avg": 1.9, "winPct": 47}, "andrew": {"first": 137, "second": 117, "third": 81, "fourth": 71, "dnp": 50, "dailyWins": 23, "played": 406, "avg": 2.21, "winPct": 34}, "mitch": {"first": 51, "second": 126, "third": 143, "fourth": 121, "dnp": 15, "dailyWins": 3, "played": 441, "avg": 2.76, "winPct": 12}, "kyle": {"first": 102, "second": 85, "third": 115, "fourth": 95, "dnp": 59, "dailyWins": 14, "played": 397, "avg": 2.51, "winPct": 26}}}, "records": {"matt": {"bestDay": {"points": 30, "date": "2026-07-30"}, "perfectDays": 3, "dailyWinStreak": {"best": 6, "current": 0}, "gameWinStreak": {"best": 6, "current": 0}}, "andrew": {"bestDay": {"points": 27, "date": "2026-08-03"}, "perfectDays": 0, "dailyWinStreak": {"best": 3, "current": 0}, "gameWinStreak": {"best": 5, "current": 0}}, "mitch": {"bestDay": {"points": 23, "date": "2026-10-10"}, "perfectDays": 0, "dailyWinStreak": {"best": 1, "current": 0}, "gameWinStreak": {"best": 3, "current": 0}}, "kyle": {"bestDay": {"points": 27, "date": "2026-09-12"}, "perfectDays": 0, "dailyWinStreak": {"best": 1, "current": 1}, "gameWinStreak": {"best": 4, "current": 4}}}, "weeklyFinishes": {"weeks": [{"n": 1, "start": "2026-07-27", "label": "Jul 27 – Aug 2", "totals": {"matt": 174, "andrew": 99, "mitch": 121, "kyle": 0}, "places": {"matt": 1, "mitch": 2, "andrew": 3, "kyle": 4}}, {"n": 2, "start": "2026-08-03", "label": "Aug 3 – Aug 9", "totals": {"matt": 121, "andrew": 90, "mitch": 69, "kyle": 108}, "places": {"matt": 1, "kyle": 2, "andrew": 3, "mitch": 4}}, {"n": 3, "start": "2026-08-10", "label": "Aug 10 – Aug 16", "totals": {"matt": 154, "andrew": 114, "mitch": 104, "kyle": 105}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 4, "start": "2026-08-17", "label": "Aug 17 – Aug 23", "totals": {"matt": 153, "andrew": 113, "mitch": 88, "kyle": 107}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 5, "start": "2026-08-24", "label": "Aug 24 – Aug 30", "totals": {"matt": 141, "andrew": 126, "mitch": 94, "kyle": 109}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 6, "start": "2026-08-31", "label": "Aug 31 – Sep 6", "totals": {"matt": 144, "andrew": 128, "mitch": 101, "kyle": 100}, "places": {"matt": 1, "andrew": 2, "mitch": 3, "kyle": 4}}, {"n": 7, "start": "2026-09-07", "label": "Sep 7 – Sep 13", "totals": {"matt": 146, "andrew": 86, "mitch": 110, "kyle": 121}, "places": {"matt": 1, "kyle": 2, "mitch": 3, "andrew": 4}}, {"n": 8, "start": "2026-09-14", "label": "Sep 14 – Sep 20", "totals": {"matt": 147, "andrew": 129, "mitch": 76, "kyle": 119}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 9, "start": "2026-09-21", "label": "Sep 21 – Sep 27", "totals": {"matt": 150, "andrew": 140, "mitch": 93, "kyle": 95}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}, {"n": 10, "start": "2026-09-28", "label": "Sep 28 – Oct 4", "totals": {"matt": 150, "andrew": 125, "mitch": 95, "kyle": 103}, "places": {"matt": 1, "andrew": 2, "kyle": 3, "mitch": 4}}], "total": {"matt": {"first": 10, "second": 0, "third": 0, "fourth": 0, "weeks": 10, "avg": 1.0}, "andrew": {"first": 0, "second": 7, "third": 2, "fourth": 1, "weeks": 10, "avg": 2.4}, "mitch": {"first": 0, "second": 1, "third": 2, "fourth": 7, "weeks": 10, "avg": 3.6}, "kyle": {"first": 0, "second": 2, "third": 6, "fourth": 2, "weeks": 10, "avg": 3.0}}}, "clutch": {"range": 24, "players": {"matt": {"showdowns": 9, "won": 9, "comebacks": 1, "held": 8, "blown": 0, "sundayAvg": 24.3}, "andrew": {"showdowns": 8, "won": 0, "comebacks": 0, "held": 0, "blown": 2, "sundayAvg": 9.8}, "mitch": {"showdowns": 0, "won": 0, "comebacks": 0, "held": 0, "blown": 0, "sundayAvg": null}, "kyle": {"showdowns": 3, "won": 0, "comebacks": 0, "held": 0, "blown": 0, "sundayAvg": 17.3}}, "weeks": [{"n": 1, "label": "Jul 27 – Aug 2", "showdown": false, "leadersBefore": ["matt"], "lead": 45, "winners": ["matt"], "sunday": {"matt": 28, "andrew": 0, "mitch": 20, "kyle": 0}, "swing": false}, {"n": 2, "label": "Aug 3 – Aug 9", "showdown": true, "leadersBefore": ["matt"], "lead": 7, "winners": ["matt"], "sunday": {"matt": 24, "andrew": 0, "mitch": 11, "kyle": 22}, "swing": false}, {"n": 3, "label": "Aug 10 – Aug 16", "showdown": true, "leadersBefore": ["matt"], "lead": 19, "winners": ["matt"], "sunday": {"matt": 30, "andrew": 9, "mitch": 16, "kyle": 9}, "swing": false}, {"n": 4, "label": "Aug 17 – Aug 23", "showdown": true, "leadersBefore": ["matt"], "lead": 24, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 6, "mitch": 18, "kyle": 15}, "swing": false}, {"n": 5, "label": "Aug 24 – Aug 30", "showdown": true, "leadersBefore": ["matt", "andrew"], "lead": 0, "winners": ["matt"], "sunday": {"matt": 27, "andrew": 12, "mitch": 16, "kyle": 11}, "swing": true}, {"n": 6, "label": "Aug 31 – Sep 6", "showdown": true, "leadersBefore": ["matt"], "lead": 11, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 17, "mitch": 17, "kyle": 12}, "swing": false}, {"n": 7, "label": "Sep 7 – Sep 13", "showdown": true, "leadersBefore": ["matt"], "lead": 23, "winners": ["matt"], "sunday": {"matt": 21, "andrew": 14, "mitch": 15, "kyle": 19}, "swing": false}, {"n": 8, "label": "Sep 14 – Sep 20", "showdown": true, "leadersBefore": ["matt"], "lead": 7, "winners": ["matt"], "sunday": {"matt": 22, "andrew": 11, "mitch": 10, "kyle": 23}, "swing": false}, {"n": 9, "label": "Sep 21 – Sep 27", "showdown": true, "leadersBefore": ["andrew"], "lead": 3, "winners": ["matt"], "sunday": {"matt": 25, "andrew": 12, "mitch": 16, "kyle": 11}, "swing": true}, {"n": 10, "label": "Sep 28 – Oct 4", "showdown": true, "leadersBefore": ["matt"], "lead": 10, "winners": ["matt"], "sunday": {"matt": 26, "andrew": 11, "mitch": 18, "kyle": 11}, "swing": false}]}, "forecast": {"week": {"start": "2026-10-05", "end": "2026-10-11", "label": "Oct 5 – Oct 11"}, "daysLeft": 1, "todayCounted": false, "pool": 75, "sims": 20000, "halfLife": 28, "players": {"matt": {"now": 126, "margin": 21, "win": 1.0, "places": [1.0, 0.0, 0.0, 0.0], "expected": 147.3}, "andrew": {"now": 105, "margin": -21, "win": 0.0, "places": [0.0, 0.8145, 0.1855, 0.0], "expected": 122.2}, "mitch": {"now": 83, "margin": -43, "win": 0.0, "places": [0.0, 0.0, 0.0113, 0.9887], "expected": 96.6}, "kyle": {"now": 102, "margin": -24, "win": 0.0, "places": [0.0, 0.1855, 0.8032, 0.0113], "expected": 117.1}}}};
-var MEDAL = String.fromCodePoint(0x1F947);   // gold medal
-var MID = String.fromCodePoint(0xB7);        // middot separator
-var EMDASH = String.fromCodePoint(0x2014);
+(() => {
+'use strict';
 
-function isDark() {
-  var t = document.documentElement.getAttribute('data-theme');
-  if (t === 'dark') return true;
-  if (t === 'light') return false;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
-function colors() { return isDark() ? DATA.colorsDark : DATA.colorsLight; }
-function playerById(id) {
-  for (var i = 0; i < DATA.players.length; i++)
-    if (DATA.players[i].id === id) return DATA.players[i];
-  return null;
-}
-function esc(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+/* ======================================================================
+   Puzzle League dashboard (modern design). Everything renders from the
+   payload embedded as window.PL; there are no network requests.
+   ====================================================================== */
+const D = window.PL;
+const P = D.players;
+const BY = {};
+P.forEach((p) => { BY[p.id] = p; });
+const MID = '·', DASH = '–', EMD = '—', MINUS = '−';
+const ORD = ['1st', '2nd', '3rd', '4th'];
+const REDUCE = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-document.getElementById('sub').textContent =
-  'Updated ' + DATA.generated + ' · scores from LinkedIn games';
+/* ---------- small helpers ------------------------------------------------ */
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pv = (p) => `--pc:var(--p${p.slot});--pc-s:var(--p${p.slot}-s);--pc-m:var(--p${p.slot}-m);--pc-ink:var(--p${p.slot}-ink)`;
+const letters = (p) => p.first.replace(/[^A-Za-z]/g, '') || p.first;
+const firstCount = {};
+P.forEach((p) => { const k = letters(p).charAt(0).toUpperCase(); firstCount[k] = (firstCount[k] || 0) + 1; });
+const initial = (p) => { const l = letters(p), k = l.charAt(0).toUpperCase(); return firstCount[k] > 1 ? k + l.charAt(1).toLowerCase() : k; };
+const av = (p, size) => { const t = initial(p); return `<span class="av${t.length > 1 ? ' two' : ''}" style="${pv(p)};--s:${size || 34}px">${esc(t)}</span>`; };
+const md = (s) => (s ? `${parseInt(s.slice(5, 7), 10)}/${parseInt(s.slice(8, 10), 10)}` : EMD);
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const longDate = (s) => { const d = new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)); return `${DOWS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`; };
+const fcPct = (p) => (p <= 0 ? '0%' : p < 0.005 ? '<1%' : p > 0.995 ? '>99%' : `${Math.round(p * 100)}%`);
+const sortedBy = (fn) => P.slice().sort(fn);
 
+const I = {
+  crown: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l4.5 4L12 4.5 16.5 12 21 8l-2 11H5L3 8z"/><rect x="5" y="20" width="14" height="2" rx="1"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M5 5H3v2a4 4 0 0 0 3.5 3.96V9A2 2 0 0 1 5 7V5zm14 0v2a2 2 0 0 1-1.5 2v1.96A4 4 0 0 0 21 7V5h-2z"/><rect x="11" y="13" width="2" height="4"/><rect x="8" y="18" width="8" height="2.5" rx="1"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .3 1.5 1 2 2 2 0-3-1-5 1-8z"/></svg>',
+  snow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 2v20M3.5 7l17 10M3.5 17l17-10"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>',
+  auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg>',
+};
+
+/* ---------- per-theme player colours -------------------------------------- */
+(() => {
+  const rgb = (h) => { const x = h.replace('#', ''); return [0, 2, 4].map((i) => parseInt(x.substr(i, 2), 16)); };
+  const lum = (h) => { const c = rgb(h).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const block = (cols) => P.map((p) => {
+    const h = cols[p.slot], c = rgb(h).join(',');
+    return `--p${p.slot}:${h};--p${p.slot}-s:rgba(${c},.16);--p${p.slot}-m:rgba(${c},.42);--p${p.slot}-ink:${lum(h) > 0.42 ? '#16171e' : '#fff'};`;
+  }).join('');
+  const st = document.createElement('style');
+  st.textContent = `:root{${block(D.colorsLight)}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${block(D.colorsDark)}}}:root[data-theme="dark"]{${block(D.colorsDark)}}`;
+  document.head.appendChild(st);
+})();
+
+/* ---------- motion: reveal on scroll, count-up --------------------------- */
+const countUp = (n) => {
+  if (n._done) return; n._done = true;
+  const to = parseFloat(n.getAttribute('data-count')), dec = +n.getAttribute('data-dec') || 0;
+  const pre = n.getAttribute('data-pre') || '', suf = n.getAttribute('data-suf') || '';
+  const fmt = (v) => pre + v.toFixed(dec) + suf;
+  if (REDUCE || !isFinite(to)) { n.textContent = fmt(to); return; }
+  const t0 = performance.now(), dur = 1100;
+  const tick = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    n.textContent = fmt(to * e);
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+};
+const runCounts = (root) => { $$('[data-count]', root).forEach(countUp); if (root.matches && root.matches('[data-count]')) countUp(root); };
+const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+  entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); runCounts(e.target); io.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' }) : null;
+const watch = (root) => {
+  $$('.rv', root).forEach((n) => { if (!io || REDUCE) { n.classList.add('in'); runCounts(n); } else io.observe(n); });
+  if (root.classList && root.classList.contains('pane')) runCounts(root);
+};
+
+/* ---------- spotlight: tap a player to highlight them everywhere ---------- */
+let FOCUS = null;
+const applyFocus = () => $$('[data-p]').forEach((n) => n.classList.toggle('dim', !!FOCUS && n.getAttribute('data-p') !== FOCUS));
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-fb]');
+  if (!t) return;
+  FOCUS = FOCUS === t.getAttribute('data-fb') ? null : t.getAttribute('data-fb');
+  applyFocus(); drawChart();
+});
+
+/* ======================================================================
+   Sections
+   ====================================================================== */
+const sectionHead = (title, sub) => `<div class="sec-h rv"><h2>${title}</h2>${sub ? `<span class="sub">${sub}</span>` : ''}</div>`;
+
+/* ---- header + alert ---- */
+function renderHeader() {
+  const w = D.seasonNow;
+  $('#seasonpill').textContent = w ? `${w.label} ${MID} Wk ${w.week_index}/${w.weeks}` : 'Puzzle League';
+  $('#foot').textContent = `Updated ${D.generated}`;
+}
 function renderAlert() {
-  var card = document.getElementById('alertcard');
-  var special = DATA.players.filter(function (p) { return p.special; })[0];
-  if (!special || !DATA.standings.length) { card.style.display = 'none'; return; }
-  var maxPts = Math.max.apply(null, DATA.standings.map(function (s) { return s.points; }));
-  var sp = DATA.standings.filter(function (s) { return s.player === special.id; })[0];
-  if (!sp || maxPts <= 0 || sp.points < maxPts) { card.style.display = 'none'; return; }
-  card.style.display = '';
-  var lastName = special.name.split(' ').slice(-1)[0].toUpperCase();
-  card.innerHTML =
-    '<div class="alert-head"><span class="siren">🚨</span> emergency broadcast '
-    + '<span class="siren">🚨</span></div>'
-    + '<div class="alert-big">' + esc(lastName) + ' IS IN FIRST PLACE.</div>'
-    + '<div class="alert-sub">remain calm.</div>';
+  const sp = P.filter((p) => p.special)[0];
+  const box = $('#alert');
+  if (!sp || !D.standings.length) { box.innerHTML = ''; return; }
+  const top = Math.max.apply(null, D.standings.map((s) => s.points));
+  const me = D.standings.filter((s) => s.player === sp.id)[0];
+  if (!me || top <= 0 || me.points < top) { box.innerHTML = ''; return; }
+  const last = sp.name.split(' ').slice(-1)[0].toUpperCase();
+  box.innerHTML = `<div class="alert"><small>emergency broadcast</small><b>${esc(last)} IS IN FIRST PLACE.</b><small>remain calm</small></div>`;
 }
 
-function renderStandings() {
-  var c = colors(), max = 1, i;
-  for (i = 0; i < DATA.standings.length; i++)
-    max = Math.max(max, DATA.standings[i].points);
-  var html = '';
-  for (i = 0; i < DATA.standings.length; i++) {
-    var s = DATA.standings[i], p = playerById(s.player);
-    var w = Math.round(100 * s.points / max);
-    var won = (DATA.weeksWon || {})[p.id] || 0;
-    html += '<div class="stand-row">'
-      + '<span class="stand-rank">' + (i + 1) + '</span>'
-      + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-      + '<span class="stand-name">' + esc(p.first)
-      + (won ? ' <span class="wchip">🏆' + (won > 1 ? '×' + won : '') + '</span>' : '')
-      + '</span>'
-      + '<span class="bar-wrap"><span class="bar" style="width:' + w + '%;background:' + c[p.slot]
-      + ';display:block"></span></span>'
-      + '<span class="stand-pts">' + s.points + '</span></div>';
-    if (p.tagline) html += '<div class="tagline">' + esc(p.tagline) + '</div>';
-  }
-  document.getElementById('standings').innerHTML = html;
+/* ---- race hero ---- */
+const rankAt = (i) => {
+  const order = D.standings.map((s) => s.player);
+  const arr = P.map((p) => ({ id: p.id, v: D.series.cumulative[p.id][i] }));
+  arr.sort((a, b) => b.v - a.v || order.indexOf(a.id) - order.indexOf(b.id));
+  const r = {}; arr.forEach((a, k) => { r[a.id] = k + 1; });
+  return r;
+};
+function renderRace() {
+  const st = D.standings, w = D.seasonNow;
+  if (!st.length) { $('#race').innerHTML = ''; return; }
+  const lead = st[0], run = st[1], lp = BY[lead.player], rp = run ? BY[run.player] : null;
+  const gap = run ? lead.points - run.points : 0;
+  let head, lede;
+  if (!lead.points) { head = 'A <span class="grad">fresh</span> season'; lede = 'Everyone starts at zero. Play on.'; }
+  else if (gap === 0) { head = `${esc(lp.first)} &amp; ${esc(rp.first)} are <span class="grad">level</span>`; lede = 'A dead heat at the top.'; }
+  else { head = `${esc(lp.first)} leads by <span class="grad">${gap}</span>`; lede = `${esc(rp.first)} is the closest chaser.`; }
+  const left = w ? (w.days_left === 0 ? 'Final day' : `${w.days_left} day${w.days_left === 1 ? '' : 's'} left`) : '';
+  const frac = w ? Math.min(1, Math.max(0, (w.weeks * 7 - w.days_left) / (w.weeks * 7))) : 0;
+  const C = 2 * Math.PI * 40;
+  const ring = w ? `<div class="ring" style="--c:${C.toFixed(1)};--o:${(C * (1 - frac)).toFixed(1)}">
+      <svg viewBox="0 0 100 100"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--p0)"/><stop offset="1" style="stop-color:var(--p3)"/></linearGradient></defs>
+      <circle class="trk" cx="50" cy="50" r="40" fill="none" stroke-width="9"/><circle class="arc" cx="50" cy="50" r="40" fill="none" stroke="url(#rg)" stroke-width="9"/></svg>
+      <div class="mid"><div><b>${w.week_index}</b><small>of ${w.weeks} wks</small></div></div></div>` : '';
+  const n = D.series.days.length;
+  const now = n ? rankAt(n - 1) : null, prev = n > 1 ? rankAt(n - 2) : null;
+  const max = Math.max(1, ...st.map((s) => s.points));
+  const pods = st.map((s, i) => {
+    const p = BY[s.player], rank = i + 1, ph = 46 + Math.round(124 * (s.points / max));
+    const d = prev ? prev[p.id] - now[p.id] : 0;
+    const mv = prev && d ? `<span class="mv ${d > 0 ? 'up' : 'down'}">${Math.abs(d)}</span>` : '';
+    return `<div class="pod" data-rank="${rank}" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)};--ph:${ph}px">
+      ${rank === 1 && s.points > 0 ? `<span class="crown">${I.crown}</span>` : ''}
+      ${av(p, 54)}<div class="nm">${esc(p.first)}</div>
+      <div class="pts" data-count="${s.points}">0</div>
+      <div class="gap">${rank === 1 ? (s.points ? 'leader' : '') : MINUS + (lead.points - s.points)}</div>${mv}
+      <div class="pillar"><span class="rk">${rank}</span></div></div>`;
+  }).join('');
+  $('#race').innerHTML = `<div class="card hero rv">
+    <div class="hero-top"><div><div class="eyebrow">${w ? esc(w.label) + ' ' + MID + ' ' + esc(w.range) : 'Season standings'}</div>
+      <h1>${head}</h1><div class="lead">${lede}${left ? ' ' + MID + ' ' + left : ''}</div></div>${ring}</div>
+    <div class="podium">${pods}</div></div>`;
+  watch($('#race'));
 }
 
-function renderSeasonHeader() {
-  var w = DATA.seasonNow, h = document.getElementById('seasonhdr');
-  var note = document.getElementById('seasonnote');
-  if (!w) { note.textContent = ''; return; }
-  h.textContent = w.label + ' standings ' + MID + ' week ' + w.week_index
-    + ' of ' + w.weeks;
-  var left = w.days_left === 0 ? 'final day'
-           : w.days_left === 1 ? '1 day left'
-           : w.days_left + ' days left';
-  note.textContent = w.range + ' ' + MID + ' ' + left + ' ' + MID
-    + ' points reset when the season ends';
-}
-
-function renderSeasons() {
-  var rows = DATA.seasons || [], titles = DATA.seasonTitles || {};
-  var box = document.getElementById('seasons');
-  var note = document.getElementById('seasonsnote');
-  if (!rows.length) { box.parentElement.style.display = 'none'; return; }
-  var c = colors(), i, anyTitles = false;
-
-  var order = DATA.players.slice().sort(function (a, b) {
-    return (titles[b.id] || 0) - (titles[a.id] || 0);
-  });
-  var html = '<div class="tcase">';
-  for (i = 0; i < order.length; i++) {
-    var p = order[i], n = titles[p.id] || 0;
-    if (n) anyTitles = true;
-    html += '<span class="tchip' + (n ? '' : ' none') + '">'
-      + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-      + esc(p.first) + ' <b>' + n + '</b>' + (n ? ' ' + MEDAL : '') + '</span>';
-  }
-  html += '</div>';
-
-  function who(ids) {
-    return ids.map(function (id) {
-      var pl = playerById(id); return pl ? esc(pl.first) : esc(id);
-    }).join(' & ');
-  }
-
-  html += '<div class="tscroll"><table><tr><th>Season</th>';
-  DATA.players.forEach(function (p) { html += '<th>' + esc(p.first) + '</th>'; });
-  html += '<th>Champion</th></tr>';
-  rows.forEach(function (w) {
-    var tag = w.complete ? ''
-      : ' ' + MID + ' <span class="s-live">'
-        + (w.current ? 'live' : 'upcoming') + '</span>';
-    html += '<tr><td>' + esc(w.label) + ' ' + MID + ' ' + esc(w.range) + tag + '</td>';
-    var tot = {};
-    w.standings.forEach(function (s) { tot[s.player] = s.points; });
-    DATA.players.forEach(function (p) {
-      var top = w.leaders.indexOf(p.id) >= 0;
-      html += '<td' + (top ? ' style="font-weight:700"' : '') + '>'
-        + (tot[p.id] || 0) + '</td>';
-    });
-    var champ = w.champions.length ? who(w.champions) + ' ' + MEDAL
-      : (w.current && w.leaders.length
-          ? who(w.leaders) + ' <span class="s-live">(leading)</span>'
-          : EMDASH);
-    html += '<td>' + champ + '</td></tr>';
-  });
-  html += '</table></div>';
-  box.innerHTML = html;
-
-  var career = (DATA.career || []).map(function (s) {
-    var pl = playerById(s.player);
-    return (pl ? esc(pl.first) : esc(s.player)) + ' ' + s.points;
-  }).join(', ');
-  note.innerHTML = (anyTitles ? '' : 'no season has finished yet ' + EMDASH + ' ')
-    + 'a season is ' + rows[rows.length - 1].weeks
-    + ' weeks and its top scorer takes the title (ties share it)'
-    + (career ? ' ' + MID + ' all-time points: ' + career : '');
-}
-
-function renderWeek() {
-  var weeks = DATA.weeks || [];
-  var cur = weeks.length ? weeks[weeks.length - 1] : null;
-  var hdr = document.getElementById('weekhdr');
-  var box = document.getElementById('week');
-  if (!cur) { hdr.parentElement.style.display = 'none'; return; }
-  var nm = (cur.missed || []).length;
-  hdr.textContent = 'This week · ' + cur.label + (cur.complete ? '' : ' · live')
-    + (nm ? ' · ⚠️ ' + nm + ' day' + (nm > 1 ? 's' : '') + ' missed' : '');
-  var c = colors();
-  var order = DATA.players.slice().sort(function (a, b) {
-    return (cur.totals[b.id] || 0) - (cur.totals[a.id] || 0);
-  });
-  var max = Math.max(1, cur.totals[order[0].id] || 0);
-  var html = '';
-  for (var i = 0; i < order.length; i++) {
-    var p = order[i], pts = cur.totals[p.id] || 0;
-    var w = Math.round(100 * pts / max);
-    var won = (DATA.weeksWon || {})[p.id] || 0;
-    html += '<div class="stand-row">'
-      + '<span class="stand-rank">' + (i + 1) + '</span>'
-      + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-      + '<span class="stand-name">' + esc(p.first)
-      + ' <span class="wchip">🏆' + won + '</span></span>'
-      + '<span class="bar-wrap"><span class="bar" style="width:' + w + '%;background:' + c[p.slot]
-      + ';display:block"></span></span>'
-      + '<span class="stand-pts">' + pts + '</span></div>';
-  }
-  box.innerHTML = html;
-}
-
-function finishTable(rows, allTime) {
-  var order = DATA.players.slice().sort(function (a, b) {
-    var x = rows[a.id], y = rows[b.id];
-    var ax = x.avg === null ? 99 : x.avg, ay = y.avg === null ? 99 : y.avg;
-    return (ax - ay) || (y.first - x.first);
-  });
-  var maxFirst = 0, minAvg = 99, maxDw = 0;
-  order.forEach(function (p) {
-    var r = rows[p.id];
-    if (r.first > maxFirst) maxFirst = r.first;
-    if (r.dailyWins > maxDw) maxDw = r.dailyWins;
-    if (r.avg !== null && r.avg < minAvg) minAvg = r.avg;
-  });
-  var c = colors();
-  var html = '<div class="tscroll"><table class="fin-table"><tr><th>Player</th>'
-    + '<th>1st</th><th>2nd</th><th>3rd</th><th>4th</th><th>DNP</th>'
-    + (allTime ? '<th>Win%</th>' : '') + '<th>Avg</th><th>Days won</th></tr>';
-  order.forEach(function (p) {
-    var r = rows[p.id];
-    var bold = function (on) { return on ? ' style="font-weight:700"' : ''; };
-    html += '<tr><td><span class="dot" style="background:' + c[p.slot]
-      + '"></span> ' + esc(p.first) + '</td>'
-      + '<td' + bold(maxFirst > 0 && r.first === maxFirst) + '>' + r.first + '</td>'
-      + '<td>' + r.second + '</td><td>' + r.third + '</td><td>' + r.fourth + '</td>'
-      + '<td' + (r.dnp ? ' style="color:#e34948"' : '') + '>' + r.dnp + '</td>'
-      + (allTime ? '<td>' + (r.winPct === null ? EMDASH : r.winPct + '%') + '</td>' : '')
-      + '<td' + bold(r.avg !== null && r.avg === minAvg) + '>'
-      + (r.avg === null ? EMDASH : r.avg.toFixed(2)) + '</td>'
-      + '<td' + bold(maxDw > 0 && r.dailyWins === maxDw) + '>' + r.dailyWins + '</td></tr>';
-  });
-  return html + '</table></div>';
-}
-
-function renderFinishes() {
-  var F = DATA.finishes || { weeks: [], total: {} };
-  var box = document.getElementById('finishes');
-  if (!F.weeks.length) { box.parentElement.style.display = 'none'; return; }
-  var html = '<div class="rec-line">All-time</div>' + finishTable(F.total, true);
-  F.weeks.slice().reverse().forEach(function (w, i) {
-    var top = 0, names = [];
-    DATA.players.forEach(function (p) {
-      var f = w.players[p.id].first;
-      if (f > top) { top = f; names = [p.first]; }
-      else if (f === top && f > 0) names.push(p.first);
-    });
-    html += '<details class="fin-week"' + (i === 0 ? ' open' : '') + '><summary>Wk '
-      + w.n + ' ' + MID + ' ' + esc(w.label) + (w.complete ? '' : ' ' + MID + ' live')
-      + (top ? ' ' + MID + ' most 1sts: ' + esc(names.join(' & ')) + ' (' + top + ')' : '')
-      + '</summary>' + finishTable(w.players, false) + '</details>';
-  });
-  box.innerHTML = html;
-}
-
-function fmtMD(s) {
-  return s ? (parseInt(s.slice(5, 7), 10) + '/' + parseInt(s.slice(8, 10), 10)) : EMDASH;
-}
-
-function renderRecords() {
-  var R = DATA.records || {};
-  var box = document.getElementById('records');
-  if (!DATA.players.length || !R[DATA.players[0].id]) { box.parentElement.style.display = 'none'; return; }
-  var c = colors();
-  var mx = { day: 0, perfect: 0, ds: 0, gs: 0 };
-  DATA.players.forEach(function (p) {
-    var r = R[p.id];
-    mx.day = Math.max(mx.day, r.bestDay.points);
-    mx.perfect = Math.max(mx.perfect, r.perfectDays);
-    mx.ds = Math.max(mx.ds, r.dailyWinStreak.best);
-    mx.gs = Math.max(mx.gs, r.gameWinStreak.best);
-  });
-  var bold = function (on) { return on ? ' style="font-weight:700"' : ''; };
-  var streak = function (s) {
-    return s.best + (s.current > 0 ? ' <span class="s-live">(now ' + s.current + ')</span>' : '');
-  };
-  var html = '<div class="tscroll"><table><tr><th>Player</th><th>Best day</th><th>Perfect days</th>'
-    + '<th>Day-win streak</th><th>Game-win streak</th></tr>';
-  DATA.players.forEach(function (p) {
-    var r = R[p.id];
-    html += '<tr><td><span class="dot" style="background:' + c[p.slot] + '"></span> '
-      + esc(p.first) + '</td>'
-      + '<td' + bold(mx.day > 0 && r.bestDay.points === mx.day) + '>' + r.bestDay.points
-      + ' <span class="s-live">(' + fmtMD(r.bestDay.date) + ')</span></td>'
-      + '<td' + bold(mx.perfect > 0 && r.perfectDays === mx.perfect) + '>' + r.perfectDays + '</td>'
-      + '<td' + bold(mx.ds > 0 && r.dailyWinStreak.best === mx.ds) + '>' + streak(r.dailyWinStreak) + '</td>'
-      + '<td' + bold(mx.gs > 0 && r.gameWinStreak.best === mx.gs) + '>' + streak(r.gameWinStreak) + '</td></tr>';
-  });
-  box.innerHTML = html + '</table></div>';
-}
-
-function wfNames(ids) {
-  return ids.map(function (id) {
-    var pl = playerById(id);
-    return pl ? esc(pl.first) : esc(id);
-  }).join(' & ');
-}
-
-function renderWeeklyFinishes() {
-  var W = DATA.weeklyFinishes || { weeks: [], total: {} };
-  var box = document.getElementById('wfinishes');
-  if (!W.weeks.length) { box.parentElement.style.display = 'none'; return; }
-  var c = colors();
-  var order = DATA.players.slice().sort(function (a, b) {
-    var x = W.total[a.id], y = W.total[b.id];
-    return ((x.avg === null ? 99 : x.avg) - (y.avg === null ? 99 : y.avg)) || (y.first - x.first);
-  });
-  var maxFirst = 0;
-  order.forEach(function (p) { maxFirst = Math.max(maxFirst, W.total[p.id].first); });
-  var bold = function (on) { return on ? ' style="font-weight:700"' : ''; };
-  var who = function (p) {
-    return '<td><span class="dot" style="background:' + c[p.slot] + '"></span> '
-      + esc(p.first) + '</td>';
-  };
-
-  var html = '<div class="tscroll"><table class="fin-table"><tr><th>Player</th>'
-    + '<th>1st</th><th>2nd</th><th>3rd</th><th>4th</th><th>Weeks</th><th>Avg</th></tr>';
-  order.forEach(function (p) {
-    var t = W.total[p.id];
-    html += '<tr>' + who(p)
-      + '<td' + bold(maxFirst > 0 && t.first === maxFirst) + '>' + t.first + '</td>'
-      + '<td>' + t.second + '</td><td>' + t.third + '</td><td>' + t.fourth + '</td>'
-      + '<td>' + t.weeks + '</td>'
-      + '<td>' + (t.avg === null ? EMDASH : t.avg.toFixed(2)) + '</td></tr>';
-  });
-  html += '</table></div>';
-
-  html += '<div class="rec-line" style="margin-top:12px">place in each week, '
-    + 'oldest to newest (the numbers across the top are the league week)</div>'
-    + '<div class="tscroll"><table class="fin-table"><tr><th>Player</th>';
-  W.weeks.forEach(function (w) { html += '<th>' + w.n + '</th>'; });
-  html += '</tr>';
-  order.forEach(function (p) {
-    html += '<tr>' + who(p);
-    W.weeks.forEach(function (w) {
-      var pl = w.places[p.id];
-      html += '<td' + bold(pl === 1) + '>' + (pl === undefined ? EMDASH : pl) + '</td>';
-    });
-    html += '</tr>';
-  });
-  box.innerHTML = html + '</table></div>';
-}
-
-function renderClutch() {
-  var C = DATA.clutch || { players: {}, weeks: [] };
-  var box = document.getElementById('clutch');
-  var shows = C.weeks.filter(function (w) { return w.showdown; });
-  if (!shows.length) { box.parentElement.style.display = 'none'; return; }
-  var c = colors();
-  var order = DATA.players.slice().sort(function (a, b) {
-    var x = C.players[a.id], y = C.players[b.id];
-    return (y.won - x.won) || (y.comebacks - x.comebacks) || (x.blown - y.blown);
-  });
-  var maxWon = 0, maxCb = 0;
-  order.forEach(function (p) {
-    maxWon = Math.max(maxWon, C.players[p.id].won);
-    maxCb = Math.max(maxCb, C.players[p.id].comebacks);
-  });
-  var bold = function (on) { return on ? ' style="font-weight:700"' : ''; };
-
-  var html = '<div class="tscroll"><table class="fin-table"><tr><th>Player</th>'
-    + '<th>Won / showdowns</th><th>Comebacks</th><th>Blown leads</th>'
-    + '<th>Sunday avg</th></tr>';
-  order.forEach(function (p) {
-    var t = C.players[p.id];
-    html += '<tr><td><span class="dot" style="background:' + c[p.slot] + '"></span> '
-      + esc(p.first) + '</td>'
-      + '<td' + bold(maxWon > 0 && t.won === maxWon) + '>' + t.won + ' / '
-      + t.showdowns + '</td>'
-      + '<td' + bold(maxCb > 0 && t.comebacks === maxCb) + '>' + t.comebacks + '</td>'
-      + '<td' + (t.blown ? ' style="color:#e34948"' : '') + '>' + t.blown + '</td>'
-      + '<td>' + (t.sundayAvg === null ? EMDASH : t.sundayAvg.toFixed(1)) + '</td></tr>';
-  });
-  html += '</table></div>';
-
-  var swings = C.weeks.filter(function (w) { return w.swing; }).reverse();
-  html += '<div class="rec-line" style="margin-top:12px">weeks where the final day '
-    + 'changed who was leading</div>';
-  if (!swings.length) html += '<div class="clutch-line">none yet</div>';
-  swings.forEach(function (w) {
-    var pts = DATA.players.slice().sort(function (a, b) {
-      return (w.sunday[b.id] || 0) - (w.sunday[a.id] || 0);
-    }).map(function (p) { return esc(p.first) + ' ' + (w.sunday[p.id] || 0); }).join(', ');
-    html += '<div class="clutch-line"><b>Wk ' + w.n + '</b> ' + MID + ' ' + esc(w.label) + ': '
-      + wfNames(w.leadersBefore) + (w.lead === 0 ? ' shared the lead' : ' led by ' + w.lead)
-      + ' entering Sunday; ' + wfNames(w.winners) + ' took the week. Sunday: ' + pts + '</div>';
-  });
-  box.innerHTML = html;
-}
-
-function fcPct(p) {
-  if (p <= 0) return '0%';
-  if (p < 0.005) return '<1%';
-  if (p > 0.995) return '>99%';
-  return Math.round(p * 100) + '%';
-}
-
-function hexA(hex, a) {
-  var h = hex.replace('#', '');
-  return 'rgba(' + parseInt(h.substr(0, 2), 16) + ',' + parseInt(h.substr(2, 2), 16)
-    + ',' + parseInt(h.substr(4, 2), 16) + ',' + a + ')';
-}
-
-function renderForecast() {
-  var F = DATA.forecast;
-  var box = document.getElementById('forecast');
-  if (!F) { box.parentElement.style.display = 'none'; return; }
-  var c = colors();
-  document.getElementById('forecasthdr').textContent = 'Week forecast ' + MID + ' '
-    + F.week.label + ' ' + MID + ' '
-    + (F.daysLeft === 0 ? 'final' : F.daysLeft + (F.daysLeft === 1 ? ' day left' : ' days left'));
-  var order = DATA.players.slice().sort(function (a, b) {
-    return (F.players[b.id].win - F.players[a.id].win)
-      || (F.players[b.id].now - F.players[a.id].now);
-  });
-  var n = DATA.players.length, ord = ['1st', '2nd', '3rd', '4th'];
-  var html = '<div class="tscroll"><table class="fin-table"><tr><th>Player</th>'
-    + '<th>Now</th><th>Margin</th>';
-  for (var k = 0; k < n; k++) html += '<th>' + (ord[k] || (k + 1) + 'th') + '</th>';
-  html += '</tr>';
-  order.forEach(function (p) {
-    var f = F.players[p.id], m = f.margin;
-    html += '<tr><td><span class="dot" style="background:' + c[p.slot] + '"></span> '
-      + esc(p.first) + '</td><td>' + f.now + '</td><td>' + (m > 0 ? '+' + m : String(m)) + '</td>';
-    for (var j = 0; j < n; j++) {
-      var pr = f.places[j];
-      html += '<td style="background:' + hexA(c[p.slot], 0.05 + 0.45 * pr)
-        + (j === 0 ? ';font-weight:700' : '') + '">' + fcPct(pr) + '</td>';
-    }
-    html += '</tr>';
-  });
-  box.innerHTML = html + '</table></div>';
-  document.getElementById('forecastnote').textContent = F.daysLeft === 0
-    ? 'the week is complete: these are the final standings'
-    : 'odds of finishing in each place, from ' + F.sims.toLocaleString() + ' simulated finishes: '
-      + (F.daysLeft === 1 ? 'the open day is' : 'each of the ' + F.daysLeft + ' open days is')
-      + ' drawn from ' + F.pool
-      + ' real past days (recent days count more) and added to the current weekly totals; '
-      + 'tied totals split the place. ' + (F.todayCounted
-        ? 'Today is counted.'
-        : 'Today is not counted until all four players have posted every game.')
-      + ' Margin = points ahead of (+) or behind (-) the best other player.';
-}
-
-function renderWeekHistory() {
-  var weeks = DATA.weeks || [];
-  var html = '<table><tr><th>Week</th>';
-  DATA.players.forEach(function (p) { html += '<th>' + esc(p.first) + '</th>'; });
-  html += '</tr>';
-  weeks.forEach(function (w, i) {
-    html += '<tr><td>Wk ' + (i + 1) + ' · ' + esc(w.label)
-      + (w.complete ? '' : ' · live')
-      + ((w.missed || []).length ? ' · ⚠️' + w.missed.length : '') + '</td>';
-    DATA.players.forEach(function (p) {
-      var isWin = w.complete && w.winners.indexOf(p.id) >= 0;
-      html += '<td' + (isWin ? ' style="font-weight:700"' : '') + '>'
-        + (w.totals[p.id] || 0) + (isWin ? ' 🏆' : '') + '</td>';
-    });
-    html += '</tr>';
-  });
-  html += '</table>';
-  document.getElementById('weekhistory').innerHTML = html;
-}
-
+/* ---- today ---- */
+const GC = ['#7c5cff', '#14b8a6', '#f59e0b', '#ef4444', '#06b6d4', '#84cc16', '#ec4899'];
 function renderToday() {
-  var d = DATA.day;
-  document.getElementById('todayhdr').textContent =
-    'Today · ' + d + ' · ' + DATA.players.map(function (p) {
-      return p.first + ' ' + (DATA.todayTotals[p.id] || 0);
-    }).join(', ');
-  var medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
-  var html = '', c = colors();
-  for (var g = 0; g < DATA.todayGames.length; g++) {
-    var game = DATA.todayGames[g];
-    html += '<div class="game"><h3>' + esc(game.name) + '</h3>';
-    if (game.status !== 'ok' || !game.rows.length) {
-      html += '<div class="nodata">no data yet</div>';
-    } else {
-      for (var r = 0; r < game.rows.length; r++) {
-        var row = game.rows[r], p = playerById(row.player);
-        if (row.played) {
-          html += '<div class="grow">'
-            + '<span class="medal">' + (medals[row.rank] || row.rank + 'th') + '</span>'
-            + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-            + '<span class="nm">' + esc(p.first) + '</span>'
-            + '<span class="sc">' + esc(row.score) + '</span>'
-            + '<span class="pt">+' + row.points + '</span></div>';
-        } else {
-          html += '<div class="grow dnp"><span class="medal">—</span>'
-            + '<span class="dot" style="background:' + c[p.slot] + ';opacity:.35"></span>'
-            + '<span class="nm">' + esc(p.first) + '</span>'
-            + '<span class="sc">did not play</span>'
-            + '<span class="pt">+0</span></div>';
-        }
-      }
-    }
-    html += '</div>';
-  }
-  document.getElementById('games').innerHTML = html;
+  const tt = D.todayTotals, order = sortedBy((a, b) => (tt[b.id] || 0) - (tt[a.id] || 0));
+  const best = tt[order[0].id] || 0;
+  const tiles = order.map((p) => `<div class="tile ${(tt[p.id] || 0) === best && best > 0 ? 'top1' : ''}" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}">
+      ${av(p, 38)}<div class="v" data-count="${tt[p.id] || 0}">0</div><small>${esc(p.first)}</small></div>`).join('');
+  const rail = D.todayGames.map((g, i) => {
+    let rows;
+    if (g.status !== 'ok' || !g.rows.length) rows = '<div class="nodata">no results yet</div>';
+    else rows = g.rows.map((r) => {
+      const p = BY[r.player];
+      return r.played
+        ? `<div class="grow" data-p="${p.id}" style="${pv(p)}"><span class="plc ${r.rank <= 3 ? 'p' + r.rank : ''}">${r.rank}</span>${av(p, 24)}<span class="nm">${esc(p.first)}</span><span class="sc">${esc(r.score)}</span><span class="pt">+${r.points}</span></div>`
+        : `<div class="grow dnp" data-p="${p.id}" style="${pv(p)}"><span class="plc">${EMD}</span>${av(p, 24)}<span class="nm">${esc(p.first)}</span><span class="sc">did not play</span><span class="pt">+0</span></div>`;
+    }).join('');
+    return `<div class="gcard rv" style="--gc:${GC[i % GC.length]};--d:${i * 70}ms"><div class="gh"><span class="gem">${esc(g.name.charAt(0))}</span><b>${esc(g.name)}</b></div>${rows}</div>`;
+  }).join('');
+  $('#today').innerHTML = `${sectionHead('Today', longDate(D.day))}
+    <div class="tiles rv">${tiles}</div><div class="rail">${rail}</div>${weekCard()}`;
+  watch($('#today'));
 }
 
-function renderLegend() {
-  var c = colors(), html = '';
-  for (var i = 0; i < DATA.players.length; i++) {
-    var p = DATA.players[i];
-    html += '<span><span class="dot" style="background:' + c[p.slot]
-      + '"></span>' + esc(p.first) + '</span>';
-  }
-  document.getElementById('legend').innerHTML = html;
+/* ---- this week's standings (live, includes today's partial points) ---- */
+function weekCard() {
+  const wk = (D.weeks || [])[(D.weeks || []).length - 1];
+  if (!wk) return '';
+  const order = sortedBy((a, b) => (wk.totals[b.id] || 0) - (wk.totals[a.id] || 0));
+  const max = Math.max(1, ...order.map((p) => wk.totals[p.id] || 0));
+  const won = D.weeksWon || {}, nm = (wk.missed || []).length;
+  const lanes = order.map((p, i) => `<div class="lane" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)};--d:${i * 90}ms">${av(p, 30)}
+      <span class="nm">${esc(p.first)}${won[p.id] ? ` <span class="chip gold" title="weeks won">${I.trophy}${won[p.id]}</span>` : ''}</span>
+      <span class="trk"><i style="--w:${Math.round(100 * (wk.totals[p.id] || 0) / max)}%"></i></span>
+      <span class="v" data-count="${wk.totals[p.id] || 0}">0</span></div>`).join('');
+  return `<div class="card rv" style="margin-top:6px"><div class="odds-h"><h3>This week ${MID} ${esc(wk.label)}</h3>
+    <span>${wk.complete ? 'final' : 'live'}${nm ? ` ${MID} ${nm} day${nm > 1 ? 's' : ''} missed` : ''}</span></div>${lanes}</div>`;
 }
 
-var chartGeom = null;
-function renderChart() {
-  var svg = document.getElementById('chart');
-  var days = DATA.series.days, c = colors();
-  var W = svg.clientWidth || 700, H = 240;
-  var padL = 34, padR = 92, padT = 12, padB = 24;
-  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-  if (!days.length) {
-    svg.innerHTML = '<text x="' + (W / 2) + '" y="' + (H / 2)
-      + '" text-anchor="middle" fill="var(--muted)">No days recorded yet</text>';
-    return;
+/* ---- odds ---- */
+function oddsCard(F, title, right, how) {
+  if (!F) return '';
+  const order = sortedBy((a, b) => F.players[b.id].win - F.players[a.id].win || F.players[b.id].now - F.players[a.id].now);
+  const rows = order.map((p, i) => {
+    const f = F.players[p.id], m = f.margin;
+    const win = f.win > 0.005 && f.win < 0.995 ? `<b data-count="${Math.round(f.win * 100)}" data-suf="%">0%</b>` : `<b>${fcPct(f.win)}</b>`;
+    const segs = f.places.map((v, k) => `<i style="--f:${Math.max(v, 0.0001)};--k:${k}"></i>`).join('');
+    return `<div class="orow rv" data-p="${p.id}" style="${pv(p)};--d:${i * 80}ms">
+      <div class="oh">${av(p, 38)}<div class="who"><b>${esc(p.first)}</b><small>${f.now} pts ${MID} ${m > 0 ? '+' + m : m < 0 ? MINUS + Math.abs(m) : 'level'}</small></div>
+        <div class="win">${win}<small>to win</small></div></div>
+      <div class="obar">${segs}</div>
+      <div class="oplaces">${f.places.map((v, k) => `<span>${ORD[k]}<b>${fcPct(v)}</b></span>`).join('')}</div></div>`;
+  }).join('');
+  return `<div class="card"><div class="odds-h"><h3>${title}</h3><span>${right}</span></div>${rows}
+    <details class="how"><summary>How is this calculated?</summary><p class="note">${how}</p></details></div>`;
+}
+function renderOdds() {
+  const wf = D.forecast, sf = D.seasonForecast;
+  if (!wf && !sf) { $('#odds').innerHTML = ''; return; }
+  const common = (F) => `Each open day is drawn from ${F.pool} real past days, with recent days counting more (the weight halves every ${F.halfLife} days), and added to the totals so far. That is repeated ${F.sims.toLocaleString()} times and the share of times each player lands in each place is the probability. Tied totals split the place. ${F.todayCounted ? 'Today is counted.' : 'Today is not counted until all four players have posted every game.'} It assumes recent form continues, so treat it as a guide, not a guarantee.`;
+  const wk = wf ? oddsCard(wf, `This week ${MID} ${esc(wf.week.label)}`, wf.daysLeft === 0 ? 'final' : `${wf.daysLeft} day${wf.daysLeft === 1 ? '' : 's'} left`, common(wf)) : '';
+  const se = sf ? oddsCard(sf, `${esc(sf.season.label)} finish`, sf.daysLeft === 0 ? 'final' : `${sf.daysLeft} days left`, common(sf)) : '';
+  $('#odds').innerHTML = `${sectionHead('Odds', 'who finishes where')}<div class="grid2">${wk}${se}</div>
+    <p class="note" style="margin-left:6px">Each bar splits a player's chances across 1st (darkest) to 4th (lightest).</p>`;
+  watch($('#odds'));
+}
+
+/* ---- chart ---- */
+const CH = { hidden: {}, played: false, geo: null };
+const smooth = (pts) => {
+  if (pts.length < 2) return `M${pts[0][0]},${pts[0][1]}`;
+  let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2, t = 0.17;
+    d += ` C${(p1[0] + (p2[0] - p0[0]) * t).toFixed(1)},${(p1[1] + (p2[1] - p0[1]) * t).toFixed(1)} ${(p2[0] - (p3[0] - p1[0]) * t).toFixed(1)},${(p2[1] - (p3[1] - p1[1]) * t).toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
   }
-  var maxY = 5;
-  DATA.players.forEach(function (p) {
-    var arr = DATA.series.cumulative[p.id];
-    if (arr.length) maxY = Math.max(maxY, arr[arr.length - 1]);
+  return d;
+};
+const niceStep = (max, n) => { const raw = max / n, mag = Math.pow(10, Math.floor(Math.log10(raw || 1))), r = raw / mag; return (r <= 1 ? 1 : r <= 2 ? 2 : r <= 5 ? 5 : 10) * mag; };
+
+function renderChartSection() {
+  $('#chart').innerHTML = `${sectionHead('Points race', D.seasonNow ? esc(D.seasonNow.label) + ' cumulative' : 'cumulative')}
+    <div class="card rv"><div class="legend" id="legend"></div><div class="chartbox" id="chartbox"></div>
+    <p class="note">Hover or tap the chart for a day-by-day readout. Tap a name above to hide or show a line.</p></div>`;
+  drawLegend(); drawChart(); watch($('#chart'));
+  if ('ResizeObserver' in window) {
+    let last = 0;
+    new ResizeObserver(() => { const w = $('#chartbox') ? $('#chartbox').clientWidth : 0; if (w && Math.abs(w - last) > 1) { last = w; drawChart(); } }).observe($('#chartbox'));
+  }
+}
+function drawLegend() {
+  $('#legend').innerHTML = P.map((p) => `<button type="button" class="lg ${CH.hidden[p.id] ? 'off' : ''}" data-p="${p.id}" data-l="${p.id}" style="${pv(p)}"><i></i>${esc(p.first)}</button>`).join('');
+  $$('[data-l]').forEach((b) => b.addEventListener('click', () => { CH.hidden[b.getAttribute('data-l')] = !CH.hidden[b.getAttribute('data-l')]; drawLegend(); drawChart(); applyFocus(); }));
+}
+function drawChart() {
+  const box = $('#chartbox'); if (!box) return;
+  const S = D.series, days = S.days;
+  if (!days.length) { box.innerHTML = '<div class="empty">No days recorded yet.</div>'; return; }
+  const W = Math.max(280, Math.floor(box.clientWidth) || 340), H = W < 560 ? 260 : 330;
+  const m = { l: 36, r: 18, t: 16, b: 28 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const vis = P.filter((p) => !CH.hidden[p.id]);
+  let maxY = 1; vis.forEach((p) => S.cumulative[p.id].forEach((v) => { if (v > maxY) maxY = v; }));
+  const step = niceStep(maxY, 4), top = Math.ceil(maxY / step) * step || step;
+  const x = (i) => m.l + (days.length === 1 ? iw / 2 : (i * iw) / (days.length - 1));
+  const y = (v) => m.t + ih - (v / top) * ih;
+  let g = '';
+  for (let v = 0; v <= top + 1e-9; v += step) g += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text class="axis" x="${m.l - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>`;
+  const nX = Math.min(days.length, W < 560 ? 4 : 7);
+  for (let k = 0; k < nX; k++) { const idx = nX === 1 ? 0 : Math.round((k * (days.length - 1)) / (nX - 1)); g += `<text class="axis" x="${x(idx).toFixed(1)}" y="${H - 8}" text-anchor="${k === 0 ? 'start' : k === nX - 1 ? 'end' : 'middle'}">${md(days[idx])}</text>`; }
+  const leadId = FOCUS && !CH.hidden[FOCUS] ? FOCUS : (D.standings[0] && !CH.hidden[D.standings[0].player] ? D.standings[0].player : null);
+  let area = '', lines = '', dots = '';
+  vis.forEach((p) => {
+    const pts = S.cumulative[p.id].map((v, i) => [x(i), y(v)]);
+    const d = smooth(pts);
+    if (p.id === leadId && pts.length > 1) area = `<path d="${d} L${pts[pts.length - 1][0].toFixed(1)},${y(0)} L${pts[0][0].toFixed(1)},${y(0)} Z" style="fill:url(#cf);" data-p="${p.id}"/>`;
+    lines += `<path class="ln" data-p="${p.id}" style="stroke:var(--p${p.slot})" d="${d}"/>`;
+    const last = pts[pts.length - 1];
+    dots += `<circle data-p="${p.id}" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="5" style="fill:var(--p${p.slot});stroke:var(--solid)" stroke-width="2.5"/>`;
   });
-  var x = function (i) {
-    return days.length === 1 ? (padL + (W - padL - padR) / 2)
-      : padL + (W - padL - padR) * i / (days.length - 1);
+  const lc = leadId ? `var(--p${BY[leadId].slot})` : 'var(--p0)';
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Cumulative points by day">
+    <defs><linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:${lc};stop-opacity:.34"/><stop offset="1" style="stop-color:${lc};stop-opacity:0"/></linearGradient></defs>
+    ${g}${area}${lines}<line class="xh" id="xh" y1="${m.t}" y2="${H - m.b}" x1="0" x2="0" style="opacity:0"/>${dots}<g id="hd"></g>
+    <rect id="hit" x="${m.l}" y="0" width="${iw}" height="${H}" fill="transparent"/></svg><div class="tip" id="tip"></div>`;
+  CH.geo = { x, y, W, H, m, days, vis };
+  applyFocus();
+  // draw-on animation the first time the chart scrolls into view
+  if (!CH.played && !REDUCE) {
+    $$('.ln', box).forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+    const play = () => { CH.played = true; $$('.ln', box).forEach((p, i) => { p.getBoundingClientRect(); p.style.transition = `stroke-dashoffset 1.5s cubic-bezier(.2,.8,.2,1) ${i * 120}ms`; p.style.strokeDashoffset = 0; }); };
+    if ('IntersectionObserver' in window) { const o = new IntersectionObserver((es) => { if (es[0].isIntersecting) { play(); o.disconnect(); } }, { threshold: 0.3 }); o.observe(box); } else play();
+  }
+  wireHover(box);
+}
+function wireHover(box) {
+  const hit = $('#hit', box), tip = $('#tip', box), xh = $('#xh', box), hd = $('#hd', box), G = CH.geo;
+  const show = (e) => {
+    const r = box.getBoundingClientRect(), px = e.clientX - r.left;
+    let i = G.days.length === 1 ? 0 : Math.round(((px - G.m.l) / (G.W - G.m.l - G.m.r)) * (G.days.length - 1));
+    i = Math.max(0, Math.min(G.days.length - 1, i));
+    const day = G.days[i], cx = G.x(i);
+    xh.setAttribute('x1', cx); xh.setAttribute('x2', cx); xh.style.opacity = 1;
+    const rows = G.vis.slice().sort((a, b) => D.series.cumulative[b.id][i] - D.series.cumulative[a.id][i]);
+    hd.innerHTML = rows.map((p) => `<circle cx="${cx}" cy="${G.y(D.series.cumulative[p.id][i])}" r="5.5" style="fill:var(--p${p.slot});stroke:var(--solid)" stroke-width="2.5"/>`).join('');
+    tip.innerHTML = `<div class="d">${longDate(day)}</div>` + rows.map((p) => {
+      const dt = (D.dayTotals[day] || {})[p.id];
+      return `<div class="r" style="${pv(p)}"><i></i>${esc(p.first)}<small>${dt === undefined ? '' : '+' + dt}</small><em>${D.series.cumulative[p.id][i]}</em></div>`;
+    }).join('');
+    tip.classList.add('on');
+    const tw = tip.offsetWidth; let left = cx + 14; if (left + tw > G.W) left = cx - tw - 14; tip.style.left = Math.max(0, left) + 'px';
   };
-  var y = function (v) { return padT + (H - padT - padB) * (1 - v / maxY); };
-
-  var parts = [];
-  var ticks = 4;
-  for (var t = 0; t <= ticks; t++) {
-    var val = Math.round(maxY * t / ticks), yy = y(val);
-    parts.push('<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + yy
-      + '" y2="' + yy + '" stroke="var(--grid)" stroke-width="1"/>');
-    parts.push('<text x="' + (padL - 6) + '" y="' + (yy + 4)
-      + '" text-anchor="end" fill="var(--muted)">' + val + '</text>');
-  }
-  parts.push('<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y(0)
-    + '" y2="' + y(0) + '" stroke="var(--axis)" stroke-width="1"/>');
-  var lblEvery = Math.max(1, Math.ceil(days.length / 6));
-  for (var i = 0; i < days.length; i += lblEvery) {
-    parts.push('<text x="' + x(i) + '" y="' + (H - 6)
-      + '" text-anchor="middle" fill="var(--muted)">'
-      + days[i].slice(5).replace('-', '/') + '</text>');
-  }
-  // series lines, direct-labeled at the line end (color never carries alone)
-  var ends = [];
-  DATA.players.forEach(function (p) {
-    var arr = DATA.series.cumulative[p.id], dpath = '';
-    for (var i = 0; i < arr.length; i++)
-      dpath += (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(arr[i]).toFixed(1);
-    parts.push('<path d="' + dpath + '" fill="none" stroke="' + c[p.slot]
-      + '" stroke-width="' + (p.special ? 3 : 2) + '" stroke-linejoin="round"/>');
-    if (days.length === 1)
-      parts.push('<circle cx="' + x(0) + '" cy="' + y(arr[0]) + '" r="4" fill="'
-        + c[p.slot] + '"/>');
-    ends.push({ p: p, y: y(arr[arr.length - 1]), v: arr[arr.length - 1] });
-  });
-  ends.sort(function (a, b) { return a.y - b.y; });
-  for (var e = 0; e < ends.length; e++) {           // nudge collided labels apart
-    if (e > 0 && ends[e].y - ends[e - 1].y < 13) ends[e].y = ends[e - 1].y + 13;
-  }
-  ends.forEach(function (en) {
-    // identity comes from the name + a colored tick; the text itself stays ink
-    parts.push('<line x1="' + (W - padR + 4) + '" x2="' + (W - padR + 12)
-      + '" y1="' + en.y + '" y2="' + en.y + '" stroke="' + c[en.p.slot]
-      + '" stroke-width="3"/>');
-    parts.push('<text x="' + (W - padR + 16) + '" y="' + (en.y + 4)
-      + '" fill="var(--ink-2)" font-weight="600">' + esc(en.p.first) + ' '
-      + en.v + '</text>');
-  });
-  parts.push('<line id="xhair" y1="' + padT + '" y2="' + y(0)
-    + '" stroke="var(--axis)" stroke-width="1" visibility="hidden"/>');
-  svg.innerHTML = parts.join('');
-  chartGeom = { x: x, y: y, W: W, padL: padL, padR: padR };
+  const hide = () => { tip.classList.remove('on'); xh.style.opacity = 0; hd.innerHTML = ''; };
+  hit.addEventListener('pointermove', show);
+  hit.addEventListener('pointerdown', show);
+  hit.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hide(); });
+  document.addEventListener('pointerdown', (e) => { if (!box.contains(e.target)) hide(); });
 }
 
-function hookHover() {
-  var svg = document.getElementById('chart'), tip = document.getElementById('tip');
-  var wrap = document.getElementById('chartwrap');
-  function move(ev) {
-    if (!chartGeom || !DATA.series.days.length) return;
-    var rect = svg.getBoundingClientRect();
-    var px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
-    var days = DATA.series.days, best = 0, bd = 1e9;
-    for (var i = 0; i < days.length; i++) {
-      var d = Math.abs(chartGeom.x(i) * rect.width / chartGeom.W - px);
-      if (d < bd) { bd = d; best = i; }
-    }
-    var xh = document.getElementById('xhair');
-    xh.setAttribute('x1', chartGeom.x(best));
-    xh.setAttribute('x2', chartGeom.x(best));
-    xh.setAttribute('visibility', 'visible');
-    var lines = ['<b>' + days[best] + '</b>'];
-    var ordered = DATA.players.slice().sort(function (a, b) {
-      return DATA.series.cumulative[b.id][best] - DATA.series.cumulative[a.id][best];
-    });
-    ordered.forEach(function (p) {
-      var day = days[best];
-      var dayPts = (DATA.dayTotals[day] || {})[p.id] || 0;
-      lines.push(esc(p.first) + ': ' + DATA.series.cumulative[p.id][best]
-        + ' (+' + dayPts + ')');
-    });
-    tip.innerHTML = lines.join('<br>');
-    tip.style.display = 'block';
-    var wr = wrap.getBoundingClientRect();
-    var tx = px + 14;
-    if (tx + tip.offsetWidth > wr.width) tx = px - tip.offsetWidth - 14;
-    tip.style.left = Math.max(0, tx) + 'px';
-    tip.style.top = '10px';
-  }
-  function leave() {
-    tip.style.display = 'none';
-    var xh = document.getElementById('xhair');
-    if (xh) xh.setAttribute('visibility', 'hidden');
-  }
-  svg.addEventListener('mousemove', move);
-  svg.addEventListener('touchstart', move);
-  svg.addEventListener('touchmove', move);
-  svg.addEventListener('mouseleave', leave);
-  svg.addEventListener('touchend', leave);
+/* ---- champions ---- */
+function renderFame() {
+  const seasons = (D.seasons || []).slice().reverse(), titles = D.seasonTitles || {};
+  if (!seasons.length) { $('#fame').innerHTML = ''; return; }
+  const shelf = sortedBy((a, b) => (titles[b.id] || 0) - (titles[a.id] || 0)).map((p) => {
+    const n = titles[p.id] || 0;
+    return `<div class="trophy ${n ? '' : 'zero'}" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}">${av(p, 34)}<span class="n">${esc(p.first)}${n ? ` ${I.trophy}<span>${n}</span>` : ''}</span></div>`;
+  }).join('');
+  const names = (ids) => ids.map((id) => esc(BY[id].first)).join(' &amp; ');
+  const cards = seasons.map((s, i) => {
+    const st = s.standings.slice().sort((a, b) => b.points - a.points);
+    const state = s.complete ? 'done' : s.current ? 'live' : 'up';
+    const tag = s.complete ? 'Complete' : s.current ? `Live ${MID} wk ${s.week_index}/${s.weeks}` : 'Upcoming';
+    let champ;
+    if (s.complete && s.champions.length) champ = `<div class="champ" style="${pv(BY[s.champions[0]])}">${av(BY[s.champions[0]], 46)}<div class="who"><small>Champion</small><b>${names(s.champions)}</b></div>${I.crown}</div>`;
+    else if (s.current && s.leaders.length) champ = `<div class="champ" style="${pv(BY[s.leaders[0]])}">${av(BY[s.leaders[0]], 46)}<div class="who"><small style="color:var(--muted)">Leading</small><b>${names(s.leaders)}</b></div></div>`;
+    else champ = `<div class="champ"><div class="who"><small style="color:var(--muted)">${s.upcoming ? 'Starts soon' : 'No champion'}</small><b>${EMD}</b></div></div>`;
+    const minis = s.upcoming ? '' : st.map((x) => `<div class="mini" style="${pv(BY[x.player])}"><span><i></i>${esc(BY[x.player].first)}</span><b>${x.points}</b></div>`).join('');
+    return `<div class="scard ${state} rv" style="--d:${i * 80}ms"><div class="sh"><b>${esc(s.label)}</b><span>${tag}</span></div><div class="rg">${esc(s.range)}</div>${champ}${minis}</div>`;
+  }).join('');
+  const career = (D.career || []).map((c) => `${esc(BY[c.player].first)} ${c.points}`).join(', ');
+  $('#fame').innerHTML = `${sectionHead('Champions', 'season titles')}<div class="shelf rv">${shelf}</div><div class="seasons">${cards}</div>
+    <p class="note" style="margin-left:6px">A season is ${seasons[0].weeks} weeks; its top scorer takes the title (ties share it). All-time points: ${career}.</p>`;
+  watch($('#fame'));
 }
 
-function renderForm() {
-  var c = colors();
-  var form = (DATA.form || []).slice().sort(function (a, b) { return b.avg - a.avg; });
-  var arrows = { up: '↗', down: '↘', flat: '→' };
-  var max = 5;
-  form.forEach(function (f) {
-    f.points.forEach(function (v) { max = Math.max(max, v); });
+/* ---- stats tabs ---- */
+const TABS = [
+  ['form', 'Form'], ['h2h', 'Head-to-head'], ['games', 'Games'], ['days', 'Weekdays'],
+  ['fin', 'Finishes'], ['weekly', 'Weeks'], ['clutch', 'Clutch'], ['rec', 'Records'], ['skips', 'Skips'],
+];
+let TAB = 'form', FINSEL = 'all';
+
+const tabForm = () => {
+  const rows = (D.form || []).slice().sort((a, b) => b.avg - a.avg);
+  if (!rows.length) return '<div class="empty">No days recorded yet.</div>';
+  let max = 5; rows.forEach((f) => f.points.forEach((v) => { max = Math.max(max, v); }));
+  return rows.map((f) => {
+    const p = BY[f.id];
+    const chip = f.streak >= 2 ? `<span class="chip hot">${I.flame}${f.streak}</span>` : f.drought >= 3 ? `<span class="chip cold">${I.snow}${f.drought}</span>` : '';
+    const bars = f.points.map((v, i) => `<i style="--h:${Math.max(3, Math.round(44 * v / max))}px;--i:${i};${v ? '' : 'opacity:.3'}" title="${md(f.days[i])} ${MID} ${v} pts"></i>`).join('');
+    return `<div class="frow" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}">${av(p, 36)}<div class="who">${esc(p.first)}<div class="chips">${chip}</div></div>
+      <div class="spark">${bars}</div><div class="meta"><b>${f.avg}</b><small>per day <span class="mv ${f.trend === 'up' ? 'up' : f.trend === 'down' ? 'down' : 'flat'}"></span></small></div></div>`;
+  }).join('') + '<p class="note">Points per day over the last 3 weeks of recorded days. The arrow compares with the 3 weeks before.</p>';
+};
+
+const tabH2H = () => {
+  const n = P.length;
+  let h = `<div class="mx" style="grid-template-columns:44px repeat(${n},1fr)"><div class="c h"></div>` + P.map((p) => `<div class="c h" data-p="${p.id}" style="${pv(p)}">${av(p, 30)}</div>`).join('');
+  P.forEach((row) => {
+    h += `<div class="c h" data-p="${row.id}" style="${pv(row)}">${av(row, 30)}</div>`;
+    P.forEach((col) => {
+      if (col.id === row.id) { h += '<div class="c self">' + EMD + '</div>'; return; }
+      const r = D.headToHead[row.id][col.id];
+      h += `<div class="c ${r.w > r.l ? 'win' : ''}" data-p="${row.id}" style="${pv(row)}"><span class="sc">${r.w}${DASH}${r.l}</span><small>${r.t} tied</small></div>`;
+    });
   });
-  var html = '';
-  form.forEach(function (f) {
-    var p = playerById(f.id);
-    var chip = f.streak >= 2 ? ' <span class="wchip">🔥' + f.streak + '</span>'
-      : f.drought >= 3 ? ' <span class="wchip">❄️' + f.drought + '</span>' : '';
-    var bars = '';
-    for (var i = 0; i < f.points.length; i++) {
-      var v = f.points[i];
-      var h = Math.max(2, Math.round(26 * v / max));
-      bars += '<i style="height:' + h + 'px;background:' + c[p.slot]
-        + (v ? '' : ';opacity:.3')
-        + '" title="' + f.days[i].slice(5).replace('-', '/') + ' · ' + v + ' pts"></i>';
-    }
-    html += '<div class="stand-row">'
-      + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-      + '<span class="stand-name">' + esc(p.first) + chip + '</span>'
-      + '<span class="spark">' + bars + '</span>'
-      + '<span class="form-meta">' + f.avg + '/day ' + arrows[f.trend] + '</span>'
-      + '</div>';
+  return h + '</div><p class="note">Row against column: wins, losses and ties across every game both played. Shaded = the row player is ahead.</p>';
+};
+
+const tabGames = () => D.gameStats.map((g, gi) => {
+  const rows = g.players.slice().sort((a, b) => {
+    if ((a.plays > 0) !== (b.plays > 0)) return a.plays > 0 ? -1 : 1;
+    const ar = a.avgRank === null ? 99 : a.avgRank, br = b.avgRank === null ? 99 : b.avgRank;
+    if (ar !== br) return ar - br;
+    if (a.wins !== b.wins) return b.wins - a.wins;
+    return (a.bestSecs || 1e9) - (b.bestSecs || 1e9);
   });
-  document.getElementById('form').innerHTML =
-    html || '<div class="nodata">no days recorded yet</div>';
+  let rec = null, holders = [];
+  rows.forEach((r) => { if (r.bestSecs === null || !r.plays) return; if (rec === null || r.bestSecs < rec) { rec = r.bestSecs; holders = [r]; } else if (r.bestSecs === rec) holders.push(r); });
+  const lead = rows.length && rows[0].plays > 0 ? rows[0].id : null;
+  const body = rows.map((r) => {
+    const p = BY[r.id], pl = r.plays > 0;
+    return `<tr class="${pl || r.missed ? '' : 'dimr'}" data-p="${p.id}" style="${pv(p)}"><td>${av(p, 22)}${esc(p.first)}${r.id === lead ? ' ' + `<span class="chip gold" style="padding:1px 6px">${I.crown}</span>` : ''}</td>
+      <td>${pl ? esc(r.avgTime) : EMD}</td><td>${pl && r.avgRank !== null ? r.avgRank : EMD}</td><td>${pl ? r.wins : EMD}</td><td>${pl ? esc(r.bestTime) : EMD}</td><td class="${r.missed ? 'skip' : ''}">${r.missed || 0}</td></tr>`;
+  }).join('');
+  return `<div class="gs"><div class="gh" style="--gc:${GC[gi % GC.length]}"><span class="gem">${esc(g.name.charAt(0))}</span><b>${esc(g.name)}</b></div>
+    ${holders.length ? `<div class="rec">Record ${esc(holders[0].bestTime)} ${MID} ${holders.map((r) => esc(BY[r.id].first)).join(', ')}</div>` : ''}
+    <table><tr><th></th><th>Avg</th><th>Place</th><th>Wins</th><th>Best</th><th>Skips</th></tr>${body}</table></div>`;
+}).join('');
+
+const tabDays = () => {
+  const rows = D.weekdays || [];
+  let max = 1; rows.forEach((r) => P.forEach((p) => { if (r.avg[p.id] !== null && r.avg[p.id] > max) max = r.avg[p.id]; }));
+  let h = '<div class="heat"><div></div>' + rows.map((r) => `<div class="hd">${r.dow}<small>${r.n ? r.n + ' days' : EMD}</small></div>`).join('');
+  P.forEach((p) => {
+    h += `<div data-p="${p.id}" style="${pv(p)}">${av(p, 32)}</div>`;
+    rows.forEach((r) => {
+      const v = r.avg[p.id];
+      if (v === null) { h += '<div class="cell" style="opacity:.4">' + EMD + '</div>'; return; }
+      let best = true; P.forEach((q) => { if (r.avg[q.id] !== null && r.avg[q.id] > v) best = false; });
+      const sk = (r.skips || {})[p.id] || 0, k = Math.round(10 + 62 * (v / max));
+      h += `<div class="cell ${best && v > 0 ? 'best' : ''}" data-p="${p.id}" style="${pv(p)};background:var(--pc-s);background:color-mix(in srgb, var(--pc) ${k}%, transparent)">${v.toFixed(1)}${sk ? `<em>${sk} skip${sk > 1 ? 's' : ''}</em>` : ''}</div>`;
+    });
+  });
+  return h + '</div><p class="note">Average points per day on that weekday. Gold ring = best that day. Red = games skipped on that weekday.</p>';
+};
+
+const finStack = (c, p) => {
+  const tot = c.first + c.second + c.third + c.fourth + c.dnp || 1;
+  const keys = ['first', 'second', 'third', 'fourth'];
+  const seg = keys.map((k, i) => `<i style="--f:${c[k]};--k:${i}">${c[k] / tot >= 0.07 ? c[k] : ''}</i>`).join('') + (c.dnp ? `<i class="dnp" style="--f:${c.dnp};--k:4">${c.dnp / tot >= 0.07 ? c.dnp : ''}</i>` : '');
+  return `<div class="fin" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}"><div class="fh">${av(p, 30)}<b>${esc(p.first)}</b><small>${c.avg === null ? '' : 'avg place ' + c.avg.toFixed(2)}${c.winPct === null ? '' : ' ' + MID + ' ' + c.winPct + '% wins'}</small></div><div class="stack">${seg}</div></div>`;
+};
+const tabFin = () => {
+  const F = D.finishes;
+  if (!F || !F.weeks.length) return '<div class="empty">No finishes recorded yet.</div>';
+  const sel = FINSEL === 'all' ? null : F.weeks.filter((w) => w.n === FINSEL)[0];
+  const data = sel ? sel.players : F.total;
+  const order = sortedBy((a, b) => (data[a.id].avg === null ? 99 : data[a.id].avg) - (data[b.id].avg === null ? 99 : data[b.id].avg));
+  const chips = `<div class="wk"><button type="button" data-fin="all" class="${sel ? '' : 'on'}">All-time</button>` + F.weeks.slice().reverse().map((w) => `<button type="button" data-fin="${w.n}" class="${sel && sel.n === w.n ? 'on' : ''}">Wk ${w.n}</button>`).join('') + '</div>';
+  return chips + order.map((p) => finStack(data[p.id], p)).join('') +
+    `<p class="note">${sel ? esc(sel.label) + ' ' + MID + ' ' : ''}Segments run 1st (darkest) to 4th (lightest); hatched = skipped a game others played. A tie for a place counts for both players.</p>`;
+};
+
+const tabWeekly = () => {
+  const W = D.weeklyFinishes;
+  if (!W || !W.weeks.length) return '<div class="empty">No completed weeks yet.</div>';
+  const order = sortedBy((a, b) => (W.total[a.id].avg === null ? 99 : W.total[a.id].avg) - (W.total[b.id].avg === null ? 99 : W.total[b.id].avg));
+  return order.map((p) => {
+    const t = W.total[p.id];
+    const dots = W.weeks.map((w) => `<span class="dot ${w.places[p.id] <= 3 ? 'p' + w.places[p.id] : ''}" title="Wk ${w.n} ${MID} ${w.label}">${w.places[p.id]}</span>`).join('');
+    return `<div class="fin" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}"><div class="fh">${av(p, 30)}<b>${esc(p.first)}</b><small>avg place ${t.avg === null ? EMD : t.avg.toFixed(2)} ${MID} ${t.weeks} weeks</small></div>
+      <div class="cnt"><span>${t.first}<small>1st</small></span><span>${t.second}<small>2nd</small></span><span>${t.third}<small>3rd</small></span><span>${t.fourth}<small>4th</small></span></div>
+      <div class="dots" style="margin-top:8px">${dots}</div></div>`;
+  }).join('') + '<p class="note">Where each player finished in the weekly standings, completed weeks only; dots run oldest to newest.</p>';
+};
+
+const tabClutch = () => {
+  const C = D.clutch;
+  if (!C || !C.weeks.some((w) => w.showdown)) return '<div class="empty">No final-day showdowns yet.</div>';
+  const order = sortedBy((a, b) => C.players[b.id].won - C.players[a.id].won || C.players[b.id].comebacks - C.players[a.id].comebacks);
+  const cards = order.map((p) => {
+    const t = C.players[p.id];
+    return `<div class="rc" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}"><div class="rh">${av(p, 32)}<b>${esc(p.first)}</b></div>
+      <div class="kv"><div><b>${t.won} / ${t.showdowns}</b><small>won showdowns</small></div><div><b>${t.comebacks}</b><small>comebacks</small></div>
+      <div><b style="${t.blown ? 'color:var(--bad)' : ''}">${t.blown}</b><small>blown leads</small></div><div><b>${t.sundayAvg === null ? EMD : t.sundayAvg.toFixed(1)}</b><small>Sunday avg</small></div></div></div>`;
+  }).join('');
+  const nm = (ids) => ids.map((id) => esc(BY[id].first)).join(' &amp; ');
+  const swings = C.weeks.filter((w) => w.swing).reverse().map((w) => {
+    const pts = P.slice().sort((a, b) => (w.sunday[b.id] || 0) - (w.sunday[a.id] || 0)).map((p) => `${esc(p.first)} ${w.sunday[p.id] || 0}`).join(', ');
+    return `<div class="swing"><b>Wk ${w.n}</b> ${MID} ${esc(w.label)}: ${nm(w.leadersBefore)} ${w.lead === 0 ? 'shared the lead' : 'led by ' + w.lead} entering Sunday; ${nm(w.winners)} took the week. Sunday: ${pts}</div>`;
+  }).join('');
+  return `<div class="rcards">${cards}</div><div class="eyebrow" style="margin:16px 4px 2px">Weeks the final day changed the lead</div>${swings || '<div class="swing">None yet.</div>'}
+    <p class="note">A showdown is a completed week where two or more players entered Sunday within ${C.range} points of the lead, the most one day can swing. Comeback = won after trailing. Blown lead = led or shared the lead entering Sunday but did not win. Small samples: one showdown per week.</p>`;
+};
+
+const tabRec = () => {
+  const R = D.records;
+  if (!R || !R[P[0].id]) return '<div class="empty">No records yet.</div>';
+  const st = (s) => `${s.best}${s.current > 0 ? ` <span class="chip good" style="padding:0 6px">now ${s.current}</span>` : ''}`;
+  return '<div class="rcards">' + P.map((p) => {
+    const r = R[p.id];
+    return `<div class="rc" data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}"><div class="rh">${av(p, 32)}<b>${esc(p.first)}</b></div>
+      <div class="kv"><div><b>${r.bestDay.points}</b><small>best day (${md(r.bestDay.date)})</small></div><div><b>${r.perfectDays}</b><small>perfect days</small></div>
+      <div><b>${st(r.dailyWinStreak)}</b><small>day-win streak</small></div><div><b>${st(r.gameWinStreak)}</b><small>game-win streak</small></div></div></div>`;
+  }).join('') + '</div><p class="note">Perfect day = won every game of a fully recorded day. Streaks end on any non-win or DNP.</p>';
+};
+
+const tabSkips = () => {
+  const rows = (D.missed || []).slice().sort((a, b) => b.missed - a.missed || BY[a.id].slot - BY[b.id].slot);
+  if (!rows.length) return '<div class="empty">No games recorded yet.</div>';
+  const max = Math.max(1, ...rows.map((r) => r.missed)), top = rows[0].missed;
+  return '<div class="bars">' + rows.map((m) => {
+    const p = BY[m.id];
+    const chips = (m.missed > 0 && m.missed === top ? '<span class="chip">most skips</span>' : '') + (m.streak >= 2 ? `<span class="chip cold">${I.snow}${m.streak} in a row</span>` : '');
+    const by = m.byGame.length ? `<div class="sub-l">${m.byGame.slice().sort((a, b) => b.missed - a.missed).map((g) => esc(g.name) + (g.missed > 1 ? ' ×' + g.missed : '')).join(' ' + MID + ' ')}${m.last ? ' ' + MID + ' last ' + md(m.last) : ''}</div>` : '';
+    return `<div data-p="${p.id}" data-fb="${p.id}" style="${pv(p)}"><div class="frow">${av(p, 32)}<div class="who">${esc(p.first)}<div class="chips">${chips}</div></div><div class="bar"><i style="--w:${Math.round(100 * m.missed / max)}%"></i></div><div class="n">${m.missed}</div></div>${by}</div>`;
+  }).join('') + `</div><p class="note">Games skipped while someone else played, all-time (${rows[0].held} games held).</p>`;
+};
+
+const PANES = { form: tabForm, h2h: tabH2H, games: tabGames, days: tabDays, fin: tabFin, weekly: tabWeekly, clutch: tabClutch, rec: tabRec, skips: tabSkips };
+function showTab(id) {
+  TAB = id;
+  $$('#seg button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-t') === id));
+  const pane = $('#pane');
+  pane.className = 'pane' + (id === 'games' ? ' gstats' : '');
+  pane.innerHTML = PANES[id]();
+  $$('[data-fin]', pane).forEach((b) => b.addEventListener('click', () => { const v = b.getAttribute('data-fin'); FINSEL = v === 'all' ? 'all' : +v; showTab('fin'); }));
+  runCounts(pane); applyFocus();
+}
+function renderStats() {
+  $('#stats').innerHTML = `${sectionHead('Stats', 'all-time unless noted')}<div class="card rv"><div class="seg" id="seg" role="tablist">${TABS.map((t) => `<button type="button" role="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div><div id="pane"></div></div>`;
+  $$('#seg button').forEach((b) => b.addEventListener('click', () => showTab(b.getAttribute('data-t'))));
+  showTab(TAB); watch($('#stats'));
 }
 
-function renderWeekdays() {
-  var c = colors();
-  var rows = DATA.weekdays || [];
-  var html = '<table><tr><th>Day</th>';
-  DATA.players.forEach(function (p) {
-    html += '<th><span class="dot" style="background:' + c[p.slot]
-      + ';display:inline-block;vertical-align:middle;margin-right:4px"></span>'
-      + esc(p.first) + '</th>';
-  });
-  html += '</tr>';
-  var any = false;
-  rows.forEach(function (r) {
-    var best = null;
-    DATA.players.forEach(function (p) {
-      var v = r.avg[p.id];
-      if (v !== null && (best === null || v > best)) best = v;
-    });
-    if (r.n) any = true;
-    html += '<tr><td' + (r.n ? '' : ' style="color:var(--muted)"') + '>' + r.dow
-      + (r.n ? ' <span style="color:var(--muted);font-size:.72rem">(' + r.n + ')</span>' : '')
-      + '</td>';
-    DATA.players.forEach(function (p) {
-      var v = r.avg[p.id];
-      if (v === null) { html += '<td style="color:var(--muted)">\u2014</td>'; return; }
-      var sk = (r.skips || {})[p.id] || 0;
-      html += '<td' + (v === best && best > 0 ? ' style="font-weight:700"' : '') + '>'
-        + v.toFixed(1)
-        + (sk ? '<span class="sk-sm">' + sk + ' skip' + (sk > 1 ? 's' : '') + '</span>'
-              : '<span class="sk-none">\u00b7</span>')
-        + '</td>';
-    });
-    html += '</tr>';
-  });
-  html += '</table>';
-  document.getElementById('weekdays').innerHTML =
-    any ? html : '<div class="nodata">no days recorded yet</div>';
-}
-
-function renderMissed() {
-  var c = colors();
-  var rows = (DATA.missed || []).slice().sort(function (a, b) {
-    return b.missed - a.missed || playerById(a.id).slot - playerById(b.id).slot;
-  });
-  var max = 1, i;
-  for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].missed);
-  var topMissed = rows.length ? rows[0].missed : 0;
-  var html = '';
-  rows.forEach(function (m) {
-    var p = playerById(m.id);
-    var chip = '';
-    if (m.missed > 0 && m.missed === topMissed) chip += ' <span class="wchip">🐔</span>';
-    if (m.streak >= 2) chip += ' <span class="wchip">💤' + m.streak + '</span>';
-    var w = Math.round(100 * m.missed / max);
-    html += '<div class="stand-row">'
-      + '<span class="dot" style="background:' + c[p.slot] + '"></span>'
-      + '<span class="stand-name">' + esc(p.first) + chip + '</span>'
-      + '<span class="bar-wrap"><span class="bar dnp-bar" style="width:' + w
-      + '%;background:' + c[p.slot] + ';display:block"></span></span>'
-      + '<span class="stand-pts"' + (m.missed ? '' : ' style="color:var(--muted)"')
-      + '>' + m.missed + '</span></div>';
-    if (m.byGame.length) {
-      var bits = m.byGame.slice().sort(function (a, b) { return b.missed - a.missed; })
-        .map(function (g) { return esc(g.name) + (g.missed > 1 ? ' ×' + g.missed : ''); });
-      html += '<div class="dnp-line">' + bits.join(' · ')
-        + (m.last ? ' · last ' + m.last.slice(5).replace('-', '/') : '') + '</div>';
-    }
-  });
-  var held = rows.length ? rows[0].held : 0;
-  document.getElementById('missed').innerHTML =
-    html || '<div class="nodata">no games recorded yet</div>';
-  document.getElementById('missednote').textContent = held
-    ? 'games skipped while someone else played · ' + held + ' games held all-time'
-      + (topMissed ? ' · 🐔 = most skips · 💤 = current skip streak' : '')
-    : '';
-}
-
-function renderH2H() {
-  var c = colors();
-  var html = '<table><tr><th></th>';
-  DATA.players.forEach(function (p) { html += '<th>' + esc(p.first) + '</th>'; });
-  html += '</tr>';
-  DATA.players.forEach(function (row) {
-    html += '<tr><td><span class="dot" style="background:' + c[row.slot]
-      + ';display:inline-block;vertical-align:middle;margin-right:5px"></span>'
-      + esc(row.first) + '</td>';
-    DATA.players.forEach(function (col) {
-      if (col.id === row.id) {
-        html += '<td style="color:var(--muted)">—</td>';
-        return;
-      }
-      var r = DATA.headToHead[row.id][col.id];
-      html += '<td' + (r.w > r.l ? ' style="font-weight:700"' : '') + '>'
-        + r.w + '–' + r.l + '–' + r.t + '</td>';
-    });
-    html += '</tr>';
-  });
-  html += '</table>';
-  document.getElementById('h2h').innerHTML = html;
-}
-
-function renderGameStats() {
-  var c = colors(), html = '';
-  for (var g = 0; g < DATA.gameStats.length; g++) {
-    var game = DATA.gameStats[g];
-    // best-performing first: avg place, then wins, then fastest best time
-    var rows = game.players.slice().sort(function (a, b) {
-      if ((a.plays > 0) !== (b.plays > 0)) return a.plays > 0 ? -1 : 1;
-      var ar = a.avgRank === null ? 99 : a.avgRank;
-      var br = b.avgRank === null ? 99 : b.avgRank;
-      if (ar !== br) return ar - br;
-      if (a.wins !== b.wins) return b.wins - a.wins;
-      return (a.bestSecs || 1e9) - (b.bestSecs || 1e9);
-    });
-    var recSecs = null, recHolders = [];
-    rows.forEach(function (r) {
-      if (r.bestSecs === null || !r.plays) return;
-      if (recSecs === null || r.bestSecs < recSecs) {
-        recSecs = r.bestSecs; recHolders = [r];
-      } else if (r.bestSecs === recSecs) recHolders.push(r);
-    });
-    html += '<div class="game"><h3>' + esc(game.name) + '</h3>';
-    if (recHolders.length) {
-      html += '<div class="rec-line">🏅 record ' + esc(recHolders[0].bestTime)
-        + ' — ' + recHolders.map(function (r) {
-            return esc(playerById(r.id).first);
-          }).join(', ') + '</div>';
-    }
-    html += '<table><tr><th></th><th>Avg</th><th>Place</th><th>Wins</th><th>Best</th>'
-      + '<th>Skips</th></tr>';
-    var leadId = rows.length && rows[0].plays > 0 ? rows[0].id : null;
-    var topSkip = 0;
-    rows.forEach(function (r) { topSkip = Math.max(topSkip, r.missed || 0); });
-    for (var r = 0; r < rows.length; r++) {
-      var row = rows[r], p = playerById(row.id);
-      var played = row.plays > 0;
-      var isRec = recSecs !== null && row.bestSecs === recSecs && played;
-      html += '<tr' + (played || row.missed ? '' : ' style="opacity:.45"') + '>'
-        + '<td' + (row.id === leadId ? ' style="font-weight:600"' : '') + '>'
-        + '<span class="dot" style="background:' + c[p.slot]
-        + ';display:inline-block;vertical-align:middle;margin-right:5px"></span>'
-        + esc(p.first) + (row.id === leadId ? ' 👑' : '') + '</td>'
-        + '<td>' + (played ? esc(row.avgTime) : '—') + '</td>'
-        + '<td>' + (played && row.avgRank !== null ? row.avgRank : '—') + '</td>'
-        + '<td>' + (played ? row.wins : '—') + '</td>'
-        + '<td' + (isRec ? ' style="font-weight:700"' : '') + '>'
-        + (played ? esc(row.bestTime) : '—') + '</td>'
-        + '<td' + (row.missed ? ' class="skip"' : ' style="color:var(--muted)"') + '>'
-        + (row.missed || 0) + (row.missed && row.missed === topSkip ? ' 🐔' : '')
-        + '</td></tr>';
-    }
-    html += '</table></div>';
-  }
-  document.getElementById('gamestats').innerHTML = html;
-}
-
+/* ---- history ---- */
 function renderHistory() {
-  var missed = {};
-  (DATA.missedDays || []).forEach(function (d) { missed[d] = true; });
-  var days = Object.keys(DATA.dayTotals).concat(DATA.missedDays || []);
-  days = days.filter(function (d, i) { return days.indexOf(d) === i; })
-    .sort().reverse();
-  var html = '<table><tr><th>Day</th>';
-  DATA.players.forEach(function (p) { html += '<th>' + esc(p.first) + '</th>'; });
-  html += '</tr>';
-  days.forEach(function (d) {
-    if (missed[d]) {
-      html += '<tr><td style="color:var(--muted)">' + d + '</td>'
-        + '<td colspan="' + DATA.players.length + '" style="color:var(--muted);'
-        + 'font-style:italic;text-align:left">no data — day missed</td></tr>';
-      return;
-    }
-    html += '<tr><td>' + d + '</td>';
-    DATA.players.forEach(function (p) {
-      html += '<td>' + (DATA.dayTotals[d][p.id] || 0) + '</td>';
-    });
-    html += '</tr>';
-  });
-  html += '</table>';
-  document.getElementById('history').innerHTML = html;
+  const weeks = (D.weeks || []).slice().reverse();
+  const wRows = weeks.map((w, i) => `<tr><td>Wk ${weeks.length - i} ${MID} ${esc(w.label)}${w.complete ? '' : ' (live)'}${(w.missed || []).length ? ` ⚠${w.missed.length}` : ''}</td>` +
+    P.map((p) => `<td class="${w.complete && w.winners.indexOf(p.id) >= 0 ? 'w' : ''}" style="${pv(p)}">${w.totals[p.id] || 0}</td>`).join('') + '</tr>').join('');
+  const missed = {}; (D.missedDays || []).forEach((d) => { missed[d] = true; });
+  let days = Object.keys(D.dayTotals).concat(D.missedDays || []);
+  days = days.filter((d, i) => days.indexOf(d) === i).sort().reverse();
+  const dRows = days.map((d) => {
+    if (missed[d]) return `<tr class="miss"><td>${md(d)}</td><td colspan="${P.length}" style="text-align:left">no data ${EMD} day missed</td></tr>`;
+    const t = D.dayTotals[d], best = Math.max.apply(null, P.map((p) => t[p.id] || 0));
+    return `<tr><td>${longDate(d)}</td>` + P.map((p) => `<td class="${(t[p.id] || 0) === best && best > 0 ? 'w' : ''}" style="${pv(p)}">${t[p.id] || 0}</td>`).join('') + '</tr>';
+  }).join('');
+  const head = '<tr><th>' + EMD + '</th>' + P.map((p) => `<th>${esc(p.first)}</th>`).join('') + '</tr>';
+  $('#history').innerHTML = `${sectionHead('History', 'every week and day')}
+    <details class="fold rv"><summary>Weekly history</summary><div class="tbw"><table class="tbl">${head}${wRows}</table></div></details>
+    <details class="fold rv"><summary>Daily history</summary><div class="tbw"><table class="tbl">${head}${dRows}</table></div></details>`;
+  watch($('#history'));
 }
 
-function renderAll() {
-  renderAlert(); renderSeasonHeader(); renderStandings(); renderSeasons();
-  renderWeek(); renderForecast(); renderToday();
-  renderLegend(); renderChart();
-  renderForm(); renderWeekdays(); renderMissed(); renderH2H(); renderGameStats(); renderFinishes(); renderRecords(); renderWeeklyFinishes(); renderClutch(); renderWeekHistory(); renderHistory();
+/* ---------- chrome: theme toggle, scrollspy ----------------------------------- */
+const THEMES = ['auto', 'light', 'dark'];
+let theme = 'auto';
+try { const t = localStorage.getItem('pl-theme'); if (THEMES.indexOf(t) >= 0) theme = t; } catch (e) { /* storage blocked: stay on auto */ }
+function applyTheme() {
+  if (theme === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', theme);
+  $('#themebtn').innerHTML = I[theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'auto'];
+  $('#themebtn').setAttribute('title', 'Theme: ' + theme);
 }
-renderAll();
-hookHover();
-window.addEventListener('resize', renderChart);
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+$('#themebtn').addEventListener('click', () => {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+  try { localStorage.setItem('pl-theme', theme); } catch (e) { /* ignore */ }
+  applyTheme();
+});
+function spy() {
+  const links = {}; $$('#nav a').forEach((a) => { links[a.getAttribute('data-sec')] = a; });
+  if (!('IntersectionObserver' in window)) return;
+  const o = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    Object.keys(links).forEach((k) => links[k].classList.toggle('on', k === e.target.id));
+    const a = links[e.target.id]; if (a && a.scrollIntoView) { const nav = $('#nav'); nav.scrollTo({ left: a.offsetLeft - 16, behavior: REDUCE ? 'auto' : 'smooth' }); }
+  }), { rootMargin: '-30% 0px -60% 0px' });
+  Object.keys(links).forEach((k) => { const s = document.getElementById(k); if (s) o.observe(s); });
+}
+
+/* ---------- go ------------------------------------------------------------------ */
+applyTheme();
+renderHeader(); renderAlert(); renderRace(); renderToday(); renderOdds(); renderChartSection();
+renderFame(); renderStats(); renderHistory();
+applyFocus(); spy();
+})();
+
 </script>
 </body>
 </html>
