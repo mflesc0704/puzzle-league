@@ -2766,5 +2766,41 @@
 "matt": "0:18",
 "mitch": "0:42"
 }
+},
+"2026-10-12": {
+"mini-sudoku": {
+"andrew": "0:53",
+"kyle": "0:37",
+"matt": "0:44",
+"mitch": "0:45"
+},
+"patches": {
+"andrew": "0:08",
+"kyle": "0:07",
+"matt": "0:08"
+},
+"queens": {
+"andrew": "0:19",
+"kyle": "0:17",
+"matt": "0:17",
+"mitch": "0:18"
+},
+"tango": {
+"andrew": "0:36",
+"kyle": "0:27",
+"matt": "1:03",
+"mitch": "0:39"
+},
+"wend": {
+"andrew": "0:13",
+"kyle": "0:11",
+"matt": "0:19"
+},
+"zip": {
+"andrew": "0:05",
+"kyle": "0:06",
+"matt": "0:05",
+"mitch": "0:19"
+}
 }
 }
