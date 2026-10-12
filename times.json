@@ -2807,6 +2807,27 @@
 },
 "_gaps": [
 {
+"day": "2026-10-07",
+"game": "Mini Sudoku",
+"player": "mitch",
+"slug": "mini-sudoku",
+"today": false
+},
+{
+"day": "2026-10-07",
+"game": "Patches",
+"player": "mitch",
+"slug": "patches",
+"today": false
+},
+{
+"day": "2026-10-07",
+"game": "Wend",
+"player": "mitch",
+"slug": "wend",
+"today": false
+},
+{
 "day": "2026-10-11",
 "game": "Queens",
 "player": "kyle",
