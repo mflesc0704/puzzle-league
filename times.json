@@ -2998,7 +2998,8 @@
 "patches": {
 "andrew": "0:12",
 "kyle": "0:38",
-"matt": "0:21"
+"matt": "0:21",
+"mitch": "0:46"
 },
 "queens": {
 "andrew": "1:27",
@@ -3015,7 +3016,8 @@
 "wend": {
 "andrew": "1:18",
 "kyle": "0:30",
-"matt": "0:51"
+"matt": "0:51",
+"mitch": "0:59"
 },
 "zip": {
 "andrew": "0:19",
@@ -3031,20 +3033,6 @@
 "player": "matt",
 "slug": "mini-sudoku",
 "today": false
-},
-{
-"day": "2026-10-18",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
-},
-{
-"day": "2026-10-18",
-"game": "Wend",
-"player": "mitch",
-"slug": "wend",
-"today": true
 }
 ],
 "_self": {}
