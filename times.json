@@ -2996,10 +2996,13 @@
 },
 "queens": {
 "andrew": "1:27",
-"matt": "0:45"
+"kyle": "1:52",
+"matt": "0:45",
+"mitch": "1:40"
 },
 "tango": {
 "andrew": "0:57",
+"kyle": "1:07",
 "matt": "0:24",
 "mitch": "0:35"
 },
@@ -3010,6 +3013,7 @@
 },
 "zip": {
 "andrew": "0:19",
+"kyle": "0:37",
 "matt": "0:18",
 "mitch": "0:24"
 }
@@ -3021,34 +3025,6 @@
 "player": "matt",
 "slug": "mini-sudoku",
 "today": false
-},
-{
-"day": "2026-10-18",
-"game": "Queens",
-"player": "mitch",
-"slug": "queens",
-"today": true
-},
-{
-"day": "2026-10-18",
-"game": "Queens",
-"player": "kyle",
-"slug": "queens",
-"today": true
-},
-{
-"day": "2026-10-18",
-"game": "Tango",
-"player": "kyle",
-"slug": "tango",
-"today": true
-},
-{
-"day": "2026-10-18",
-"game": "Zip",
-"player": "kyle",
-"slug": "zip",
-"today": true
 },
 {
 "day": "2026-10-18",
