@@ -756,6 +756,7 @@ function renderNeeds() {
 async function jump(player, day, slug) {
   S.day = day; S.focusGame = slug || null;
   if (E.self.enabled && E.self.players.indexOf(player) >= 0) { S.mode = 'player'; S.me = player; }
+  else if (player && player !== E.meId) { S.mode = 'player'; }   // self-entry off: explain, do not ask for a token
   else { S.mode = 'commish'; }
   store.set('pl_mode', S.mode);
   await refresh();
@@ -777,7 +778,7 @@ function renderModes() {
 function playerPanel() {
   const se = E.self;
   if (!se.enabled) {
-    return `<div class="en-note"><b>Entering your own score isn't switched on yet.</b> Ask Matt to switch it on, or send him your times. He can add them from the Commissioner tab.</div>`;
+    return `<div class="en-note"><b>Entering your own score isn't switched on yet.</b> Matt has one quick setup left to turn it on. Until then, send him your time and he will add it.</div>`;
   }
   if (!S.me || se.players.indexOf(S.me) < 0) {
     const who = se.players.map((id) => `<button type="button" class="who-btn" data-who="${id}" style="${pv(BY[id])}">${av(BY[id], 44)}<b>${esc(BY[id].first)}</b></button>`).join('');
@@ -941,7 +942,7 @@ $('#themebtn').addEventListener('click', () => { theme = THEMES[(THEMES.indexOf(
   if (qd && /^\d{4}-\d{2}-\d{2}$/.test(qd)) S.day = qd;
   if (qp && BY[qp]) {
     if (E.self.enabled && E.self.players.indexOf(qp) >= 0) { S.mode = 'player'; S.me = qp; }
-    else S.mode = 'commish';
+    else S.mode = qp === E.meId ? 'commish' : 'player';
   }
   S.focusGame = qg || null;
   await refresh();
