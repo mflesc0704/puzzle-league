@@ -791,7 +791,7 @@ function playerPanel() {
     const need = (S.gaps || []).some((x) => x.player === S.me && x.day === S.day && x.slug === g.slug);
     const note = locked ? 'On the leaderboard' : mine ? 'Self-reported, you can fix it' : need ? 'Needs your score' : '';
     return `<div class="en-row ${need ? 'need' : ''}" id="row-${g.slug}">${gem(g, i)}<div class="nm"><b>${esc(g.name)}</b><small>${note}</small></div>
-      <input class="time" id="t-${g.slug}" inputmode="numeric" autocomplete="off" placeholder="0:42" value="${esc(t || '')}" ${locked ? 'disabled' : ''} aria-label="Your ${esc(g.name)} time">
+      <input class="time" id="t-${g.slug}" data-time inputmode="numeric" autocomplete="off" placeholder="0:42" value="${esc(t || '')}" ${locked ? 'disabled' : ''} aria-label="Your ${esc(g.name)} time">
     </div>`;
   }).join('');
   const lo = addDays(TODAY, -(E.self.maxAgeDays || 3));
@@ -800,7 +800,7 @@ function playerPanel() {
     <label class="field"><span>Puzzle day</span><input type="date" id="day" value="${S.day}" min="${lo}" max="${TODAY}"></label>
     <div class="en-rows">${rows}</div>
     <button type="button" class="btn" id="sendSelf">Send my scores</button>
-    <p class="note">Type a time like <b>0:42</b> or just the seconds (<b>42</b>). Only games without a time on the leaderboard can be added. Yours shows as <b>self</b> until the next update confirms it. ${se.formUrl ? `<a href="${esc(se.formUrl)}" style="text-decoration:underline">Open the form instead</a>.` : ''}</p>
+    <p class="note">Just type the digits and the colon appears: <b>4 2</b> becomes 0:42, <b>1 2 3</b> becomes 1:23. Only games without a time on the leaderboard can be added. Yours shows up on the dashboard within a few minutes, marked <b>self</b> until the leaderboard confirms it. ${se.formUrl ? `<a href="${esc(se.formUrl)}" style="text-decoration:underline">Open the form instead</a>.` : ''}</p>
     <div class="sent" id="sent"></div>`;
 }
 
@@ -840,7 +840,7 @@ async function sendSelf() {
   const log = JSON.parse(store.get('pl_sent') || '[]');
   todo.forEach((r) => log.unshift({ p: me, day, g: r.name, t: r.time, at: Date.now() }));
   store.set('pl_sent', JSON.stringify(log.slice(0, 8)));
-  say(`Sent ${sent} score${sent === 1 ? '' : 's'}. They appear on the site after its next update, marked "self" until the leaderboard confirms them.`, 'ok');
+  say(`Sent ${sent} score${sent === 1 ? '' : 's'}. They should appear on the dashboard within a few minutes, marked "self" until the leaderboard confirms them.`, 'ok');
   paintSent();
 }
 function paintSent() {
@@ -853,7 +853,7 @@ function paintSent() {
 function commishPanel() {
   const cards = E.games.map((g, i) => {
     const man = S.manual[g.slug], known = man && man !== 'none' ? man : (S.known[g.slug] || {});
-    const grid = P.map((p) => `<label>${esc(p.first)}<input class="cin" id="g-${g.slug}-${p.id}" inputmode="numeric" autocomplete="off" placeholder="0:42" value="${esc(known[p.id] || '')}"></label>`).join('');
+    const grid = P.map((p) => `<label>${esc(p.first)}<input class="cin" id="g-${g.slug}-${p.id}" data-time inputmode="numeric" autocomplete="off" placeholder="0:42" value="${esc(known[p.id] || '')}"></label>`).join('');
     return `<div class="cgame" id="row-${g.slug}"><div class="gh">${gem(g, i)}<b>${esc(g.name)}</b></div><div class="cgrid">${grid}</div>
       <label class="cnone"><input type="checkbox" id="none-${g.slug}" ${man === 'none' ? 'checked' : ''}> nobody played this one</label></div>`;
   }).join('');
@@ -917,6 +917,40 @@ function wirePanel() {
   if (st) st.addEventListener('click', () => { store.set('pl_token', $('#token').value.trim()); say('Token saved on this device.', 'ok'); });
   $$('input.time').forEach((i) => i.addEventListener('blur', () => { const t = parseTime(i.value); if (t && !i.disabled) i.value = t; }));
 }
+
+/* ---------- time boxes: the colon puts itself in -------------------------------------------
+   The phone's number pad has no colon, so typing is calculator style: the digits fill in
+   from the right and the colon appears. 4 2 gives 0:42, 1 2 3 gives 1:23, 1 2 3 4 gives
+   12:34. Anything that is not a digit is dropped as it is typed or pasted, so a colon
+   from a full keyboard changes nothing, backspace removes the last digit, and a pasted
+   "1:05" works. */
+const fmtDigits = (raw) => {
+  let d = String(raw).replace(/\D/g, '').replace(/^0+/, '').slice(-4);
+  if (!d) return '';
+  d = d.padStart(3, '0');
+  return d.slice(0, -2) + ':' + d.slice(-2);
+};
+const isTimeBox = (el) => !!(el && el.matches && el.matches('input[data-time]'));
+// Tapping a box that already holds a time arms it: the first thing typed replaces the whole
+// time instead of piling digits onto it (phones are unreliable at selecting text on tap).
+document.addEventListener('focusin', (e) => {
+  if (!isTimeBox(e.target)) return;
+  e.target.dataset.fresh = e.target.value ? '1' : '';
+  try { e.target.select(); } catch (err) { /* some phones refuse */ }
+});
+document.addEventListener('focusout', (e) => { if (isTimeBox(e.target)) e.target.dataset.fresh = ''; });
+document.addEventListener('input', (e) => {
+  if (!isTimeBox(e.target)) return;
+  const el = e.target;
+  let raw = el.value;
+  if (el.dataset.fresh === '1') {
+    el.dataset.fresh = '';
+    if (e.inputType === 'insertText' && e.data) raw = e.data;
+    else if (e.inputType && e.inputType.indexOf('delete') === 0) raw = '';
+  }
+  const v = fmtDigits(raw);
+  if (v !== el.value) el.value = v;
+});
 
 /* theme, shared with the dashboard */
 const THEMES = ['auto', 'light', 'dark'];
