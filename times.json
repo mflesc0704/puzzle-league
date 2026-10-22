@@ -3036,7 +3036,8 @@
 "patches": {
 "andrew": "0:07",
 "kyle": "0:10",
-"matt": "0:11"
+"matt": "0:11",
+"mitch": "0:35"
 },
 "queens": {
 "andrew": "0:23",
@@ -3146,16 +3147,14 @@
 "player": "matt",
 "slug": "mini-sudoku",
 "today": false
-},
-{
-"day": "2026-10-19",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": false
 }
 ],
 "_self": {
+"2026-10-19": {
+"patches": [
+"mitch"
+]
+},
 "2026-10-21": {
 "patches": [
 "kyle"
