@@ -529,6 +529,23 @@ details.fold[open] > summary::after { transform: rotate(-135deg); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .selfchip { color: #f7c755; } }
 :root[data-theme="dark"] .selfchip { color: #f7c755; }
 
+/* ---- unofficial scoring preview ---- */
+.pvban { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: var(--track); border: 1px dashed var(--line); font-size: 14px; }
+.pvban b { color: var(--gold); text-transform: uppercase; letter-spacing: .06em; font-size: 12px; margin-right: 6px; }
+.pvrow { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.pvrow + .pvrow { border-top: 1px dashed var(--line); }
+.pvrow .who { flex: 1; min-width: 0; }
+.pvrow .who small, .pvn small { display: block; opacity: .7; font-size: 12px; }
+.pvn { text-align: right; } .pvn b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.pvrow .win { text-align: right; min-width: 52px; } .pvrow .win b { font-size: 18px; } .pvrow .win small { display: block; opacity: .7; font-size: 11px; }
+.pvscroll { overflow-x: auto; }
+.pvt { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+.pvt th, .pvt td { padding: 8px 6px; text-align: right; border-bottom: 1px solid var(--line); }
+.pvt th:first-child, .pvt td.wk { text-align: left; }
+.pvt td.wk em { display: block; font-style: normal; font-size: 11px; opacity: .6; }
+.pvt td.lead { font-weight: 700; color: var(--gold); }
+.pvt tr.projected td { opacity: .75; }
+
 /* ---------- entry page -------------------------------------------------------- */
 .en-card { padding: 18px; }
 .en-mode { margin-bottom: 14px; }
