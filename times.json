@@ -3187,27 +3187,5 @@
 "today": false
 }
 ],
-"_self": {
-"2026-10-19": {
-"patches": [
-"mitch"
-]
-},
-"2026-10-21": {
-"patches": [
-"kyle"
-]
-},
-"2026-10-22": {
-"patches": [
-"kyle"
-],
-"queens": [
-"kyle"
-],
-"wend": [
-"kyle"
-]
-}
-}
+"_self": {}
 }
