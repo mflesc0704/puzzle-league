@@ -3149,11 +3149,13 @@
 },
 "patches": {
 "andrew": "0:46",
+"kyle": "0:58",
 "matt": "1:05",
 "mitch": "0:19"
 },
 "queens": {
 "andrew": "0:25",
+"kyle": "1:23",
 "matt": "0:32",
 "mitch": "0:54"
 },
@@ -3165,6 +3167,7 @@
 },
 "wend": {
 "andrew": "0:06",
+"kyle": "1:19",
 "matt": "0:51",
 "mitch": "0:29"
 },
@@ -3182,27 +3185,6 @@
 "player": "matt",
 "slug": "mini-sudoku",
 "today": false
-},
-{
-"day": "2026-10-22",
-"game": "Queens",
-"player": "kyle",
-"slug": "queens",
-"today": true
-},
-{
-"day": "2026-10-22",
-"game": "Patches",
-"player": "kyle",
-"slug": "patches",
-"today": true
-},
-{
-"day": "2026-10-22",
-"game": "Wend",
-"player": "kyle",
-"slug": "wend",
-"today": true
 }
 ],
 "_self": {
@@ -3213,6 +3195,17 @@
 },
 "2026-10-21": {
 "patches": [
+"kyle"
+]
+},
+"2026-10-22": {
+"patches": [
+"kyle"
+],
+"queens": [
+"kyle"
+],
+"wend": [
 "kyle"
 ]
 }
