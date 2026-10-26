@@ -3254,6 +3254,51 @@
 "mitch": "0:19"
 }
 },
-"_gaps": [],
+"2026-10-25": {
+"mini-sudoku": {
+"andrew": "1:49",
+"kyle": "1:06",
+"matt": "1:19",
+"mitch": "1:31"
+},
+"patches": {
+"andrew": "0:21",
+"kyle": "0:38",
+"matt": "0:38",
+"mitch": "1:00"
+},
+"queens": {
+"andrew": "1:33",
+"kyle": "0:31",
+"matt": "1:51",
+"mitch": "1:16"
+},
+"tango": {
+"andrew": "0:30",
+"kyle": "0:56",
+"matt": "0:26",
+"mitch": "0:39"
+},
+"wend": {
+"andrew": "0:25",
+"kyle": "0:39",
+"matt": "1:02"
+},
+"zip": {
+"andrew": "0:13",
+"kyle": "0:54",
+"matt": "0:51",
+"mitch": "0:25"
+}
+},
+"_gaps": [
+{
+"day": "2026-10-25",
+"game": "Wend",
+"player": "mitch",
+"slug": "wend",
+"today": true
+}
+],
 "_self": {}
 }
