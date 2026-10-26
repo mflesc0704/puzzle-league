@@ -3282,7 +3282,8 @@
 "wend": {
 "andrew": "0:25",
 "kyle": "0:39",
-"matt": "1:02"
+"matt": "1:02",
+"mitch": "1:02"
 },
 "zip": {
 "andrew": "0:13",
@@ -3291,14 +3292,12 @@
 "mitch": "0:25"
 }
 },
-"_gaps": [
-{
-"day": "2026-10-25",
-"game": "Wend",
-"player": "mitch",
-"slug": "wend",
-"today": true
+"_gaps": [],
+"_self": {
+"2026-10-25": {
+"wend": [
+"mitch"
+]
 }
-],
-"_self": {}
+}
 }
