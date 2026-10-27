@@ -3329,12 +3329,74 @@
 "mitch": "0:07"
 }
 },
+"2026-10-27": {
+"mini-sudoku": {
+"andrew": "0:29",
+"kyle": "0:32",
+"matt": "0:28"
+},
+"patches": {
+"andrew": "0:10",
+"kyle": "0:13",
+"matt": "0:17"
+},
+"queens": {
+"andrew": "0:16",
+"kyle": "0:44",
+"matt": "0:52",
+"mitch": "0:47"
+},
+"tango": {
+"andrew": "0:24",
+"kyle": "0:21",
+"matt": "0:20",
+"mitch": "0:24"
+},
+"wend": {
+"andrew": "0:16",
+"matt": "0:21"
+},
+"zip": {
+"andrew": "0:09",
+"kyle": "0:09",
+"matt": "0:07",
+"mitch": "0:11"
+}
+},
 "_gaps": [
 {
 "day": "2026-10-26",
 "game": "Patches",
 "player": "mitch",
 "slug": "patches",
+"today": false
+},
+{
+"day": "2026-10-27",
+"game": "Mini Sudoku",
+"player": "mitch",
+"slug": "mini-sudoku",
+"today": true
+},
+{
+"day": "2026-10-27",
+"game": "Patches",
+"player": "mitch",
+"slug": "patches",
+"today": true
+},
+{
+"day": "2026-10-27",
+"game": "Wend",
+"player": "mitch",
+"slug": "wend",
+"today": true
+},
+{
+"day": "2026-10-27",
+"game": "Wend",
+"player": "kyle",
+"slug": "wend",
 "today": true
 }
 ],
