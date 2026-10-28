@@ -3302,7 +3302,8 @@
 "patches": {
 "andrew": "0:06",
 "kyle": "0:13",
-"matt": "0:09"
+"matt": "0:09",
+"mitch": "0:08"
 },
 "queens": {
 "andrew": "0:27",
@@ -3368,23 +3369,21 @@
 },
 "_gaps": [
 {
-"day": "2026-10-26",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": false
-},
-{
 "day": "2026-10-27",
 "game": "Patches",
 "player": "mitch",
 "slug": "patches",
-"today": true
+"today": false
 }
 ],
 "_self": {
 "2026-10-25": {
 "wend": [
+"mitch"
+]
+},
+"2026-10-26": {
+"patches": [
 "mitch"
 ]
 }
