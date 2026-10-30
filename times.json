@@ -3416,7 +3416,8 @@
 "patches": {
 "andrew": "0:24",
 "kyle": "0:24",
-"matt": "0:07"
+"matt": "0:07",
+"mitch": "0:45"
 },
 "queens": {
 "andrew": "0:36",
@@ -3449,36 +3450,7 @@
 "player": "andrew",
 "slug": "zip",
 "today": true
-},
-{
-"day": "2026-10-29",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
 }
 ],
-"_self": {
-"2026-10-25": {
-"wend": [
-"mitch"
-]
-},
-"2026-10-26": {
-"patches": [
-"mitch"
-]
-},
-"2026-10-27": {
-"patches": [
-"mitch"
-]
-},
-"2026-10-28": {
-"queens": [
-"mitch",
-"kyle"
-]
-}
-}
+"_self": {}
 }
