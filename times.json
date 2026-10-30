@@ -3406,7 +3406,28 @@
 "mitch": "0:14"
 }
 },
-"_gaps": [],
+"2026-10-29": {
+"tango": {
+"andrew": "0:35",
+"kyle": "0:32",
+"matt": "0:23",
+"mitch": "0:27"
+},
+"zip": {
+"kyle": "0:23",
+"matt": "0:39",
+"mitch": "0:19"
+}
+},
+"_gaps": [
+{
+"day": "2026-10-29",
+"game": "Zip",
+"player": "andrew",
+"slug": "zip",
+"today": true
+}
+],
 "_self": {
 "2026-10-25": {
 "wend": [
