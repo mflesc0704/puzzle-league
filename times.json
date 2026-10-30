@@ -3410,18 +3410,18 @@
 "mini-sudoku": {
 "andrew": "0:31",
 "kyle": "1:00",
-"matt": "1:15",
+"matt": "1:01",
 "mitch": "2:00"
 },
 "patches": {
 "andrew": "0:24",
 "kyle": "0:24",
-"matt": "0:21"
+"matt": "0:07"
 },
 "queens": {
 "andrew": "0:36",
 "kyle": "0:45",
-"matt": "0:24",
+"matt": "0:10",
 "mitch": "0:43"
 },
 "tango": {
@@ -3433,7 +3433,7 @@
 "wend": {
 "andrew": "0:10",
 "kyle": "0:20",
-"matt": "0:36",
+"matt": "0:22",
 "mitch": "0:26"
 },
 "zip": {
