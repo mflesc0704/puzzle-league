@@ -3438,19 +3438,12 @@
 "mitch": "0:26"
 },
 "zip": {
+"andrew": "0:38",
 "kyle": "0:23",
 "matt": "0:39",
 "mitch": "0:19"
 }
 },
-"_gaps": [
-{
-"day": "2026-10-29",
-"game": "Zip",
-"player": "andrew",
-"slug": "zip",
-"today": true
-}
-],
+"_gaps": [],
 "_self": {}
 }
