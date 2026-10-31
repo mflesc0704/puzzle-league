@@ -3490,11 +3490,13 @@
 },
 "patches": {
 "kyle": "0:19",
-"matt": "0:46"
+"matt": "0:46",
+"mitch": "0:19"
 },
 "queens": {
 "kyle": "1:03",
-"matt": "1:16"
+"matt": "1:16",
+"mitch": "1:36"
 },
 "tango": {
 "kyle": "0:35",
@@ -3503,7 +3505,8 @@
 },
 "wend": {
 "kyle": "0:32",
-"matt": "0:40"
+"matt": "0:40",
+"mitch": "0:21"
 },
 "zip": {
 "kyle": "0:12",
@@ -3511,29 +3514,7 @@
 "mitch": "0:17"
 }
 },
-"_gaps": [
-{
-"day": "2026-10-31",
-"game": "Queens",
-"player": "mitch",
-"slug": "queens",
-"today": true
-},
-{
-"day": "2026-10-31",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
-},
-{
-"day": "2026-10-31",
-"game": "Wend",
-"player": "mitch",
-"slug": "wend",
-"today": true
-}
-],
+"_gaps": [],
 "_self": {
 "2026-10-30": {
 "wend": [
