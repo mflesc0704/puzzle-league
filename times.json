@@ -3470,6 +3470,7 @@
 "mitch": "0:27"
 },
 "wend": {
+"andrew": "1:17",
 "kyle": "0:55",
 "matt": "0:48",
 "mitch": "0:38"
@@ -3481,14 +3482,12 @@
 "mitch": "0:27"
 }
 },
-"_gaps": [
-{
-"day": "2026-10-30",
-"game": "Wend",
-"player": "andrew",
-"slug": "wend",
-"today": true
+"_gaps": [],
+"_self": {
+"2026-10-30": {
+"wend": [
+"andrew"
+]
 }
-],
-"_self": {}
+}
 }
