@@ -3708,7 +3708,8 @@
 "mini-sudoku": {
 "andrew": "1:22",
 "kyle": "0:54",
-"matt": "1:28"
+"matt": "1:28",
+"mitch": "1:38"
 },
 "patches": {
 "andrew": "0:18",
@@ -3740,13 +3741,6 @@
 }
 },
 "_gaps": [
-{
-"day": "2026-11-06",
-"game": "Mini Sudoku",
-"player": "mitch",
-"slug": "mini-sudoku",
-"today": true
-},
 {
 "day": "2026-11-06",
 "game": "Patches",
