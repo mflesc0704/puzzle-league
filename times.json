@@ -3846,18 +3846,11 @@
 "zip": {
 "andrew": "0:05",
 "kyle": "0:05",
-"matt": "0:06"
+"matt": "0:06",
+"mitch": "0:20"
 }
 },
-"_gaps": [
-{
-"day": "2026-11-09",
-"game": "Zip",
-"player": "mitch",
-"slug": "zip",
-"today": true
-}
-],
+"_gaps": [],
 "_self": {
 "2026-11-08": {
 "queens": [
