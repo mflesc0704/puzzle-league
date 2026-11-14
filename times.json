@@ -3965,11 +3965,16 @@
 },
 "2026-11-13": {
 "mini-sudoku": {
-"matt": "0:58"
+"andrew": "1:16",
+"kyle": "1:03",
+"matt": "0:58",
+"mitch": "0:54"
 },
 "patches": {
 "andrew": "0:05",
-"matt": "0:05"
+"kyle": "0:07",
+"matt": "0:05",
+"mitch": "0:09"
 },
 "queens": {
 "andrew": "1:23",
@@ -3984,10 +3989,16 @@
 "mitch": "0:39"
 },
 "wend": {
-"matt": "0:55"
+"andrew": "0:27",
+"kyle": "0:27",
+"matt": "0:55",
+"mitch": "0:44"
 },
 "zip": {
-"matt": "0:12"
+"andrew": "0:22",
+"kyle": "0:08",
+"matt": "0:12",
+"mitch": "0:42"
 }
 },
 "_gaps": [
@@ -3997,83 +4008,6 @@
 "player": "kyle",
 "slug": "tango",
 "today": false
-},
-{
-"day": "2026-11-13",
-"game": "Zip",
-"player": "andrew",
-"slug": "zip",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Zip",
-"player": "mitch",
-"slug": "zip",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Zip",
-"player": "kyle",
-"slug": "zip",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Mini Sudoku",
-"player": "andrew",
-"slug": "mini-sudoku",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Mini Sudoku",
-"player": "mitch",
-"slug": "mini-sudoku",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Mini Sudoku",
-"player": "kyle",
-"slug": "mini-sudoku",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Patches",
-"player": "kyle",
-"slug": "patches",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Wend",
-"player": "andrew",
-"slug": "wend",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Wend",
-"player": "mitch",
-"slug": "wend",
-"today": true
-},
-{
-"day": "2026-11-13",
-"game": "Wend",
-"player": "kyle",
-"slug": "wend",
-"today": true
 }
 ],
 "_self": {
