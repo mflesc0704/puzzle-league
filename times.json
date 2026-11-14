@@ -3947,6 +3947,7 @@
 },
 "tango": {
 "andrew": "0:27",
+"kyle": "1:18",
 "matt": "0:39",
 "mitch": "0:43"
 },
@@ -4001,18 +4002,15 @@
 "mitch": "0:42"
 }
 },
-"_gaps": [
-{
-"day": "2026-11-12",
-"game": "Tango",
-"player": "kyle",
-"slug": "tango",
-"today": false
-}
-],
+"_gaps": [],
 "_self": {
 "2026-11-08": {
 "queens": [
+"kyle"
+]
+},
+"2026-11-12": {
+"tango": [
 "kyle"
 ]
 }
