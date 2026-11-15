@@ -4002,7 +4002,58 @@
 "mitch": "0:42"
 }
 },
-"_gaps": [],
+"2026-11-14": {
+"mini-sudoku": {
+"matt": "1:53"
+},
+"patches": {
+"matt": "0:33"
+},
+"queens": {
+"matt": "1:13",
+"mitch": "1:13"
+},
+"tango": {
+"matt": "0:23"
+},
+"wend": {
+"matt": "1:14",
+"mitch": "1:15"
+},
+"zip": {
+"matt": "0:19"
+}
+},
+"_gaps": [
+{
+"day": "2026-11-14",
+"game": "Tango",
+"player": "mitch",
+"slug": "tango",
+"today": true
+},
+{
+"day": "2026-11-14",
+"game": "Zip",
+"player": "mitch",
+"slug": "zip",
+"today": true
+},
+{
+"day": "2026-11-14",
+"game": "Mini Sudoku",
+"player": "mitch",
+"slug": "mini-sudoku",
+"today": true
+},
+{
+"day": "2026-11-14",
+"game": "Patches",
+"player": "mitch",
+"slug": "patches",
+"today": true
+}
+],
 "_self": {
 "2026-11-08": {
 "queens": [
