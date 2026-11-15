@@ -4004,56 +4004,43 @@
 },
 "2026-11-14": {
 "mini-sudoku": {
-"matt": "1:53"
+"andrew": "1:17",
+"kyle": "1:12",
+"matt": "1:53",
+"mitch": "0:55"
 },
 "patches": {
-"matt": "0:33"
+"andrew": "0:20",
+"kyle": "0:37",
+"matt": "0:33",
+"mitch": "0:18"
 },
 "queens": {
+"andrew": "0:53",
+"kyle": "0:51",
 "matt": "1:13",
 "mitch": "1:13"
 },
 "tango": {
-"matt": "0:23"
+"andrew": "0:33",
+"kyle": "1:19",
+"matt": "0:23",
+"mitch": "0:32"
 },
 "wend": {
+"andrew": "0:57",
+"kyle": "0:54",
 "matt": "1:14",
 "mitch": "1:15"
 },
 "zip": {
-"matt": "0:19"
+"andrew": "0:13",
+"kyle": "0:27",
+"matt": "0:19",
+"mitch": "0:33"
 }
 },
-"_gaps": [
-{
-"day": "2026-11-14",
-"game": "Tango",
-"player": "mitch",
-"slug": "tango",
-"today": true
-},
-{
-"day": "2026-11-14",
-"game": "Zip",
-"player": "mitch",
-"slug": "zip",
-"today": true
-},
-{
-"day": "2026-11-14",
-"game": "Mini Sudoku",
-"player": "mitch",
-"slug": "mini-sudoku",
-"today": true
-},
-{
-"day": "2026-11-14",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
-}
-],
+"_gaps": [],
 "_self": {
 "2026-11-08": {
 "queens": [
