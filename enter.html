@@ -64,13 +64,13 @@ b, strong { font-weight: 700; }
 .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
 .bg i {
   position: absolute; width: 58vmax; height: 58vmax; border-radius: 50%;
-  filter: blur(80px); opacity: var(--blob); will-change: transform;
+  opacity: var(--blob); will-change: transform;   /* soft edge via gradient: a blur() filter was repainting every frame */
   animation: drift 26s ease-in-out infinite alternate;
 }
-.bg i:nth-child(1) { background: var(--p0); left: -22vmax; top: -26vmax; }
-.bg i:nth-child(2) { background: var(--p1); right: -26vmax; top: -10vmax; animation-delay: -6s; animation-duration: 31s; }
-.bg i:nth-child(3) { background: var(--p2); left: -10vmax; bottom: -34vmax; animation-delay: -12s; animation-duration: 34s; }
-.bg i:nth-child(4) { background: var(--p3); right: -20vmax; bottom: -28vmax; animation-delay: -3s; animation-duration: 29s; }
+.bg i:nth-child(1) { background: radial-gradient(closest-side, var(--p0) 25%, transparent 100%); left: -22vmax; top: -26vmax; }
+.bg i:nth-child(2) { background: radial-gradient(closest-side, var(--p1) 25%, transparent 100%); right: -26vmax; top: -10vmax; animation-delay: -6s; animation-duration: 31s; }
+.bg i:nth-child(3) { background: radial-gradient(closest-side, var(--p2) 25%, transparent 100%); left: -10vmax; bottom: -34vmax; animation-delay: -12s; animation-duration: 34s; }
+.bg i:nth-child(4) { background: radial-gradient(closest-side, var(--p3) 25%, transparent 100%); right: -20vmax; bottom: -28vmax; animation-delay: -3s; animation-duration: 29s; }
 @keyframes drift {
   from { transform: translate3d(0,0,0) scale(1); }
   to   { transform: translate3d(6vmax,4vmax,0) scale(1.12); }
@@ -127,7 +127,6 @@ b, strong { font-weight: 700; }
 .card {
   position: relative; background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--r); box-shadow: var(--shadow); padding: 18px;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
 }
 .grid2 { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 860px) {
