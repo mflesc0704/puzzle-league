@@ -4154,7 +4154,81 @@
 "mitch": "0:09"
 }
 },
-"_gaps": [],
+"2026-11-18": {
+"mini-sudoku": {
+"kyle": "1:29",
+"matt": "1:04"
+},
+"patches": {
+"kyle": "0:10",
+"matt": "0:06"
+},
+"queens": {
+"kyle": "0:33",
+"matt": "0:28"
+},
+"sumbreak": {
+"kyle": "0:04",
+"matt": "0:14"
+},
+"tango": {
+"kyle": "0:23",
+"matt": "0:34",
+"mitch": "0:20"
+},
+"wend": {
+"kyle": "0:04",
+"matt": "0:09"
+},
+"zip": {
+"kyle": "0:06",
+"matt": "0:05"
+}
+},
+"_gaps": [
+{
+"day": "2026-11-18",
+"game": "Queens",
+"player": "mitch",
+"slug": "queens",
+"today": true
+},
+{
+"day": "2026-11-18",
+"game": "Zip",
+"player": "mitch",
+"slug": "zip",
+"today": true
+},
+{
+"day": "2026-11-18",
+"game": "Mini Sudoku",
+"player": "mitch",
+"slug": "mini-sudoku",
+"today": true
+},
+{
+"day": "2026-11-18",
+"game": "Patches",
+"player": "mitch",
+"slug": "patches",
+"today": true
+},
+{
+"day": "2026-11-18",
+"game": "Wend",
+"player": "mitch",
+"slug": "wend",
+"today": true
+},
+{
+"day": "2026-11-18",
+"game": "Sumbreak",
+"player": "mitch",
+"slug": "sumbreak",
+"today": true
+}
+],
 "_self": {
 "2026-11-08": {
 "queens": [
