@@ -4142,20 +4142,13 @@
 "mitch": "0:25"
 },
 "zip": {
+"andrew": "0:06",
 "kyle": "0:05",
 "matt": "0:06",
 "mitch": "0:09"
 }
 },
-"_gaps": [
-{
-"day": "2026-11-17",
-"game": "Zip",
-"player": "andrew",
-"slug": "zip",
-"today": true
-}
-],
+"_gaps": [],
 "_self": {
 "2026-11-08": {
 "queens": [
@@ -4170,6 +4163,11 @@
 "2026-11-15": {
 "queens": [
 "kyle"
+]
+},
+"2026-11-17": {
+"zip": [
+"andrew"
 ]
 }
 }
