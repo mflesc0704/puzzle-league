@@ -4201,19 +4201,19 @@
 "mini-sudoku": {
 "andrew": "1:37",
 "kyle": "1:00",
-"matt": "4:03",
+"matt": "1:03",
 "mitch": "1:05"
 },
 "patches": {
 "andrew": "0:39",
 "kyle": "0:24",
-"matt": "3:41",
+"matt": "0:41",
 "mitch": "0:09"
 },
 "queens": {
 "andrew": "0:43",
 "kyle": "0:34",
-"matt": "3:00",
+"matt": "0:30",
 "mitch": "0:18"
 },
 "sumbreak": {
@@ -4225,19 +4225,19 @@
 "tango": {
 "andrew": "0:15",
 "kyle": "0:29",
-"matt": "3:16",
+"matt": "0:16",
 "mitch": "0:25"
 },
 "wend": {
 "andrew": "0:31",
 "kyle": "0:21",
-"matt": "3:35",
+"matt": "0:35",
 "mitch": "0:34"
 },
 "zip": {
 "andrew": "0:11",
 "kyle": "0:11",
-"matt": "3:17",
+"matt": "0:17",
 "mitch": "0:21"
 }
 },
