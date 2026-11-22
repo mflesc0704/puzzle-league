@@ -4331,13 +4331,16 @@
 },
 "2026-11-22": {
 "mini-sudoku": {
-"matt": "1:56"
+"matt": "1:56",
+"mitch": "1:20"
 },
 "patches": {
-"matt": "0:17"
+"matt": "0:17",
+"mitch": "0:51"
 },
 "queens": {
-"matt": "1:19"
+"matt": "1:19",
+"mitch": "1:13"
 },
 "sumbreak": {
 "matt": "0:07",
@@ -4351,7 +4354,8 @@
 "matt": "2:07"
 },
 "zip": {
-"matt": "0:18"
+"matt": "0:18",
+"mitch": "0:44"
 }
 },
 "_gaps": [
@@ -4361,34 +4365,6 @@
 "player": "andrew",
 "slug": "zip",
 "today": false
-},
-{
-"day": "2026-11-22",
-"game": "Queens",
-"player": "mitch",
-"slug": "queens",
-"today": true
-},
-{
-"day": "2026-11-22",
-"game": "Zip",
-"player": "mitch",
-"slug": "zip",
-"today": true
-},
-{
-"day": "2026-11-22",
-"game": "Mini Sudoku",
-"player": "mitch",
-"slug": "mini-sudoku",
-"today": true
-},
-{
-"day": "2026-11-22",
-"game": "Patches",
-"player": "mitch",
-"slug": "patches",
-"today": true
 },
 {
 "day": "2026-11-22",
