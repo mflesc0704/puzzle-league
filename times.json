@@ -4351,7 +4351,8 @@
 "mitch": "0:34"
 },
 "wend": {
-"matt": "2:07"
+"matt": "2:07",
+"mitch": "1:33"
 },
 "zip": {
 "matt": "0:18",
@@ -4365,13 +4366,6 @@
 "player": "andrew",
 "slug": "zip",
 "today": false
-},
-{
-"day": "2026-11-22",
-"game": "Wend",
-"player": "mitch",
-"slug": "wend",
-"today": true
 }
 ],
 "_self": {
@@ -4388,6 +4382,11 @@
 "2026-11-15": {
 "queens": [
 "kyle"
+]
+},
+"2026-11-22": {
+"wend": [
+"mitch"
 ]
 }
 }
